@@ -3,18 +3,28 @@
 #define _configuration_h_
 
 #include "counter.hpp"
+#include "boundedCounter.hpp"
 
 // Integer config template
-template<typename Init>
-struct IntCounterConfig {
-	// the held type of the value
-	typedef int ValueType;
-	// the config initializer
-	typedef  Init InitVal;
-	// the config type
-	typedef IntCounterConfig Config;
-	// the held counter
+template<typename Type, typename Init, typename Inc>
+struct CounterConfig {
+	typedef Type ValueType;
+	typedef Init InitVal;
+	typedef Inc IncVal;
+};
+
+// Integer config template
+template<typename Type, typename Init, typename Increment>
+struct IncCounterConfig : public CounterConfig<Type, Init, Increment> {
+	typedef IncCounterConfig Config;
 	typedef Counter<Config> Counter;
 };
 
+// partial template bounded coutner config
+template<typename Type, typename Init, typename Inc, typename Bound>
+struct BoundedCounterConfig : public CounterConfig<Type, Init, Inc> {
+	typedef Bound UpperBound;
+	typedef BoundedCounterConfig Config;
+	typedef BoundedCounter<Counter<Config>> Counter;
+};
 #endif

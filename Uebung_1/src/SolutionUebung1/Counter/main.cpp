@@ -3,14 +3,13 @@
 #include "configuration.hpp"
 #include "counter.hpp"
 #include "boundedCounter.hpp"
-#include "varIncrementBoundCounter.h"
 
 using namespace std;
 
 int main() {
 	// Test for integer counter 
-	cout << "Integer counter:" << endl;
-	typedef typename IntCounterConfig<IntValue<0>>::Counter Counter;
+	cout << "Integer counter :" << endl;
+	typedef typename IncCounterConfig<int, IntValue<0>, IntValue<1>>::Counter Counter;
 	Counter counter;
 
 	cout << counter.Value() << endl;
@@ -28,9 +27,29 @@ int main() {
 	cout << counter.Value() << endl;
 	cout << "----------------------------------" << endl << endl;
 
+	// Test for double counter 
+	cout << "Double counter :" << endl;
+	typedef typename IncCounterConfig<double, IntValue<0>, DoubleValue_0_5>::Counter DoubleCounter;
+	DoubleCounter doubleCounter;
+
+	cout << doubleCounter.Value() << endl;
+	doubleCounter.Increment();
+	cout << doubleCounter.Value() << endl;
+	doubleCounter.Increment();
+	cout << doubleCounter.Value() << endl;
+	doubleCounter.Increment();
+	cout << doubleCounter.Value() << endl;
+	doubleCounter.Increment();
+	cout << doubleCounter.Value() << endl;
+	doubleCounter.Increment();
+	cout << doubleCounter.Value() << endl;
+	doubleCounter.Reset();
+	cout << doubleCounter.Value() << endl;
+	cout << "----------------------------------" << endl << endl;
+
 	// Tests for bounded integer counter
 	cout << "Bounded integer counter:" << endl;
-	typedef typename BoundedIntCounterConfig<IntValue<0>, IntValue<2>>::Counter BoundedCounter;
+	typedef typename BoundedCounterConfig<int, IntValue<0>, IntValue<2>, IntValue<1>>::Counter BoundedCounter;
 	BoundedCounter boundedCounter;
 
 	// Take a look at implemented class some mehtods are wrong
@@ -47,25 +66,6 @@ int main() {
 	cout << boundedCounter.Value() << endl;
 	boundedCounter.Reset();
 	cout << boundedCounter.Value() << endl;
-	cout << "----------------------------------" << endl << endl;
-
-	// Tests for variable increment bounded integer counter
-	cout << "Variable increment Bounded integer counter:" << endl;
-	typedef typename VarIncrementBoundIntCounterConfig<IntValue<0>, IntValue<30>, IntValue<10>>::Counter VarIncrementBoundedCounter;
-	VarIncrementBoundedCounter varIncBoundCounter;
-
-	// Take a look at implemented class some mehtods are wrong
-	cout << varIncBoundCounter.Value() << endl;
-	varIncBoundCounter.Increment();
-	cout << varIncBoundCounter.Value() << endl;
-	varIncBoundCounter.Increment();
-	cout << varIncBoundCounter.Value() << endl;
-	varIncBoundCounter.Increment();
-	cout << varIncBoundCounter.Value() << endl;
-	varIncBoundCounter.Increment();
-	cout << varIncBoundCounter.Value() << endl;
-	varIncBoundCounter.Reset();
-	cout << varIncBoundCounter.Value() << endl;
 	cout << "----------------------------------" << endl << endl;
 
 	return 0;

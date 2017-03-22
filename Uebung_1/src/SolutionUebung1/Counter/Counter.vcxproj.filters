@@ -32,11 +32,5 @@
     <ClInclude Include="configuration.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="varIncrementBoundCounter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="varIncrementCounter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

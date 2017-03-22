@@ -13,35 +13,26 @@ protected:
 
 protected:
 	// The held value reference
-	ValueType *value;
+	ValueType value;
 
 public:
 	// Initialize value for given ValueType
-	Counter() {
-		Reset();
-	}
-
-	// delete held value
-	~Counter() {
-		delete value;
+	Counter() : value(Config::InitVal::value) {
 	}
 
 	// Get actual value
-	ValueType &Value() const {
-		return (*value);
+	ValueType Value() const {
+		return value;
 	}
 
 	// Increment value by by one 
 	void Increment() {
-		(*value)++;
+		value = value + Config::IncVal::value;
 	}
 
 	// Reset value by deleting old and creating new one
 	void Reset() {
-		if (value != nullptr) {
-			delete value;
-		}
-		value = new ValueType(Config::InitVal::value);
+		value = Config::InitVal::value;
 	}
 };
 
