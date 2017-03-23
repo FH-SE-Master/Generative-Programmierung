@@ -27,4 +27,26 @@ struct BoundedCounterConfig : public CounterConfig<Type, Init, Inc> {
 	typedef BoundedCounterConfig Config;
 	typedef BoundedCounter<Counter<Config>> Counter;
 };
+
+template<bool Condition, typename Then, typename Else>
+struct IF {
+	typedef Then RET;
+};
+
+// Then template
+template<typename Then, typename Else>
+struct IF<false, Then, Else> {
+	typedef Else RET;
+};
+
+enum CounterType {increment, bounded};
+template<CounterType counterType = increment, typename Type = int, typename Init = IntValue<0>, typename Inc = IntValue<1>, typename Bound = IntValue<0>>
+class CounterConfigurationGenerator {
+private:
+	enum { isBounded = counterType == bounded };
+
+public:
+	typedef typename IF<isBounded, BoundedCounterConfig<Type, Init, Inc, Bound>,
+		IncCounterConfig<Type, Init, Inc>>::RET::Config Config;
+};
 #endif
