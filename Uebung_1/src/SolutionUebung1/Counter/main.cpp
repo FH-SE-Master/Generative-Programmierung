@@ -35,7 +35,7 @@ int main() {
 
 	// Tests for bounded integer counter
 	cout << "Bounded integer counter:" << endl;
-	typedef typename BoundedCounterConfig<int, IntValue<0>, IntValue<2>, IntValue<1>>::Counter BoundedCounter;
+	typedef typename BoundedCounterConfig<int, IntValue<0>, IntValue<1>, IntValue<2>>::Counter BoundedCounter;
 	BoundedCounter boundedCounter;
 	cout << boundedCounter.Value() << endl;
 	boundedCounter.Increment();

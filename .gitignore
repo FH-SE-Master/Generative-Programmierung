@@ -1,3 +1,8 @@
 */**/Debug/*
 *.exe
 *.obj
+*.aux
+*.gz
+*.log
+*.out
+*minted-*
