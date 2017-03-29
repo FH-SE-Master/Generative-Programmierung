@@ -66,6 +66,6 @@ public:
 		typename IF<isVarIntIncBounded, BoundedCounterConfig<int, Init, Bound, Inc>,
 		typename IF<isDoubInc, IncCounterConfig<double, Init, DoubleValue_1_0>,
 		typename IF<isDoubIncBounded, BoundedCounterConfig<double, Init, Bound, DoubleValue_1_0>,
-		typename IF<isVarDoubInc, IncCounterConfig<double, Init, Inc>, BoundedCounterConfig<double, Init, Bound, Inc>>::RET>::RET>::RET>::RET>::RET>::RET>::RET Config;
+		typename IF<isVarDoubInc, IncCounterConfig<double, Init, Inc>, BoundedCounterConfig<double, Init, Bound, Inc>>::RET::Counter>::RET::Counter>::RET::Counter>::RET::Counter>::RET::Counter>::RET::Counter>::RET::Counter Counter;
 };
 #endif

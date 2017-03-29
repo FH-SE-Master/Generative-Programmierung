@@ -95,7 +95,7 @@ int main() {
 	
 	// Tests Int Configurator
 	cout << "CounterConfigurationGenerator<intInc, IntValue<0>>:" << endl;
-	typedef typename CounterConfigurationGenerator<intInc, IntValue<0>>::Config::Counter GenIntIncCounter;
+	typedef typename CounterConfigurationGenerator<intInc, IntValue<0>>::Counter GenIntIncCounter;
 	GenIntIncCounter genIntIncCounter;
 	cout << genIntIncCounter.Value() << endl;
 	genIntIncCounter.Increment();
@@ -109,7 +109,7 @@ int main() {
 	cout << "----------------------------------" << endl << endl;
 
 	cout << "CounterConfigurationGenerator<intIncBounded, IntValue<0>, IntValue<2>>:" << endl;
-	typedef typename CounterConfigurationGenerator<intIncBounded, IntValue<0>, IntValue<2>>::Config::Counter GenIntIncBoundCounter;
+	typedef typename CounterConfigurationGenerator<intIncBounded, IntValue<0>, IntValue<2>>::Counter GenIntIncBoundCounter;
 	GenIntIncBoundCounter genIntIncBoundCounter;
 	cout << genIntIncBoundCounter.Value() << endl;
 	genIntIncBoundCounter.Increment();
@@ -123,7 +123,7 @@ int main() {
 	cout << "----------------------------------" << endl << endl;
 
 	cout << "CounterConfigurationGenerator<varIntInc, IntValue<0>, NoBound, IntValue<2>>:" << endl;
-	typedef typename CounterConfigurationGenerator<varIntInc, IntValue<0>, NoBound, IntValue<2>>::Config::Counter GenIntVarIncCounter;
+	typedef typename CounterConfigurationGenerator<varIntInc, IntValue<0>, NoBound, IntValue<2>>::Counter GenIntVarIncCounter;
 	GenIntVarIncCounter genIntVarIncCounter;
 	cout << genIntVarIncCounter.Value() << endl;
 	genIntVarIncCounter.Increment();
@@ -137,7 +137,7 @@ int main() {
 	cout << "----------------------------------" << endl << endl;
 
 	cout << "CounterConfigurationGenerator<varIntInc, IntValue<0>, IntValue<2>, IntValue<1>>:" << endl;
-	typedef typename CounterConfigurationGenerator<varIntInc, IntValue<0>, IntValue<2>, IntValue<1>>::Config::Counter GenIntVarIncBoundCounter;
+	typedef typename CounterConfigurationGenerator<varIntInc, IntValue<0>, IntValue<2>, IntValue<1>>::Counter GenIntVarIncBoundCounter;
 	GenIntVarIncBoundCounter genIntVarIncBoundCounter;
 	cout << genIntVarIncBoundCounter.Value() << endl;
 	genIntVarIncBoundCounter.Increment();
@@ -152,7 +152,7 @@ int main() {
 
 	// Tests Double Configurator
 	cout << "CounterConfigurationGenerator<doubInc, DoubleValue_0_5>:" << endl;
-	typedef typename CounterConfigurationGenerator<doubInc, DoubleValue_0_5>::Config::Counter GenDoubleIncCounter;
+	typedef typename CounterConfigurationGenerator<doubInc, DoubleValue_0_5>::Counter GenDoubleIncCounter;
 	GenDoubleIncCounter genDoubleIncCounter;
 	cout << genDoubleIncCounter.Value() << endl;
 	genDoubleIncCounter.Increment();
@@ -166,7 +166,7 @@ int main() {
 	cout << "----------------------------------" << endl << endl;
 
 	cout << "CounterConfigurationGenerator<doubIncBounded, DoubleValue_0_5, DoubleValue_2_0>:" << endl;
-	typedef typename CounterConfigurationGenerator<doubIncBounded, DoubleValue_0_5, DoubleValue_2_0>::Config::Counter GenDoubleIncBoundCounter;
+	typedef typename CounterConfigurationGenerator<doubIncBounded, DoubleValue_0_5, DoubleValue_2_0>::Counter GenDoubleIncBoundCounter;
 	GenDoubleIncBoundCounter genDoubleIncBoundCounter;
 	cout << genDoubleIncBoundCounter.Value() << endl;
 	genDoubleIncBoundCounter.Increment();
@@ -180,7 +180,7 @@ int main() {
 	cout << "----------------------------------" << endl << endl;
 
 	cout << "CounterConfigurationGenerator<varDoubInc, IntValue<0>, NoBound, DoubleValue_0_5>:" << endl;
-	typedef typename CounterConfigurationGenerator<varDoubInc, DoubleValue_0_5, NoBound, DoubleValue_0_5>::Config::Counter GenDoubleVarIncCounter;
+	typedef typename CounterConfigurationGenerator<varDoubInc, DoubleValue_0_5, NoBound, DoubleValue_0_5>::Counter GenDoubleVarIncCounter;
 	GenDoubleVarIncCounter genDoubleVarIncCounter;
 	cout << genDoubleVarIncCounter.Value() << endl;
 	genDoubleVarIncCounter.Increment();
@@ -194,7 +194,7 @@ int main() {
 	cout << "----------------------------------" << endl << endl;
 
 	cout << "CounterConfigurationGenerator<varDoubIncBounded, DoubleValue_0_5, DoubleValue_2_0, DoubleValue_1_0>:" << endl;
-	typedef typename CounterConfigurationGenerator<varDoubIncBounded, DoubleValue_0_5, DoubleValue_2_0, DoubleValue_1_0>::Config::Counter GenDoubleVarIncBoundCounter;
+	typedef typename CounterConfigurationGenerator<varDoubIncBounded, DoubleValue_0_5, DoubleValue_2_0, DoubleValue_1_0>::Counter GenDoubleVarIncBoundCounter;
 	GenDoubleVarIncBoundCounter genDoubleVarIncBoundCounter;
 	cout << genDoubleVarIncBoundCounter.Value() << endl;
 	genDoubleVarIncBoundCounter.Increment();
