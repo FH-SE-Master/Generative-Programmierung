@@ -136,8 +136,8 @@ int main() {
 	cout << genIntVarIncCounter.Value() << endl;
 	cout << "----------------------------------" << endl << endl;
 
-	cout << "CounterConfigurationGenerator<varIntInc, IntValue<0>, IntValue<2>, IntValue<1>>:" << endl;
-	typedef typename CounterConfigurationGenerator<varIntInc, IntValue<0>, IntValue<2>, IntValue<1>>::Counter GenIntVarIncBoundCounter;
+	cout << "CounterConfigurationGenerator<varIntIncBounded, IntValue<0>, IntValue<2>, IntValue<1>>:" << endl;
+	typedef typename CounterConfigurationGenerator<varIntIncBounded, IntValue<0>, IntValue<2>, IntValue<1>>::Counter GenIntVarIncBoundCounter;
 	GenIntVarIncBoundCounter genIntVarIncBoundCounter;
 	cout << genIntVarIncBoundCounter.Value() << endl;
 	genIntVarIncBoundCounter.Increment();

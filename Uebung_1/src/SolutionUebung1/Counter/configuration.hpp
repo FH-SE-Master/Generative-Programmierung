@@ -17,8 +17,8 @@ struct CounterConfig {
 	typedef Inc IncVal;
 };
 
-template<typename Type, typename Init, typename Increment = IntValue<1>>
-struct IncCounterConfig : public CounterConfig<Type, Init, Increment> {
+template<typename Type, typename Init, typename Inc = IntValue<1>>
+struct IncCounterConfig : public CounterConfig<Type, Init, Inc> {
 	typedef IncCounterConfig Config;
 	typedef Counter<Config> Counter;
 };
@@ -60,12 +60,14 @@ private:
 };
 
 public:
-	typedef typename IF<isIntInc, IncCounterConfig<int, Init, IntValue<1>>,
-		typename IF<isIntIncBounded, BoundedCounterConfig<int, Init, Bound, IntValue<1>>,
-		typename IF<isVarIntInc, IncCounterConfig<int, Init, Inc>,
-		typename IF<isVarIntIncBounded, BoundedCounterConfig<int, Init, Bound, Inc>,
-		typename IF<isDoubInc, IncCounterConfig<double, Init, DoubleValue_1_0>,
-		typename IF<isDoubIncBounded, BoundedCounterConfig<double, Init, Bound, DoubleValue_1_0>,
-		typename IF<isVarDoubInc, IncCounterConfig<double, Init, Inc>, BoundedCounterConfig<double, Init, Bound, Inc>>::RET::Counter>::RET::Counter>::RET::Counter>::RET::Counter>::RET::Counter>::RET::Counter>::RET::Counter Counter;
+	typedef typename IF<isIntInc, Counter<IncCounterConfig<int, Init, IntValue<1>>>,
+		typename IF<isIntIncBounded, BoundedCounter<Counter<BoundedCounterConfig<int, Init, Bound, IntValue<1>>>>,
+		typename IF<isVarIntInc, Counter<IncCounterConfig<int, Init, Inc>>,
+		typename IF<isVarIntIncBounded, BoundedCounter<Counter<BoundedCounterConfig<int, Init, Bound, Inc>>>,
+		typename IF<isDoubInc, Counter<IncCounterConfig<double, Init, DoubleValue_1_0>>,
+		typename IF<isDoubIncBounded, BoundedCounter<Counter<BoundedCounterConfig<double, Init, Bound, DoubleValue_1_0>>>,
+		typename IF<isVarDoubInc, Counter<IncCounterConfig<double, Init, Inc>>,
+		BoundedCounter<Counter<BoundedCounterConfig<double, Init, Bound, Inc>>>>
+			::RET>::RET>::RET>::RET>::RET>::RET>::RET Counter;
 };
 #endif

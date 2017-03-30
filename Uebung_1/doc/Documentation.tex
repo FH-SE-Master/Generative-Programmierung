@@ -38,6 +38,7 @@
 
 % the default java directory structure and the main packages
 \newcommand{\srcDirBunnies}{../src/SolutionUebung1/MetaProgramming}
+\newcommand{\srcDirCounter}{../src/SolutionUebung1/Counter}
 \newcommand{\imageDir}{images}
 % =============================================
 % Code Settings
@@ -127,38 +128,99 @@ Die DO-IF-Statement Templates werden in der Datei statement.hpp implementiert. F
 	\cppSourceFile{\srcDirBunnies/main.cpp}
 	\label{src:main-cpp}
 \end{code}
+\ \newpage
 
-\begin{figure}
+\subsection{Tests}
+\begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.9]{\imageDir/bunnies1.JPG}
+	\includegraphics[scale=0.7]{\imageDir/bunnies1.JPG}
 	\caption{Test Teil 1}
 	\label{fig:bunnies-1}
 \end{figure}
+\ \newpage
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.9]{\imageDir/bunnies2.JPG}
+	\includegraphics[scale=0.7]{\imageDir/bunnies2.JPG}
 	\caption{Test Teil 2}
 	\label{fig:bunnies-2}
 \end{figure}
+\ \newpage
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.9]{\imageDir/bunnies3.JPG}
+	\includegraphics[scale=0.7]{\imageDir/bunnies3.JPG}
 	\caption{Test Teil 3}
 	\label{fig:bunnies-3}
 \end{figure}
+\ \newpage
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.9]{\imageDir/bunnies4.JPG}
+	\includegraphics[scale=0.7]{\imageDir/bunnies4.JPG}
 	\caption{Test Teil 4}
 	\label{fig:bunnies-4}
 \end{figure}
 \ \newpage
 
-\section{1, 2, 3, 4, 5, 6, ...}
+\section{1, 2, 3, 4, 5, 6, ... / Counters of the Shelf}
 \subsection{Lösungsidee}
+Für die Repräsentation der \emph{Counter}-Werte \emph{Inc, Init} wird ein \emph{Template IntValue} für Integer implementiert. Für die Repräsentation von Double Werten werden \emph{Structs} implementiert, da Float und Double Zahlenwerte nicht als Template Argumente gesetzt werden dürfen, daher ist die Lösung über ein Template nicht möglich. Über eine Konstante wird der aktuelle Double Wert in das \emph{Struct} setzt.    
+\newline
+\newline
+Es werden die 3 Konfigurationen \emph{CounterConfig}, \emph{IncCounterConfig} und \emph{BoundedCounterConfig} implementiert, wobei die Konfiguration \emph{CounterConfig} als Basiskonfiguration fungiert, von der die anderen Konfigurationen ableiten werden. Die Basiskonfiguration \emph{CounterConfig} enthält die Attribute \emph{ValueType}, \emph{IntValue} und \emph{IncValue}, die über alle Konfigurationen wieder verwendbar sind. Die Konfiguration \emph{IncCounterConfig} setzt als \emph{default}-Wert für das Inkrement \emph{IntValue<1>}, somit ist der \emph{default Counter} immer ein \emph{(increment by one) Counter}.
+\newline
+\newline
+Es werden die zwei \emph{Counter}-Klassen \emph{Counter} und \emph{BoundedCounter} implementiert, die über eine Konfiguration konfiguriert werden. Es wird keine \emph{IntCounter}-Klasse \emph{(increment by one)} implementiert, da dieser \emph{IntCounter} ein \emph{Counter} mit Inkrement 1 ist und dieser \emph{IntCounter} über ein \emph{default}-Template-Argument \emph{(IncValue)} der Konfiguration \emph{IncCounterConfig} realisiert wird. Mit diesem Ansatz kann die \emph{Counter}-Klasse wiederverwende werden und es wird eine Klasse eingespart.
+\newline
+\newline
+Es wird ein Konfigurator implementiert, der je nach gesetzten \emph{Template}-Argumenten, den entsprechenden Counter zurückgibt. Dafür wurde eine \emph{enum} implementiert, die alle verfügbaren \emph{Counter} abbildet und die als \emph{Template}-Argument gesetzt wird. Da nicht alle \emph{Template}-Argumente benötigt werden, werden die optionalen oder nur für bestimmte \emph{Counter} benötigten Argumente mit \emph{defaults} gesetzt.
 
+\begin{code}
+	\caption{value.hpp}
+	\cppSourceFile{\srcDirCounter/value.hpp}
+	\label{src:value-cpp}
+\end{code}
+\ \newpage
+
+\begin{code}
+	\caption{configuration.hpp}
+	\cppSourceFile{\srcDirCounter/configuration.hpp}
+	\label{src:configuration-cpp}
+\end{code}
+
+\begin{code}
+	\caption{counter.hpp}
+	\cppSourceFile{\srcDirCounter/counter.hpp}
+	\label{src:counter-cpp}
+\end{code}
+
+\begin{code}
+	\caption{boundedCounter.hpp}
+	\cppSourceFile{\srcDirCounter/boundedCounter.hpp}
+	\label{src:bounded-counter-cpp}
+\end{code}
+
+\begin{code}
+	\caption{main.hpp}
+	\cppSourceFile{\srcDirCounter/main.cpp}
+	\label{src:counter-main-cpp}
+\end{code}
+
+\subsection{Tests}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=1]{\imageDir/counter1.JPG}
+	\caption{Test Teil 1}
+	\label{fig:counter-1}
+\end{figure}
+\ \newpage
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=1]{\imageDir/counter2.JPG}
+	\caption{Test Teil 2}
+	\label{fig:counter-2}
+\end{figure}
 
 \end{document}
