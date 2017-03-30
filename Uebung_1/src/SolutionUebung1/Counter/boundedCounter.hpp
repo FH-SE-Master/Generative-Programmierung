@@ -17,8 +17,12 @@ public:
 	}
 
 	void Increment() {
+		ValueType tmp = value;
 		if (value < bound) {
 			BaseCounter::Increment();
+		}
+		if (value > bound) {
+			value = tmp;
 		}
 	}
 };

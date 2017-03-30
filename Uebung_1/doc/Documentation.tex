@@ -100,28 +100,25 @@ Die Implementierungen der Aufgabe \emph{like Buniies} wird in drei Dateien aufge
 	\item statement.hpp
 	\item main.cpp
 \end{itemize}
-Die Berechnung der Fibonacci-Folge wird über eine rekursive Funktion implementiert, die dazu verwendet wird die Berechnung zur Laufzeit zu durchzuführen. Es wird ein Template implementiert, welches die Fibonacci-Folge zur Compile-time berechnet. Es werden zwei partielle Ausprägungen des Templates implementiert und zwar für die Werte 0 und 1. 0 damit die Instanziierung der Templates ein definiertes Ende hat und zusätzlich eine partielle Ausprägung für 1, da die Fibonacci-Folge wie folgt definiert ist $fib(n) = fib(n-1) + fib(n-1)$. 
+Die Berechnung der Fibonacci-Folge wird über eine rekursive Funktion implementiert, die dazu verwendet wird, die Berechnung zur Laufzeit zu durchzuführen. Es wird ein Template implementiert, welches die Fibonacci-Folge beim Kompilieren berechnet. Es werden zwei partielle Ausprägungen des Templates implementiert und zwar für die Werte 0 und 1. 0 damit die Instanziierung der Templates ein definiertes Ende hat und zusätzlich eine partielle Ausprägung für 1, da die Fibonacci-Folge wie folgt definiert ist $fib(n) = fib(n-1) + fib(n-1)$. 
 \newline
 \newline
-Für die Berechnung der Fibonacci-Folge über DO-IF-Template-Metafunctions, die zur Compile-Time evaluiert werden, wird ein Template für die Berechnung der Fibonacci-Folge implementiert, sowie ein Template für die Condition, welche entscheidet wann die Berechnung fertig ist. Um das aktuelle n im Template zu speichern wird folgende Anweisung verwendet \emph{enum \{ current = n \}}. Das gespeicherte n als current wird von der \emph{FibonacciCondition} benötigt um zu entscheiden, wann die Berechnung fertig ist.
+Für die Berechnung der Fibonacci-Folge über \emph{DO-IF-Template-Metafunctions}, die beim Kompilieren  evaluiert werden, wird ein \emph{Template} für die Berechnung der Fibonacci-Folge implementiert, sowie ein \emph{Template} \emph{FibonacciCondition} für die Bedingung, die entscheidet, wann die Berechnung fertig ist. Um das aktuelle n im \emph{Template} zu speichern, wird folgende Anweisung verwendet \emph{enum \{ current = n \}}. Das gespeicherte n als current wird von der \emph{FibonacciCondition} benötigt, um zu entscheiden, wann die Berechnung fertig ist.
 \newline
 \newline
-Die DO-IF-Statement Templates werden in der Datei statement.hpp implementiert. Für das IF-Template wird zusätzlich ein partielles Template für den boolschen Wert false implementiert. Das DO-Template erwartet sich zwei Typparameter \emph{Statement} und \emph{Condition}, wobei \emph{Statement} eine einfach verkettete Liste von \emph{Statements} darstellt, wobei das nächste \emph{Statement} über \emph{Statement:NEXT} verfügbar ist.
-\newpage
+Die \emph{DO-IF-Statement Templates} werden in der Datei statement.hpp implementiert. Für das \emph{IF-Template} wird zusätzlich ein partielles \emph{Template} für den boolschen Wert \emph{false} implementiert. Das \emph{DO-Template} erwartet sich zwei Typ-Parameter \emph{Statement} und \emph{Condition}, wobei \emph{Statement} eine einfach verkettete Liste von \emph{Statements} darstellt, wobei das nächste \emph{Statement} über \emph{Statement:NEXT} verfügbar ist.
 
 \begin{code}
 	\caption{fibonacci.hpp}
 	\cppSourceFile{\srcDirBunnies/fibonacci.hpp}
 	\label{src:fibonacci-hhp}
 \end{code}
-\ \newpage
 
 \begin{code}
 	\caption{statement.hpp}
 	\cppSourceFile{\srcDirBunnies/statement.hpp}
 	\label{src:statement-hhp}
 \end{code}
-\ \newpage
 
 \begin{code}
 	\caption{main.cpp}
@@ -165,23 +162,40 @@ Die DO-IF-Statement Templates werden in der Datei statement.hpp implementiert. F
 
 \section{1, 2, 3, 4, 5, 6, ... / Counters of the Shelf}
 \subsection{Lösungsidee}
-Für die Repräsentation der \emph{Counter}-Werte \emph{Inc, Init} wird ein \emph{Template IntValue} für Integer implementiert. Für die Repräsentation von Double Werten werden \emph{Structs} implementiert, da Float und Double Zahlenwerte nicht als Template Argumente gesetzt werden dürfen, daher ist die Lösung über ein Template nicht möglich. Über eine Konstante wird der aktuelle Double Wert in das \emph{Struct} setzt.    
+Diese Aufgabenstellung wurde in den folgenden 4 Dateien implementiert:
+\begin{itemize}
+	\item value.hpp
+	\item configuration.hpp
+	\item counter.hpp
+	\item boundedCounter.hpp
+\end{itemize}
+Für die Repräsentation der \emph{Counter}-Werte wie \emph{Inc} und \emph{Init} wird ein \emph{Template IntValue} für Integer implementiert. Für die Repräsentation von Double Werten werden für jeden verwendeten Wert \emph{Structs} implementiert, da Float und Double Zahlenwerte nicht als Template Argumente gesetzt werden dürfen, daher ist die Lösung über ein Template nicht möglich. Über eine Konstante wird der aktuelle Double Wert in das \emph{Struct} setzt.    
 \newline
 \newline
-Es werden die 3 Konfigurationen \emph{CounterConfig}, \emph{IncCounterConfig} und \emph{BoundedCounterConfig} implementiert, wobei die Konfiguration \emph{CounterConfig} als Basiskonfiguration fungiert, von der die anderen Konfigurationen ableiten werden. Die Basiskonfiguration \emph{CounterConfig} enthält die Attribute \emph{ValueType}, \emph{IntValue} und \emph{IncValue}, die über alle Konfigurationen wieder verwendbar sind. Die Konfiguration \emph{IncCounterConfig} setzt als \emph{default}-Wert für das Inkrement \emph{IntValue<1>}, somit ist der \emph{default Counter} immer ein \emph{(increment by one) Counter}.
+Es werden die 3 Konfigurationen \emph{CounterConfig}, \emph{IncCounterConfig} und \emph{BoundedCounterConfig} als \emph{Templates} implementiert, wobei die Konfiguration \emph{CounterConfig} als Basiskonfiguration fungiert, von der die anderen Konfigurationen ableiten. Die Basiskonfiguration \emph{CounterConfig} wird die Typdefinitionen \emph{ValueType}, \emph{IntValue} und \emph{IncValue} bereitstellen, die über alle Konfigurationen wieder verwendbar sind. Die Konfiguration \emph{IncCounterConf} setzt als \emph{default}-Wert für das Inkrement \emph{IntValue$<1>$}, somit ist der \emph{default Counter} immer ein \emph{(increment by one) Counter}.
 \newline
 \newline
-Es werden die zwei \emph{Counter}-Klassen \emph{Counter} und \emph{BoundedCounter} implementiert, die über eine Konfiguration konfiguriert werden. Es wird keine \emph{IntCounter}-Klasse \emph{(increment by one)} implementiert, da dieser \emph{IntCounter} ein \emph{Counter} mit Inkrement 1 ist und dieser \emph{IntCounter} über ein \emph{default}-Template-Argument \emph{(IncValue)} der Konfiguration \emph{IncCounterConfig} realisiert wird. Mit diesem Ansatz kann die \emph{Counter}-Klasse wiederverwende werden und es wird eine Klasse eingespart.
+Es werden die zwei \emph{Counter}-Klassen \emph{Counter} und \emph{BoundedCounter} implementiert, die über eine Konfiguration konfigurierbar sind. Es wird keine \emph{IntCounter}-Klasse \emph{(increment by one)} implementiert, da dieser \emph{IntCounter} ein \emph{Counter} mit Inkrement 1 ist und dieser \emph{IntCounter} über ein \emph{Default} für das \emph{Template}-Argument \emph{(IncValue)} der Konfiguration \emph{IncCounterConfig} realisiert werden kann. Mit diesem Ansatz kann die \emph{Counter}-Klasse wiederverwendet werden und es wird eine Klasse eingespart.
 \newline
 \newline
-Es wird ein Konfigurator implementiert, der je nach gesetzten \emph{Template}-Argumenten, den entsprechenden Counter zurückgibt. Dafür wurde eine \emph{enum} implementiert, die alle verfügbaren \emph{Counter} abbildet und die als \emph{Template}-Argument gesetzt wird. Da nicht alle \emph{Template}-Argumente benötigt werden, werden die optionalen oder nur für bestimmte \emph{Counter} benötigten Argumente mit \emph{defaults} gesetzt.
+Es wird eine Konfigurator Klasse \emph{CounterConfigurator} implementiert, die je nach gesetzten \emph{Template}-Argumenten, den entsprechenden \emph{Counter} liefert. Dafür wird ein Aufzählungsdatentyp implementiert, der alle verfügbaren \emph{Counter}-Typen abbildet. \emph{Template}-Argumente, die nicht für alle \emph{Counter}-Typen benötigt werden, werden mit \emph{defaults} gesetzt, damit diese optional werden und nicht ausgeprägt werden müssen. Folgende \emph{Template}-Argumente werden auf der Konfigurator Klasse \emph{CounterConfigurator} definiert:
+\begin{itemize}
+	\item\emph{counterType} ist das Argument, über den der \emph{Counter}-Typ definiert wird.
+	\item \emph{Init} ist das Argument, über den der Initialwert des \emph{Counters} definiert wird.
+	\item \emph{Bound} ist das optionale Argument, über den der \emph{Bound} des \emph{bounded Counters} definiert wird. Als \emph{Default} wird \emph{NoBound} gesetzt.
+	\item \emph{Inc} ist das optionale Argument, über den das Inkrement des \emph{Counters} definiert wird. Als \emph{Default} wird \emph{IntValue$<1>$} gesetzt.
+\end{itemize}
+Für die Entscheidung welcher \emph{Counter} geliefert werden muss, wird das \emph{IF-Statement} aus der Aufgabenstellung \emph{like Bunnies} verwendet. Es wird eine \emph{ELSE-IF Cascade} realisiert, die je nach gesetzter Aufzählung den entsprechenden \emph{Counter} konfiguriert und liefert.
+\newline
+\newline
+Sollte das Inkrement beim \emph{bounded Counter} den Schwellwert überschreiten, so wird der \emph{Value} auf den zuletzt gültigen Wert gesetzt.
+\ \newpage
 
 \begin{code}
 	\caption{value.hpp}
 	\cppSourceFile{\srcDirCounter/value.hpp}
 	\label{src:value-cpp}
 \end{code}
-\ \newpage
 
 \begin{code}
 	\caption{configuration.hpp}
@@ -206,6 +220,7 @@ Es wird ein Konfigurator implementiert, der je nach gesetzten \emph{Template}-Ar
 	\cppSourceFile{\srcDirCounter/main.cpp}
 	\label{src:counter-main-cpp}
 \end{code}
+\ \newpage
 
 \subsection{Tests}
 \begin{figure}[h]
