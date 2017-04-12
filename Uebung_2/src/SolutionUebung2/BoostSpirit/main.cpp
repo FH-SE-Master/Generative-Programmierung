@@ -46,21 +46,24 @@ void test_lolcode() {
 		"bolsche R WIN                    BTW assign value\n"
 		"VISIBLE bolsche                  BTW print value\n"
 		"I   HAS  A    answer             BTW declare variable\n"
-		"answer R 21.0                    BTW assign value\n"
+		"answer R 10.0                    BTW assign value\n"
 		"VISIBLE answer                   BTW print value\n"
-		"answer R SUM OF 21.6 AN 20.4     BTW add two values and assign result\n"
+		"answer R SUM OF 10.0 AN 10.0     BTW add two values and assign result\n"
 		"VISIBLE answer                   \n"
 		"OBTW This is a multiline comment \n"
-		"and this is the second line TLDR\n"
-		"VISIBLE SUM OF 1 AN SUM OF 0.3 AN 0.037\n"
-		"VISIBLE \"iz coffeh tiem!\"\n"
+		"and this is the second line TLDR \n"
+		"VISIBLE \"SUM:      \" SUM OF 1 AN SUM OF 2 AN 2                BTW Nested Addition\n"
+		//"VISIBLE \"DIFF:     \" DIFF OF 10 AN DIFF OF 10 AN 5            BTW Nested Substraction\n"
+		//"VISIBLE \"PRODUKT:  \" PRODUKT OF 10 AN PRODUKT OF 10 AN 10     BTW Nested Produkt\n"
+		//"VISIBLE \"QUOSHUNT: \" QUOSHUNT OF 100 AN PRODUKT OF 100 AN 10  BTW Nested Division\n"
+		//"VISIBLE \"iz coffeh tiem!\"\n"
 		"KTHXBYE";
 
 	auto begin = code.begin();
 	auto end = code.end();
 	lolcode::lolcode_grammar<decltype(begin)> grammar;
 
-	cout << "parsing ... " << endl;
+	cout << "parsing ... " << endl << code << endl;
 	bool success = qi::phrase_parse(begin, end, grammar, qi::blank) && begin == end;
 	cout << "success = " << success << endl;
 }

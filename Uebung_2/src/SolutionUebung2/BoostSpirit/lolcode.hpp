@@ -19,6 +19,17 @@ namespace lolcode {
 			var_dict[var] = 0.0;
 			var_is_bool_dict[var] = false;
 		}
+	};	
+	
+	struct get_var {
+		double operator()(std::string const &var) const {
+			if (var_dict.find(var) != var_dict.end()) {
+				return var_dict[var];
+			}
+			else {
+				return 0.0;
+			}
+		}
 	};
 
 	void set_var(std::string const &var, double const &val) {
@@ -53,7 +64,7 @@ namespace lolcode {
 			program = "HAI" >> qi::eol >> *stat >> "KTHXBYE" >> *qi::eol;
 			stat = -(vardecl
 				| assignment
-				| addition
+				| arithemticExpr
 				| visible
 				)
 				>> -comment
@@ -65,18 +76,34 @@ namespace lolcode {
 			assignment = ident[qi::_a = qi::_1] // local variable "_a" for rule "assignment", see rule declaration below
 				>> "R"
 				>> (boolexpr[phoenix::bind(&set_var_bool, qi::_a, qi::_1)]
-			      | mathexpr[phoenix::bind(&set_var, qi::_a, qi::_1)]);
+			      | arithemticExpr[phoenix::bind(&set_var, qi::_a, qi::_1)]);
 			addition = qi::lit("SUM")
 				>> "OF"
-				>> mathexpr[qi::_val = qi::_1]
+				>> arithemticExpr[qi::_val = qi::_1]
 				>> "AN"
-				>> mathexpr[qi::_val += qi::_1];  // "set_var(qi::_a, qi::_1)"
+				>> arithemticExpr[qi::_val += qi::_1];
+			substraction = qi::lit("DIFF")
+				>> "OF"
+				>> arithemticExpr[qi::_val = qi::_1]
+				>> "AN"
+				>> arithemticExpr[qi::_val -= qi::_1];
+			product = qi::lit("PRODUKT")
+				>> "OF"
+				>> arithemticExpr[qi::_val = qi::_1]
+				>> "AN"
+				>> arithemticExpr[qi::_val *= qi::_1];
+			division = qi::lit("QUOSHUNT")
+				>> "OF"
+				>> arithemticExpr[qi::_val = qi::_1]
+				>> "AN"
+				>> arithemticExpr[qi::_val /= qi::_1];
 			visible = "VISIBLE"
-				>> (mathexpr[std::cout << qi::_1 << std::endl]
-					| literal[std::cout << qi::_1 << std::endl]
+				>> (literal[std::cout << qi::_1 << std::endl]
+					| arithemticExpr[std::cout << qi::_1 << std::endl] 
 					| ident[print_variable()] // "print_variable.operator(qi::_1)"
 					);
-			mathexpr = qi::double_ | addition;
+			arithemticExpr = qi::double_ | addition | substraction | product | division;
+			//mathexpr = qi::double_ | addition;
 			boolexpr = qi::string("WIN")[qi::_val = true]
 				     | qi::string("FAIL")[qi::_val = false];
 			comment = ("BTW" >> qi::lexeme[*(qi::char_ - qi::eol)]) 
@@ -88,7 +115,7 @@ namespace lolcode {
 		qi::rule<Iterator, qi::blank_type> program, stat, vardecl, comment, visible;
 		qi::rule<Iterator, qi::blank_type, qi::locals<std::string>> assignment; // locals of type string defined for this rule
 																				// http://www.boost.org/doc/libs/1_63_0/libs/spirit/doc/html/spirit/qi/reference/parser_concepts/nonterminal.html#spirit.qi.reference.parser_concepts.nonterminal.locals
-		qi::rule<Iterator, double(), qi::blank_type> mathexpr, addition;
+		qi::rule<Iterator, double(), qi::blank_type> arithemticExpr, addition, substraction, product, division;
 		qi::rule<Iterator, bool(), qi::blank_type> boolexpr;
 		qi::rule<Iterator, std::string(), qi::blank_type> ident, literal;
 	};
