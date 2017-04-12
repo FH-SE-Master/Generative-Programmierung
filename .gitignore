@@ -6,3 +6,10 @@
 *.log
 *.out
 *minted-*
+*.pdb
+*.idb
+*.db
+*.vdb
+*.opendb
+*/**/ipch/*
+*/**/.vs/*
