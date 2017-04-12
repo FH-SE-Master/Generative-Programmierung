@@ -13,4 +13,4 @@
 *.opendb
 *.pch
 */**/ipch/*
-*/**/.vs/*
+.vs
