@@ -36,6 +36,10 @@ namespace lolcode {
 		var_is_bool_dict[var] = false;
 		var_dict[var] = val;
 	}
+	
+	void debug_bool_expr(bool const &_1, bool const &val) {
+		std::cout << "qi::_1: " << _1 << " qi::_val: " << val;
+	}
 
 	void set_var_bool(std::string const &var, bool const &val) {
 		var_is_bool_dict[var] = true;
@@ -65,6 +69,7 @@ namespace lolcode {
 			stat = -(vardecl
 				| assignment
 				| arithemticExpr
+				| boolexpr
 				| visible
 				)
 				>> -comment
@@ -77,6 +82,7 @@ namespace lolcode {
 				>> "R"
 				>> (boolexpr[phoenix::bind(&set_var_bool, qi::_a, qi::_1)]
 			      | arithemticExpr[phoenix::bind(&set_var, qi::_a, qi::_1)]);
+			// --- BEGIN: Arithmetic expressions ---
 			addition = qi::lit("SUM")
 				>> "OF"
 				>> arithemticExpr[qi::_val = qi::_1]
@@ -97,14 +103,41 @@ namespace lolcode {
 				>> arithemticExpr[qi::_val = qi::_1]
 				>> "AN"
 				>> arithemticExpr[qi::_val /= qi::_1];
+			// --- END: Arithmetic expressions ---
+			// --- BEGIN: Bool expressions ---
+			same = qi::lit("BOTH")
+				>> "SAEM"
+				>> allexpr[qi::_val = qi::_1]
+				>> "AN"
+				>> allexpr[qi::_val = (qi::_val == qi::_1)]; // TODO: Here I get false because _vla = 0 and _i = 0
+			notsame = qi::lit("DIFFRINT")
+				>> allexpr[qi::_val = qi::_1]
+				>> "AN"
+				>> allexpr[qi::_val = qi::_val != qi::_1];
+			smaller = qi::lit("SMALLR")
+				>> "OF"
+				>> allexpr[qi::_val = qi::_1]
+				>> "AN"
+				>> allexpr[qi::_val = qi::_val < qi::_1];
+			bigger = qi::lit("BIGGR")
+				>> "OF"
+				>> allexpr[qi::_val = qi::_1]
+				>> "AN"
+				>> allexpr[qi::_val = qi::_val > qi::_1];
+			// --- END: Bool expressions ---
 			visible = "VISIBLE"
 				>> (literal[std::cout << qi::_1 << std::endl]
 					| arithemticExpr[std::cout << qi::_1 << std::endl] 
+					| boolexpr[std::cout << qi::_1 << std::endl]
 					| ident[print_variable()] // "print_variable.operator(qi::_1)"
 					);
 			arithemticExpr = qi::double_ | addition | substraction | product | division;
 			boolexpr = qi::string("WIN")[qi::_val = true]
-				     | qi::string("FAIL")[qi::_val = false];
+				     | qi::string("FAIL")[qi::_val = false] 
+				     | same | notsame | smaller | bigger;
+			allexpr = qi::string("WIN")[qi::_val = 1]
+				    | qi::string("FAIL")[qi::_val = 0]
+				    | arithemticExpr;
 			comment = ("BTW" >> qi::lexeme[*(qi::char_ - qi::eol)]) 
 				    | ("OBTW" >> qi::lexeme[*((qi::char_ | qi::eol) - "TLDR")] >> "TLDR");
 			ident = qi::lexeme[qi::alpha >> *(qi::alnum | '_')];
@@ -114,8 +147,8 @@ namespace lolcode {
 		qi::rule<Iterator, qi::blank_type> program, stat, vardecl, comment, visible;
 		qi::rule<Iterator, qi::blank_type, qi::locals<std::string>> assignment; // locals of type string defined for this rule
 																				// http://www.boost.org/doc/libs/1_63_0/libs/spirit/doc/html/spirit/qi/reference/parser_concepts/nonterminal.html#spirit.qi.reference.parser_concepts.nonterminal.locals
-		qi::rule<Iterator, double(), qi::blank_type> arithemticExpr, addition, substraction, product, division;
-		qi::rule<Iterator, bool(), qi::blank_type> boolexpr;
+		qi::rule<Iterator, double(), qi::blank_type> allexpr, arithemticExpr, addition, substraction, product, division;
+		qi::rule<Iterator, bool(), qi::blank_type> boolexpr, same, notsame, smaller, bigger;
 		qi::rule<Iterator, std::string(), qi::blank_type> ident, literal;
 
 	};

@@ -56,6 +56,8 @@ void test_lolcode() {
 		"VISIBLE DIFF OF 10 AN DIFF OF 10 AN 5            BTW Nested Substraction\n"
 		"VISIBLE PRODUKT OF 10 AN PRODUKT OF 10 AN 10     BTW Nested Produkt\n"
 		"VISIBLE QUOSHUNT OF 100 AN PRODUKT OF 100 AN 10  BTW Nested Division\n"
+		// bool expressions
+		"VISIBLE BOTH SAEM WIN AN WIN     BTW Both the same\n"
 		"VISIBLE \"iz coffeh tiem!\"\n"
 		"KTHXBYE";
 
