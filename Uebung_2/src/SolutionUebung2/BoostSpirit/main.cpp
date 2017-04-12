@@ -42,12 +42,16 @@ void test_lolcode() {
 	string code =
 		"HAI\n"
 		"BTW i'm a comment\n"
+		"I   HAS  A    bolsche            BTW declare variable\n"
+		"bolsche R WIN                    BTW assign value\n"
+		"VISIBLE bolsche                  BTW print value\n"
 		"I   HAS  A    answer             BTW declare variable\n"
 		"answer R 21.0                    BTW assign value\n"
 		"VISIBLE answer                   BTW print value\n"
 		"answer R SUM OF 21.6 AN 20.4     BTW add two values and assign result\n"
 		"VISIBLE answer                   \n"
-		"OBTW rtqwerqwerqwerqwer \n asdfasdfasdfasdfasdfasdf        TLDR\n"                
+		"OBTW This is a multiline comment \n"
+		"and this is the second line TLDR\n"
 		"VISIBLE SUM OF 1 AN SUM OF 0.3 AN 0.037\n"
 		"VISIBLE \"iz coffeh tiem!\"\n"
 		"KTHXBYE";
