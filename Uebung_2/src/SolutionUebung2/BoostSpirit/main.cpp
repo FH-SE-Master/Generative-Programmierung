@@ -52,11 +52,11 @@ void test_lolcode() {
 		"VISIBLE answer                   \n"
 		"OBTW This is a multiline comment \n"
 		"and this is the second line TLDR \n"
-		"VISIBLE \"SUM:      \" SUM OF 1 AN SUM OF 2 AN 2                BTW Nested Addition\n"
-		//"VISIBLE \"DIFF:     \" DIFF OF 10 AN DIFF OF 10 AN 5            BTW Nested Substraction\n"
-		//"VISIBLE \"PRODUKT:  \" PRODUKT OF 10 AN PRODUKT OF 10 AN 10     BTW Nested Produkt\n"
-		//"VISIBLE \"QUOSHUNT: \" QUOSHUNT OF 100 AN PRODUKT OF 100 AN 10  BTW Nested Division\n"
-		//"VISIBLE \"iz coffeh tiem!\"\n"
+		"VISIBLE SUM OF 1 AN SUM OF 2 AN 2                BTW Nested Addition\n"
+		"VISIBLE DIFF OF 10 AN DIFF OF 10 AN 5            BTW Nested Substraction\n"
+		"VISIBLE PRODUKT OF 10 AN PRODUKT OF 10 AN 10     BTW Nested Produkt\n"
+		"VISIBLE QUOSHUNT OF 100 AN PRODUKT OF 100 AN 10  BTW Nested Division\n"
+		"VISIBLE \"iz coffeh tiem!\"\n"
 		"KTHXBYE";
 
 	auto begin = code.begin();

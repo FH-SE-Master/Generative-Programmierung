@@ -103,7 +103,6 @@ namespace lolcode {
 					| ident[print_variable()] // "print_variable.operator(qi::_1)"
 					);
 			arithemticExpr = qi::double_ | addition | substraction | product | division;
-			//mathexpr = qi::double_ | addition;
 			boolexpr = qi::string("WIN")[qi::_val = true]
 				     | qi::string("FAIL")[qi::_val = false];
 			comment = ("BTW" >> qi::lexeme[*(qi::char_ - qi::eol)]) 
@@ -118,6 +117,7 @@ namespace lolcode {
 		qi::rule<Iterator, double(), qi::blank_type> arithemticExpr, addition, substraction, product, division;
 		qi::rule<Iterator, bool(), qi::blank_type> boolexpr;
 		qi::rule<Iterator, std::string(), qi::blank_type> ident, literal;
+
 	};
 }
 
