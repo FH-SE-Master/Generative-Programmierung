@@ -36,10 +36,6 @@ namespace lolcode {
 		var_is_bool_dict[var] = false;
 		var_dict[var] = val;
 	}
-	
-	void debug_bool_expr(bool const &_1, bool const &val) {
-		std::cout << "qi::_1: " << _1 << " qi::_val: " << val;
-	}
 
 	void set_var_bool(std::string const &var, bool const &val) {
 		var_is_bool_dict[var] = true;
@@ -60,96 +56,150 @@ namespace lolcode {
 				std::cout << "Variable '" << var << "' not found";
 			}
 		}
-	};
+	}; 
+	
+	void print_bool_result(bool const &_1) {
+		std::cout << "qi::_1: " << _1 << std::endl;
+	}
 
 	template<typename Iterator>
 	struct lolcode_grammar : qi::grammar<Iterator, qi::blank_type> {
 		lolcode_grammar() : lolcode_grammar::base_type(program) {
-			program = "HAI" >> qi::eol >> *stat >> "KTHXBYE" >> *qi::eol;
-			stat = -(vardecl
-				| assignment
-				| arithemticExpr
-				| boolexpr
-				| visible
-				)
-				>> -comment
-				>> qi::eol;
-			vardecl = qi::string("I") // "I" >> "HAS" would not work, wrong operator overload would be used
-				>> "HAS"
-				>> "A"
-				>> ident[new_var()]; // "new_var.operator(qi::_1)"
-			assignment = ident[qi::_a = qi::_1] // local variable "_a" for rule "assignment", see rule declaration below
-				>> "R"
-				>> (boolexpr[phoenix::bind(&set_var_bool, qi::_a, qi::_1)]
-			      | arithemticExpr[phoenix::bind(&set_var, qi::_a, qi::_1)]);
+			program =    qi::lit("HAI") 
+				      >> qi::eol 
+				      >> *stat 
+				      >> qi::lit("KTHXBYE")
+				      >> *qi::eol;
+
+			stat =    -(
+					     includeStat
+					   | vardeclStat
+					   | assignmentStat
+					   | arithemticExpr
+					   | boolexpr
+					   | visibleStat
+					   )
+					   >> -comment
+					   >> qi::eol;
+
+			includeStat   =     qi::lit("CAN") 
+					  		 >> qi::lit("HAS") 
+							 >> include;
+
+			vardeclStat   =     qi::string("I") // "I" >> "HAS" would not work, wrong operator overload would be used
+						     >> qi::lit("HAS")
+						     >> qi::lit("A")
+						     >> ident[new_var()]; // "new_var.operator(qi::_1)"
+
+			assignmentStat =    ident[qi::_a = qi::_1] // local variable "_a" for rule "assignment", see rule declaration below
+				             >> qi::lit("R")
+				             >> (
+								  boolexpr[phoenix::bind(&set_var_bool, qi::_a, qi::_1)]
+			                    | arithemticExpr[phoenix::bind(&set_var, qi::_a, qi::_1)]
+							    );
+
 			// --- BEGIN: Arithmetic expressions ---
-			addition = qi::lit("SUM")
-				>> "OF"
-				>> arithemticExpr[qi::_val = qi::_1]
-				>> "AN"
-				>> arithemticExpr[qi::_val += qi::_1];
-			substraction = qi::lit("DIFF")
-				>> "OF"
-				>> arithemticExpr[qi::_val = qi::_1]
-				>> "AN"
-				>> arithemticExpr[qi::_val -= qi::_1];
-			product = qi::lit("PRODUKT")
-				>> "OF"
-				>> arithemticExpr[qi::_val = qi::_1]
-				>> "AN"
-				>> arithemticExpr[qi::_val *= qi::_1];
-			division = qi::lit("QUOSHUNT")
-				>> "OF"
-				>> arithemticExpr[qi::_val = qi::_1]
-				>> "AN"
-				>> arithemticExpr[qi::_val /= qi::_1];
+			additionStat     =    qi::lit("SUM")
+							   >> qi::lit("OF")
+							   >> arithemticExpr[qi::_val = qi::_1]
+							   >> qi::lit("AN")
+							   >> arithemticExpr[qi::_val += qi::_1];
+
+			substractionStat =    qi::lit("DIFF")
+							   >> qi::lit("OF")
+							   >> arithemticExpr[qi::_val = qi::_1]
+							   >> qi::lit("AN")
+							   >> arithemticExpr[qi::_val -= qi::_1];
+
+			productStat      =    qi::lit("PRODUKT")
+							   >> qi::lit("OF")
+							   >> arithemticExpr[qi::_val = qi::_1]
+							   >> qi::lit("AN")
+							   >> arithemticExpr[qi::_val *= qi::_1];
+
+			divisionStat     =    qi::lit("QUOSHUNT")
+							   >> qi::lit("OF")
+							   >> arithemticExpr[qi::_val = qi::_1]
+							   >> qi::lit("AN")
+							   >> arithemticExpr[qi::_val /= qi::_1];
+
 			// --- END: Arithmetic expressions ---
 			// --- BEGIN: Bool expressions ---
-			same = qi::lit("BOTH")
-				>> "SAEM"
-				>> allexpr[qi::_val = qi::_1]
-				>> "AN"
-				>> allexpr[qi::_val = (qi::_val == qi::_1)]; // TODO: Here I get false because _vla = 0 and _i = 0
-			notsame = qi::lit("DIFFRINT")
-				>> allexpr[qi::_val = qi::_1]
-				>> "AN"
-				>> allexpr[qi::_val = qi::_val != qi::_1];
-			smaller = qi::lit("SMALLR")
-				>> "OF"
-				>> allexpr[qi::_val = qi::_1]
-				>> "AN"
-				>> allexpr[qi::_val = qi::_val < qi::_1];
-			bigger = qi::lit("BIGGR")
-				>> "OF"
-				>> allexpr[qi::_val = qi::_1]
-				>> "AN"
-				>> allexpr[qi::_val = qi::_val > qi::_1];
+			sameStat    =    qi::lit("BOTH")
+						  >> qi::lit("SAEM")
+						  >> allexpr[qi::_val = qi::_1]
+						  >> qi::lit("AN")
+					      >> allexpr[qi::_val = (qi::_val == qi::_1)];
+
+			notsameStat =    qi::lit("DIFFRINT")
+						  >> allexpr[qi::_val = qi::_1]
+						  >> qi::lit("AN")
+						  >> allexpr[qi::_val = qi::_val != qi::_1];
+
+			smallerStat =    qi::lit("SMALLR")
+						  >> qi::lit("OF")
+						  >> allexpr[qi::_val = qi::_1]
+						  >> qi::lit("AN")
+						  >> allexpr[qi::_val = qi::_val < qi::_1];
+
+			biggerStat  =    qi::lit("BIGGR")
+						  >> qi::lit("OF")
+						  >> allexpr[qi::_val = qi::_1]
+						  >> qi::lit("AN")
+						  >> allexpr[qi::_val = qi::_val > qi::_1];
+
 			// --- END: Bool expressions ---
-			visible = "VISIBLE"
-				>> (literal[std::cout << qi::_1 << std::endl]
-					| arithemticExpr[std::cout << qi::_1 << std::endl] 
-					| boolexpr[std::cout << qi::_1 << std::endl]
-					| ident[print_variable()] // "print_variable.operator(qi::_1)"
-					);
-			arithemticExpr = qi::double_ | addition | substraction | product | division;
-			boolexpr = qi::string("WIN")[qi::_val = true]
-				     | qi::string("FAIL")[qi::_val = false] 
-				     | same | notsame | smaller | bigger;
-			allexpr = qi::string("WIN")[qi::_val = 1]
-				    | qi::string("FAIL")[qi::_val = 0]
-				    | arithemticExpr;
-			comment = ("BTW" >> qi::lexeme[*(qi::char_ - qi::eol)]) 
-				    | ("OBTW" >> qi::lexeme[*((qi::char_ | qi::eol) - "TLDR")] >> "TLDR");
-			ident = qi::lexeme[qi::alpha >> *(qi::alnum | '_')];
-			literal = qi::lexeme['"' >> *(qi::char_ - '"') >> '"'];
+			visibleStat =    qi::lit("VISIBLE")
+						  >> (
+							   literal[std::cout << qi::_1 << std::endl]
+							 | arithemticExpr[std::cout << qi::_1 << std::endl] 
+							 | boolexpr[phoenix::bind(&print_bool_result, qi::_1)]
+							 | ident[print_variable()] // "print_variable.operator(qi::_1)"
+							 );
+
+			arithemticExpr = qi::double_ | additionStat | substractionStat | productStat | divisionStat;
+
+			boolexpr =   qi::string("WIN")[qi::_val = true]
+				       | qi::string("FAIL")[qi::_val = false] 
+				       | sameStat 
+				       | notsameStat 
+				       | smallerStat 
+				       | biggerStat;
+
+			allexpr =   qi::string("WIN")[qi::_val = 1]
+				      | qi::string("FAIL")[qi::_val = 0]
+				      | arithemticExpr;
+
+			comment = (  
+				         qi::lit("BTW")
+				      >> qi::lexeme[*(qi::char_ - qi::eol)]
+				      ) 
+				      | 
+				      (  
+						 qi::lit("OBTW") 
+					  >> qi::lexeme[*((qi::char_ | qi::eol) - qi::lit("TLDR"))]
+					  >> qi::lit("TLDR")
+					  );
+
+			ident =   qi::lexeme[qi::alpha >> *(qi::alnum | '_')];
+
+			include = (
+					    qi::lit("STDIO") 
+					  | qi::lit("STRING") 
+					  | qi::lit("SOCKS") 
+					  | qi::lit("STDLIB")
+					  ) 
+				      >> qi::lit("?");
+
+			literal =    qi::lexeme['"' >> *(qi::char_ - '"') >> '"'];
 		}
 
-		qi::rule<Iterator, qi::blank_type> program, stat, vardecl, comment, visible;
-		qi::rule<Iterator, qi::blank_type, qi::locals<std::string>> assignment; // locals of type string defined for this rule
+		qi::rule<Iterator, qi::blank_type> program, stat, includeStat, vardeclStat, comment, visibleStat;
+		qi::rule<Iterator, qi::blank_type, qi::locals<std::string>> assignmentStat; // locals of type string defined for this rule
 																				// http://www.boost.org/doc/libs/1_63_0/libs/spirit/doc/html/spirit/qi/reference/parser_concepts/nonterminal.html#spirit.qi.reference.parser_concepts.nonterminal.locals
-		qi::rule<Iterator, double(), qi::blank_type> allexpr, arithemticExpr, addition, substraction, product, division;
-		qi::rule<Iterator, bool(), qi::blank_type> boolexpr, same, notsame, smaller, bigger;
-		qi::rule<Iterator, std::string(), qi::blank_type> ident, literal;
+		qi::rule<Iterator, double(), qi::blank_type> allexpr, arithemticExpr, additionStat, substractionStat, productStat, divisionStat;
+		qi::rule<Iterator, bool(), qi::blank_type> boolexpr, sameStat, notsameStat, smallerStat, biggerStat;
+		qi::rule<Iterator, std::string(), qi::blank_type> include, ident, literal;
 
 	};
 }
