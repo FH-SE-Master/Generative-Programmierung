@@ -18,28 +18,35 @@ namespace lolcode {
 		void operator()(std::string const &var) const {
 			var_dict[var] = 0.0;
 			var_is_bool_dict[var] = false;
+
+			std::cout << "semantics-info: created new var '" << var << std::endl;
 		}
 	};	
 	
-	struct get_var {
-		double operator()(std::string const &var) const {
-			if (var_dict.find(var) != var_dict.end()) {
-				return var_dict[var];
-			}
-			else {
-				return 0.0;
-			}
+	double get_var(std::string const &var) {
+		double result = 0.0;
+
+		if (var_dict.find(var) != var_dict.end()) {
+			result = var_dict[var];
 		}
-	};
+
+		std::cout << "semantics-info: resolved variable '" << var << "' to value: " << result << std::endl;
+
+		return result;
+	}
 
 	void set_var(std::string const &var, double const &val) {
 		var_is_bool_dict[var] = false;
 		var_dict[var] = val;
+
+		std::cout << "semantics-info: set numeric var '" << var << " to: " << val << std::endl;
 	}
 
 	void set_var_bool(std::string const &var, double const &val) {
-		var_is_bool_dict[var] = (val != 1.0) ? false : true;
+		var_is_bool_dict[var] = true;
 		var_dict[var] = (val != 1.0) ? 0.0 : 1.0;
+
+		std::cout << "semantics-info: set boolean var '" << var << " to: " << ((var_dict[var] == 0.0) ? "FAIL" : "WIN") << std::endl;
 	}
 
 	struct print_variable {
@@ -53,7 +60,7 @@ namespace lolcode {
 				}
 			}
 			else {
-				std::cout << "Variable '" << var << "' not found";
+				std::cout << "semantics-info: Variable '" << var << "' not found";
 			}
 		}
 	}; 
@@ -94,59 +101,59 @@ namespace lolcode {
 			assignmentStat =    ident[qi::_a = qi::_1] // local variable "_a" for rule "assignment", see rule declaration below
 				             >> qi::lit("R")
 				             >> (
-									  boolexpr[phoenix::bind(&set_var_bool, qi::_a, qi::_1)]
-									| arithemticExpr[phoenix::bind(&set_var, qi::_a, qi::_1)]
-							    );
+									  arithemticExpr
+								    | boolexpr
+							    )[phoenix::bind(&set_var, qi::_a, qi::_1)];
 
 			// --- BEGIN: Arithmetic expressions ---
 			additionStat     =    qi::lit("SUM")
 							   >> qi::lit("OF")
-							   >> arithemticExpr[qi::_val = qi::_1]
+							   >> arithExOrVar[qi::_val = qi::_1]
 							   >> qi::lit("AN")
-							   >> arithemticExpr[qi::_val += qi::_1];
+							   >> arithExOrVar[qi::_val += qi::_1];
 
 			substractionStat =    qi::lit("DIFF")
 							   >> qi::lit("OF")
-							   >> arithemticExpr[qi::_val = qi::_1]
+							   >> arithExOrVar[qi::_val = qi::_1]
 							   >> qi::lit("AN")
-							   >> arithemticExpr[qi::_val -= qi::_1];
+							   >> arithExOrVar[qi::_val -= qi::_1];
 
 			productStat      =    qi::lit("PRODUKT")
 							   >> qi::lit("OF")
-							   >> arithemticExpr[qi::_val = qi::_1]
+							   >> arithExOrVar[qi::_val = qi::_1]
 							   >> qi::lit("AN")
-							   >> arithemticExpr[qi::_val *= qi::_1];
+							   >> arithExOrVar[qi::_val *= qi::_1];
 
 			divisionStat     =    qi::lit("QUOSHUNT")
 							   >> qi::lit("OF")
-							   >> arithemticExpr[qi::_val = qi::_1]
+							   >> arithExOrVar[qi::_val = qi::_1]
 							   >> qi::lit("AN")
-							   >> arithemticExpr[qi::_val /= qi::_1];
+							   >> arithExOrVar[qi::_val /= qi::_1];
 
 			// --- END: Arithmetic expressions ---
 			// --- BEGIN: Bool expressions ---
 			sameStat    =    qi::lit("BOTH")
 						  >> qi::lit("SAEM")
-						  >> boolexpr[qi::_val = qi::_1]
+						  >> boolOrVar[qi::_val = qi::_1]
 						  >> qi::lit("AN")
-					      >> boolexpr[qi::_val = (qi::_val == qi::_1)];
+					      >> boolOrVar[qi::_val = (qi::_val == qi::_1)];
 
 			notsameStat =    qi::lit("DIFFRINT")
-						  >> boolexpr[qi::_val = qi::_1]
+						  >> boolOrVar[qi::_val = qi::_1]
 						  >> qi::lit("AN")
-						  >> boolexpr[qi::_val = qi::_val != qi::_1];
+						  >> boolOrVar[qi::_val = qi::_val != qi::_1];
 
 			smallerStat =    qi::lit("SMALLR")
 						  >> qi::lit("OF")
-						  >> boolexpr[qi::_val = qi::_1]
+						  >> boolOrVar[qi::_val = qi::_1]
 						  >> qi::lit("AN")
-						  >> boolexpr[qi::_val = qi::_val < qi::_1];
+						  >> boolOrVar[qi::_val = qi::_val < qi::_1];
 
 			biggerStat  =    qi::lit("BIGGR")
 						  >> qi::lit("OF")
-						  >> boolexpr[qi::_val = qi::_1]
+						  >> boolOrVar[qi::_val = qi::_1]
 						  >> qi::lit("AN")
-						  >> boolexpr[qi::_val = qi::_val > qi::_1];
+						  >> boolOrVar[qi::_val = qi::_val > qi::_1];
 
 			// --- END: Bool expressions ---
 			visibleStat    =  qi::lit("VISIBLE")
@@ -158,19 +165,25 @@ namespace lolcode {
 								  | ident[print_variable()] // "print_variable.operator(qi::_1)"
 							  );
 
-			arithemticExpr =   qi::double_ 
+			arithemticExpr =  qi::double_ 
 				            | additionStat 
 				            | substractionStat 
 				            | productStat 
 				            | divisionStat;
 
-			boolexpr      =   qi::string("WIN")[qi::_val = 1.0]
-						    | qi::string("FAIL")[qi::_val = 0.0] 
+			boolexpr      =   qi::lit("WIN")[qi::_val = 1.0]
+						    | qi::lit("FAIL")[qi::_val = 0.0] 
 						    | sameStat[qi::_val = qi::_1]
 						    | notsameStat[qi::_val = qi::_1]
 						    | smallerStat[qi::_val = qi::_1]
 						    | biggerStat[qi::_val = qi::_1]
 						    | arithemticExpr[qi::_val = qi::_1];
+
+			arithExOrVar =    arithemticExpr[qi::_val = qi::_1]
+				            | ident[qi::_val = phoenix::bind(&get_var, qi::_1)];  
+
+			boolOrVar     =   boolexpr[qi::_val = qi::_1]
+				            | ident[qi::_val = phoenix::bind(&get_var, qi::_1)];
 
 			comment       = (  
 								   qi::lit("BTW")
@@ -199,7 +212,7 @@ namespace lolcode {
 		qi::rule<Iterator, qi::blank_type> program, stat, includeStat, vardeclStat, comment, visibleStat;
 		qi::rule<Iterator, qi::blank_type, qi::locals<std::string>> assignmentStat; // locals of type string defined for this rule
 																				// http://www.boost.org/doc/libs/1_63_0/libs/spirit/doc/html/spirit/qi/reference/parser_concepts/nonterminal.html#spirit.qi.reference.parser_concepts.nonterminal.locals
-		qi::rule<Iterator, double(), qi::blank_type> boolexpr, arithemticExpr, additionStat, substractionStat, productStat, divisionStat, sameStat, notsameStat, smallerStat, biggerStat;
+		qi::rule<Iterator, double(), qi::blank_type> boolexpr, arithemticExpr, arithExOrVar, boolOrVar, additionStat, substractionStat, productStat, divisionStat, sameStat, notsameStat, smallerStat, biggerStat;
 		qi::rule<Iterator, std::string(), qi::blank_type> include, ident, literal;
 
 	};
