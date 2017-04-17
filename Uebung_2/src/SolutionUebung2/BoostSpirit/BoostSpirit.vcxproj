@@ -128,7 +128,12 @@
   <ItemGroup>
     <ClInclude Include="boost.hpp" />
     <ClInclude Include="calc.hpp" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="lolcode.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="test.json" />
+    <None Include="test.lolcode" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

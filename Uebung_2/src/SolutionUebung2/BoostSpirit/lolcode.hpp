@@ -5,10 +5,13 @@
 #include <map>
 #include <string>
 
+#define IT_VAR "IT"
+
 namespace lolcode {
 
 	namespace qi = boost::spirit::qi;
 	namespace phoenix = boost::phoenix;
+
 
 	std::map<std::string, bool> var_is_bool_dict;
 	std::map<std::string, double> var_dict; // we need something for NUMBAR and TROOF, see boost::variant
@@ -19,7 +22,7 @@ namespace lolcode {
 			var_dict[var] = 0.0;
 			var_is_bool_dict[var] = false;
 
-			std::cout << "semantics-info: created new var '" << var << std::endl;
+			std::cout << std::endl << "semantics-info: created new var '" << var << std::endl;
 		}
 	};	
 	
@@ -30,7 +33,7 @@ namespace lolcode {
 			result = var_dict[var];
 		}
 
-		std::cout << "semantics-info: resolved variable '" << var << "' to value: " << result << std::endl;
+		std::cout << std::endl << "semantics-info: resolved variable '" << var << "' to value: " << result << std::endl;
 
 		return result;
 	}
@@ -39,14 +42,14 @@ namespace lolcode {
 		var_is_bool_dict[var] = false;
 		var_dict[var] = val;
 
-		std::cout << "semantics-info: set numeric var '" << var << " to: " << val << std::endl;
+		std::cout << std::endl << "semantics-info: set numeric var '" << var << " to: " << val << std::endl;
 	}
 
 	void set_var_bool(std::string const &var, double const &val) {
 		var_is_bool_dict[var] = true;
 		var_dict[var] = (val != 1.0) ? 0.0 : 1.0;
 
-		std::cout << "semantics-info: set boolean var '" << var << " to: " << ((var_dict[var] == 0.0) ? "FAIL" : "WIN") << std::endl;
+		std::cout << std::endl << "semantics-info: set boolean var '" << var << " to: " << ((var_dict[var] == 0.0) ? "FAIL" : "WIN") << std::endl;
 	}
 
 	struct print_variable {
@@ -60,7 +63,7 @@ namespace lolcode {
 				}
 			}
 			else {
-				std::cout << "semantics-info: Variable '" << var << "' not found";
+				std::cout << std::endl << "semantics-info: Variable '" << var << "' not found";
 			}
 		}
 	}; 
@@ -82,8 +85,8 @@ namespace lolcode {
 							 includeStat
 						   | vardeclStat
 						   | assignmentStat
-						   | arithemticExpr
-						   | boolexpr
+						   | arithemticExpr[phoenix::bind(&set_var, (const char *)IT_VAR, qi::_1)]
+						   | boolexpr[phoenix::bind(&set_var_bool, (const char *)IT_VAR, qi::_1)]
 						   | visibleStat
 					   )
 					   >> -comment
@@ -91,7 +94,8 @@ namespace lolcode {
 
 			includeStat   =     qi::lit("CAN") 
 					  		 >> qi::lit("HAS") 
-							 >> include;
+							 >> include
+				             >> qi::lit('?');
 
 			vardeclStat   =     qi::string("I") // "I" >> "HAS" would not work, wrong operator overload would be used
 						     >> qi::lit("HAS")
@@ -101,9 +105,9 @@ namespace lolcode {
 			assignmentStat =    ident[qi::_a = qi::_1] // local variable "_a" for rule "assignment", see rule declaration below
 				             >> qi::lit("R")
 				             >> (
-									  arithemticExpr
-								    | boolexpr
-							    )[phoenix::bind(&set_var, qi::_a, qi::_1)];
+									  arithemticExpr[phoenix::bind(&set_var, qi::_a, qi::_1)]
+								    | boolexpr[phoenix::bind(&set_var_bool, qi::_a, qi::_1)]
+							    );
 
 			// --- BEGIN: Arithmetic expressions ---
 			additionStat     =    qi::lit("SUM")
@@ -159,11 +163,15 @@ namespace lolcode {
 			visibleStat    =  qi::lit("VISIBLE")
 						      >> 
 				              (
-									literal[std::cout << qi::_1 << std::endl]
-								  | arithemticExpr[std::cout << qi::_1 << std::endl] 
+									literal[std::cout << qi::_1]
+								  | arithemticExpr[std::cout << qi::_1] 
 								  | boolexpr[phoenix::bind(&print_bool_result, qi::_1)]
 								  | ident[print_variable()] // "print_variable.operator(qi::_1)"
-							  );
+							  )
+							  >> (
+								      qi::char_('!')
+								    | qi::eps[phoenix::ref(std::cout) << std::endl]
+								  );
 
 			arithemticExpr =  qi::double_ 
 				            | additionStat 
@@ -198,13 +206,11 @@ namespace lolcode {
 
 			ident         = qi::lexeme[qi::alpha >> *(qi::alnum | '_')];
 
-			include       = (
-								  qi::lit("STDIO") 
-								| qi::lit("STRING") 
-								| qi::lit("SOCKS") 
-								| qi::lit("STDLIB")
-						    ) 
-						    >> qi::lit("?");
+			include       =   qi::lit("STDIO") 
+							| qi::lit("STRING") 
+							| qi::lit("SOCKS") 
+							| qi::lit("STDLIB")
+						    ;
 
 			literal       = qi::lexeme['"' >> *(qi::char_ - '"') >> '"'];
 		}

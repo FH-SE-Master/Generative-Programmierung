@@ -1,0 +1,119 @@
+HAI                                                                      
+		
+OBTW This section declares includes the needed libs                      
+	 All supported libs are included                                     
+TLDR                                                                     
+
+CAN HAS STDIO?                   BTW Include STDIO lib                   
+CAN HAS STRING?                  BTW Include STRING lib                  
+CAN HAS SOCKS?                   BTW Include SOCKS lib                   
+CAN HAS STDLIB?                  BTW Include STDLIB lib                  
+
+OBTW This section declares all numeric variables                         
+	 Two numeric variables are declared and intialized                   
+TLDR                                                                     
+I HAS A num1                    BTW declare variable num_ 1             
+I HAS A num2                    BTW declare variable num_ 2             
+num1 R 10.0                     BTW assign 10.0 to num1                 
+num2 R 20.0                       BTW assign 10 to num2                 
+
+OBTW This section declares all bool variables                           
+	 Two bool variables are declared and intialized                     
+TLDR                                                                    
+
+I HAS A bool1                   BTW declare variable bool_ 1            
+I HAS A bool2                   BTW declare variable bool_ 2            
+bool1 R WIN                     BTW assign WIN to bool1                 
+bool2 R FAIL                    BTW assign FAIL to bool2                                                         
+SUM OF 1 AN 2                                                   
+
+OBTW This section prints the current variable values                     
+	 Two bool and numeric variables are print                            
+TLDR                                                                     
+
+VISIBLE "Value of num1:  = " !                                           
+VISIBLE num1                    BTW print value of num1                
+VISIBLE "Value of num2:  = " !                                              
+VISIBLE num2                    BTW print value of num2                
+VISIBLE "Value of bool1:  = " !                                             
+VISIBLE bool1                   BTW print value of bool1               
+VISIBLE "Value of bool2:  = " !                                             
+VISIBLE bool2                   BTW print value of bool2               
+VISIBLE "Value of IT:  = " !                                             
+VISIBLE IT                      BTW print value of bool2                
+
+BTW This section performs simple arithmetic expressions and prints them  
+
+VISIBLE "1 + 2 = 3 = " !                                                     
+VISIBLE SUM OF 1 AN 2                                                    
+VISIBLE "10 - 5 = 5 = " !                                                   
+VISIBLE DIFF OF 10 AN 5                                                  
+VISIBLE "2 * 2.5 = 5 = " !                                                   
+VISIBLE PRODUKT OF 2.5 AN 2                                              
+VISIBLE "100 / 5 = 20 = " !                                                 
+VISIBLE QUOSHUNT OF 100 AN 5                                             
+
+BTW This section performs complex arithmetic expressions and prints them 
+
+VISIBLE "10 - (100 / 10) = 0 = " !                                           
+VISIBLE DIFF OF 10 AN QUOSHUNT OF 100 AN 10                              
+VISIBLE "2 * (3 + 2) = 10 = " !                                              
+VISIBLE PRODUKT OF 2 AN SUM OF 3 AN 2                                    
+VISIBLE "100 / (100 - 90) = 10 = " !                                         
+VISIBLE QUOSHUNT OF 100 AN DIFF OF 100 AN 90                             
+
+BTW This section performs complex arithmetic expressions with variables and prints them 
+
+VISIBLE "num1 + num2 = 30 = " !                                            
+VISIBLE SUM OF num1 AN num2                                            
+VISIBLE "num1 + (num1 * num2) = 210 = " !                                 
+VISIBLE SUM OF num1 AN PRODUKT OF num1 AN num2                        
+
+BTW This section performs simple bool expressions and prints them        
+
+VISIBLE "WIN == WIN = WIN = " !                                              
+VISIBLE BOTH SAEM WIN AN WIN                                             
+VISIBLE "WIN != FAIL = WIL = " !                                             
+VISIBLE DIFFRINT WIN AN FAIL                                             
+VISIBLE "WIN < FAIL = FAIL = " !                                             
+VISIBLE SMALLR OF WIN AN FAIL                                            
+VISIBLE "FAIL > WIN = FAIL = " !                                             
+VISIBLE BIGGR OF FAIL AN WIN                                             
+
+VISIBLE "10 == 10 = WIN = " !                                               
+VISIBLE BOTH SAEM WIN AN WIN                                             
+VISIBLE "10 != 11 = WIN = " !                                               
+VISIBLE DIFFRINT WIN AN FAIL                                             
+VISIBLE "10 < 9 = FAIL = " !                                                
+VISIBLE SMALLR OF 10 AN 9                                                
+VISIBLE "9 > 10 = FAIL = " !                                                
+VISIBLE BIGGR OF 9 AN 10                                                 
+
+VISIBLE "WIN == (WIN == FAIL) = FAIL = " !                                  
+VISIBLE BOTH SAEM WIN AN BOTH SAEM WIN AN FAIL                           
+VISIBLE "WIN != (WIN != FAIL) = FAIL = " !                                  
+VISIBLE DIFFRINT WIN AN DIFFRINT WIN AN FAIL                             
+VISIBLE "FAIL < (WIN > FAIL) = WIN = " !                                    
+VISIBLE SMALLR OF FAIL AN BIGGR OF WIN AN FAIL                           
+VISIBLE "WIN > (WIN < FAIL) = WIN = " !                                     
+VISIBLE BIGGR OF WIN AN SMALLR OF WIN AN FAIL                            
+
+VISIBLE "10 == (10 - 10) = FAIL = " !                                       
+VISIBLE BOTH SAEM 10 AN DIFF OF 10 AN 10                                 
+VISIBLE "10 != (9 + 1) = FAIL = " !                                         
+VISIBLE DIFFRINT 10 AN SUM OF 9 AN 1                                     
+VISIBLE "10 < (1 * 11) = WIN = " !                                          
+VISIBLE SMALLR OF 10 AN PRODUKT OF 1 AN 11                               
+VISIBLE "10 > (90 / 10) = WIN = " !                                         
+VISIBLE BIGGR OF 10 AN QUOSHUNT OF 90 AN 10                              
+
+BTW This section performs complex bool expressions with variables and prints them 
+
+VISIBLE "bool1 == bool2 = FAIL = " !                                      
+VISIBLE BOTH SAEM bool1 AN bool2                                       
+VISIBLE "bool1 == (bool1 != bool2) = WIN = " !                           
+VISIBLE BOTH SAEM bool1 AN DIFFRINT bool1 AN bool2                    
+
+VISIBLE "End of program"                                               
+
+KTHXBYE
