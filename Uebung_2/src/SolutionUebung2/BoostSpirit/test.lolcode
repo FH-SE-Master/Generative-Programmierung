@@ -67,7 +67,9 @@ BTW This section performs complex arithmetic expressions with variables and prin
 VISIBLE "num1 + num2 = 30 = " !                                            
 VISIBLE SUM OF num1 AN num2                                            
 VISIBLE "num1 + (num1 * num2) = 210 = " !                                 
-VISIBLE SUM OF num1 AN PRODUKT OF num1 AN num2                        
+VISIBLE SUM OF num1 AN PRODUKT OF num1 AN num2                               
+VISIBLE "100 + (50 * num1) = 600 = " !                          
+VISIBLE SUM OF 100 AN PRODUKT OF 50 AN num1                         
 
 BTW This section performs simple bool expressions and prints them        
 
@@ -113,6 +115,8 @@ VISIBLE "bool1 == bool2 = FAIL = " !
 VISIBLE BOTH SAEM bool1 AN bool2                                       
 VISIBLE "bool1 == (bool1 != bool2) = WIN = " !                           
 VISIBLE BOTH SAEM bool1 AN DIFFRINT bool1 AN bool2                    
+VISIBLE "bool1 == (100 != num1) = WIN = " !                           
+VISIBLE BOTH SAEM bool1 AN DIFFRINT 100 AN num1
 
 VISIBLE "End of program"                                               
 
