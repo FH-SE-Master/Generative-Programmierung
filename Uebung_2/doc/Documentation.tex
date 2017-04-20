@@ -103,7 +103,7 @@
 
 \section{JSON Validator}
 \subsection{Lösungsidee}
-Der \emph{JSON}-Validierer wurde in der \emph{Header}-Datei \emph{json.hpp} implementiert. Die Grammatik wurde gemäß der Spezifikation auf \url{http://json.org} implementiert.
+Der \emph{JSON}-Validierer wurde in der \emph{Header}-Datei \emph{json.hpp} implementiert. Die Grammatik wurde gemäß der Grammatik wie auf der Webseite \url{http://json.org} gezeigt implementiert.
 
 \subsubsection{Source}
 \begin{code}
@@ -133,10 +133,10 @@ Der \emph{JSON}-Validierer wurde in der \emph{Header}-Datei \emph{json.hpp} impl
 \ \newpage
 
 \subsection{Mini-LOLCODE with Boost.Spirit}
-Der Parser mit semantischen Aktionen für die Programmiersprache \emph{LOLCODE} wurde in der \emph{Header}-Datei \emph{lolcode.hpp} implementiert. Es wurden die beiden Datentypen \emph{Numeric} und \emph{Bool} implementiert, wobei auch der Datentyp \emph{Bool} als \emph{Numeric} behandelt wird, also \emph{0=FAIL} und \emph{1=WIN}. Variablen werden in einem assoziativen \emph{Container (map$<$string, double$>$)} gespeichert. Ein zweiter assoziativer \emph{Container (map$<$string, bool$>$)} speichert die Information, ob die Variable ein \emph{Numeric} Datentyp ist oder ob es wich um einen \emph{Bool} Datentyp handelt.
+Der Parser mit semantischen Aktionen für die Programmiersprache \emph{LOLCODE} wurde in der \emph{Header}-Datei \emph{lolcode.hpp} implementiert. Es wurden die beiden Datentypen \emph{Numeric} und \emph{Bool} implementiert, wobei auch der Datentyp \emph{Bool} als \emph{Numeric}-Datentyp während des Parsens behandelt wird, also \emph{0=FAIL} und \emph{1=WIN}. Variablen werden in einem assoziativen \emph{Container (map$<$string, double$>$)} gespeichert. Ein zweiter assoziativer \emph{Container (map$<$string, bool$>$)} speichert die Information, ob die Variable ein \emph{Numeric} Datentyp ist oder ob es wich um einen \emph{Bool} Datentyp handelt.
 \newline
 \newline
-boolsche und arithmetische Ausdrücke können verschachtelt werden, sowie Variablen in den Ausdrücken verwendet werden. Somit Ausdrücke wie:
+Boolsche und arithmetische Ausdrücke können verschachtelt werden, sowie Variablen in den Ausdrücken verwendet werden. Folgende Ausdrücke sind gültig:
 \begin{itemize}
 	\item\emph{BIGGR OF WIN AN SMALLR OF WIN AN FAIL}
 	\item\emph{BIGGR OF 10 AN QUOSHUNT OF 90 AN 10}
@@ -144,10 +144,10 @@ boolsche und arithmetische Ausdrücke können verschachtelt werden, sowie Variab
 	\item\emph{BOTH SAEM bool1 AN DIFFRINT 100 AN num1}
 \end{itemize}
 \ \newline
-Da auch boolsche Variablen als numerische behandelt werden, sind auch boolsche Variablen in arithmetischen Ausdrücken erlaubt, da in arithmetischen Ausdrücken der numerische Wert einer boolschen variable herangezogen werden.
+Da auch boolsche Variablen als numerische behandelt werden, sind auch boolsche Variablen in arithmetischen Ausdrücken erlaubt und umgekehrt. Wen in einem boolschen Ausdruck eine Variable eines \emph{Bool}-Datentyp mit einem \emph{Numeric}-Datentypen verglichen werden, so wird die numerische Repräsentation der boolschen variable im boolschen Ausdruck verwendet.
 \newline
 \newline
-Alle Konstanten wie z.B. \emph{VISIBLE} wurden als Literale in der Grammatik definiert \emph{(qi::lit("VISIBLE"))}.
+Es wurden alle \emph{String}-Konstanten wie z.B. \emph{VISIBLE} als \emph{boost spirit} Literale in der Grammatik definiert \emph{(qi::lit("VISIBLE"))} und nicht als \emph{String} angegeben.
  
 \subsubsection{Source}
 \begin{code}
