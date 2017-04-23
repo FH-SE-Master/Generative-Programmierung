@@ -1,0 +1,75 @@
+﻿<#@ template debug="true" language="C#" hostSpecific="true" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core.dll" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#
+  string assemblyFile = @"bin\Debug\CloningGenerator.exe";
+  Assembly assembly = LoadProjectAssembly(assemblyFile);
+  var deepClonables = assembly.GetTypes().Where(x => !x.IsInterface && x.Name != "DeepCloneable" && x.GetInterfaces().Any(y => y.Name == "IDeepCloneable"));
+#>
+namespace CloningGenerator {
+
+<#
+		foreach(var t in deepClonables) {
+#>
+		public partial class <#= t.Name #> {
+
+			// Clone constructor
+			protected <#= t.Name #>(<#= t.Name #> original, Cloner cloner): base(original, cloner) {
+<#
+			foreach(var fieldInfo in t.GetFields()) {
+				var fieldType = fieldInfo.FieldType;
+				if (fieldType.GetInterfaces().Any(y => y.Name == "IDeepCloneable")) {
+#>
+					this.<#= fieldInfo.Name #> = cloner.Clone(original.<#= fieldInfo.Name #>);
+<#
+				} else if (typeof(ICloneable).IsAssignableFrom(fieldType)) {
+#>
+					this.<#= fieldInfo.Name #> = (<#= fieldType.FullName #>) original.<#= fieldInfo.Name #>.Clone();
+<#
+				} else {				
+#>
+					this.<#= fieldInfo.Name #> = original.<#= fieldInfo.Name #>;
+<#		
+				}
+			}					
+#>
+			}
+
+			public override IDeepCloneable Clone(Cloner cloner){
+				return new <#= t.Name#>(this, cloner);
+			}
+
+		}
+<# 
+		}
+#>
+}
+
+<# Cleanup(); #>
+<#+
+private string outputDir;
+
+private Assembly LoadProjectAssembly(string assemblyFile) {
+  if (!Path.IsPathRooted(assemblyFile))
+    assemblyFile = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), assemblyFile);
+  outputDir = Path.GetDirectoryName(assemblyFile);
+  if (!File.Exists(assemblyFile))
+    throw new ArgumentException(string.Format("Project assembly file could not be located at {0}.", assemblyFile));
+  AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+  return Assembly.Load(File.ReadAllBytes(assemblyFile));
+}
+
+private void Cleanup() {
+  AppDomain.CurrentDomain.AssemblyResolve -= ResolveAssembly;
+}
+
+private Assembly ResolveAssembly(object sender, ResolveEventArgs args) {
+  string dependency = Path.Combine(outputDir, args.Name.Substring(0, args.Name.IndexOf(',')) + ".dll");
+  if (File.Exists(dependency))
+    return Assembly.Load(File.ReadAllBytes(dependency));
+  return null;
+}
+#>

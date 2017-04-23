@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<model>
+  <class name="Person" namespace="GenerativeProgramming">
+    <property name="Name" type="string"/>
+    <property name="Age" type="int"/>
+  </class>
+  <class name="Student" namespace="GenerativeProgramming" base="Person">
+    <property name="Id" type="string"/>
+  </class>
+</model>

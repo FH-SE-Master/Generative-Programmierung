@@ -1,0 +1,13 @@
+﻿<#@ template debug="true" hostSpecific="true" language="C#" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Xml" #>
+<#@ import namespace="System.Xml" #>
+<#@ assembly name="System.Core.dll" #>
+<#@ import namespace="System.IO" #>
+
+<#
+    string modelFileName = Host.ResolvePath("Model.xml");
+	var doc = new XmlDocument();
+	doc.Load(modelFileName);
+	var model = doc.DocumentElement;
+#>
