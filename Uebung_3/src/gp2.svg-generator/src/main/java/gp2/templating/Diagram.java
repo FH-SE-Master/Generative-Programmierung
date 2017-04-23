@@ -1,13 +1,14 @@
 package gp2.templating;
 
-import gp2.templating.shapes.AbstractShape;
+import gp2.templating.generator.api.Generator;
+import gp2.templating.shape.impl.AbstractShape;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-public class Diagram {
+public class Diagram extends AbstractShape {
 
     @Getter
     @Setter
@@ -35,11 +36,10 @@ public class Diagram {
     private boolean showAxis;
     @Getter
     @Setter
-    private List<AbstractShape> shapes;
+    private List<AbstractShape> shapes = new LinkedList<>();
 
-    public Diagram() { this(100, 100, 0.0, 1.0, 0.0, 1.0, 1.0, true); }
-
-    public Diagram(int width,
+    public Diagram(final Generator generator,
+                   int width,
                    int height,
                    double minX,
                    double minY,
@@ -47,6 +47,8 @@ public class Diagram {
                    double maxY,
                    double defaultSize,
                    boolean showAxis) {
+        super(null, generator);
+
         this.width = width;
         this.height = height;
         this.minX = minX;
@@ -55,7 +57,6 @@ public class Diagram {
         this.maxY = maxY;
         this.defaultSize = defaultSize;
         this.showAxis = showAxis;
-        shapes = new ArrayList<>();
     }
 
     public void addShape(AbstractShape s) {
