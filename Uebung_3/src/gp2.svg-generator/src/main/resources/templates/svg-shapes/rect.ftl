@@ -1,4 +1,5 @@
 <rect x="${coordinate.x}"
       y="${coordinate.y}"
       width="${width}"
-      height="${height}"/>
+      height="${height}"
+      <#if fill??>fill="${fill}"</#if>/>

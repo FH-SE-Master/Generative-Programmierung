@@ -14,13 +14,13 @@ import java.util.Objects;
 public class Coordinate {
 
     @Getter
-    private final int x;
+    private final double x;
 
     @Getter
-    private final int y;
+    private final double y;
 
-    public Coordinate(int x,
-                      int y) {
+    public Coordinate(double x,
+                      double y) {
         this.x = x;
         this.y = y;
     }

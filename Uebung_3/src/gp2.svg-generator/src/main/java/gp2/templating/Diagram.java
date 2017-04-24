@@ -1,6 +1,8 @@
 package gp2.templating;
 
 import gp2.templating.generator.api.Generator;
+import gp2.templating.shape.api.Coordinate;
+import gp2.templating.shape.api.Shape;
 import gp2.templating.shape.impl.AbstractShape;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,51 +13,40 @@ import java.util.List;
 public class Diagram extends AbstractShape {
 
     @Getter
-    @Setter
-    private int width;
+    private final int width;
     @Getter
-    @Setter
-    private int height;
+    private final int height;
     @Getter
-    @Setter
-    private double minX;
+    private final Coordinate coordinate;
     @Getter
-    @Setter
-    private double minY;
+    private final double coordinateHeight;
     @Getter
-    @Setter
-    private double maxX;
+    private final double coordinateWidth;
     @Getter
-    @Setter
-    private double maxY;
+    private final boolean showAxis;
     @Getter
-    @Setter
-    private double defaultSize;
-    @Getter
-    @Setter
-    private boolean showAxis;
-    @Getter
-    @Setter
-    private List<AbstractShape> shapes = new LinkedList<>();
+    private final List<AbstractShape> shapes = new LinkedList<>();
+
+    public Diagram(Generator generator,
+                   int width,
+                   int height) {
+        this(generator, width, height, null, 0.0, 0.0, false);
+    }
 
     public Diagram(final Generator generator,
                    int width,
                    int height,
-                   double minX,
-                   double minY,
-                   double maxX,
-                   double maxY,
-                   double defaultSize,
+                   Coordinate coordinate,
+                   double coordinateHeight,
+                   double coordinateWidth,
                    boolean showAxis) {
         super(null, generator);
 
         this.width = width;
         this.height = height;
-        this.minX = minX;
-        this.minY = minY;
-        this.maxX = maxX;
-        this.maxY = maxY;
-        this.defaultSize = defaultSize;
+        this.coordinate = coordinate;
+        this.coordinateWidth = coordinateWidth;
+        this.coordinateHeight = coordinateHeight;
         this.showAxis = showAxis;
     }
 

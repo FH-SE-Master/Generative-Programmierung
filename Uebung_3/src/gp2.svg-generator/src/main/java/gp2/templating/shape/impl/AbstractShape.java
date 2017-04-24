@@ -6,6 +6,7 @@ import gp2.templating.generator.exception.RenderException;
 import gp2.templating.shape.api.Shape;
 import lombok.Getter;
 
+import java.awt.*;
 import java.util.Objects;
 
 /**
@@ -34,5 +35,13 @@ public abstract class AbstractShape implements Shape {
         } catch (GeneratorException e) {
             throw new RenderException("Shape execution failed", e);
         }
+    }
+
+    protected String colorToHexString(final Color color) {
+        String hex = null;
+        if (color != null) {
+            hex = "#" + Integer.toHexString(color.getRGB()).substring(2).toUpperCase();
+        }
+        return hex;
     }
 }

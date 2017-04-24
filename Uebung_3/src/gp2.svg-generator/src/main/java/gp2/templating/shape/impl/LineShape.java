@@ -42,7 +42,7 @@ public class LineShape extends AbstractShape {
         this.start = start;
         this.end = end;
         this.strokeWidth = strokeWidth;
-        this.strokeColor = "#" + Integer.toHexString(strokeColor.getRGB()).substring(2).toUpperCase();
+        this.strokeColor = colorToHexString(strokeColor);
     }
 
 }
