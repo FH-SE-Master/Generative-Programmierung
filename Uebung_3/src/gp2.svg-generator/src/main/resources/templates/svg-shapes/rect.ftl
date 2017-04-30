@@ -1,5 +1,6 @@
-<rect x="${coordinate.x}"
-      y="${coordinate.y}"
+<rect x="${origin.x}"
+      y="${origin.y}"
       width="${width}"
       height="${height}"
-      <#if fill??>fill="${fill}"</#if>/>
+      <#if strokeColor??>stroke="${strokeColor}"</#if>
+      <#if fillColor??>fill="${fillColor}"</#if>/>

@@ -1,6 +1,6 @@
-<line x1="${start.x}"
-      y1="${start.y}"
+<line x1="${origin.x}"
+      y1="${origin.y}"
       x2="${end.x}"
       y2="${end.y}"
-      stroke-width="${strokeWidth}"
-      stroke="${strokeColor}"/>
+      strokeColor-width="${strokeWidth}"
+      strokeColor="${strokeColor}"/>

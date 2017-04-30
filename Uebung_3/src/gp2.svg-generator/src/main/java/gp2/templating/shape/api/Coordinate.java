@@ -15,7 +15,6 @@ public class Coordinate {
 
     @Getter
     private final double x;
-
     @Getter
     private final double y;
 

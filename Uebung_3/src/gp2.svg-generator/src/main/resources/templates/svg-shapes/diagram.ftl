@@ -3,14 +3,14 @@
 <svg xmlns="http://www.w3.org/2000/svg"
      width="${width}"
      height="${height}"
-     <#if coordinate??>viewBox="${coordinate.x} ${coordinate.y} ${coordinateWidth} ${coordinateHeight}"</#if>
-     preserveAspectRatio="none">
+     <#if viewBoxEnabled>viewBox="${minX} ${minY} ${maxX - minX} ${maxY - minY}"
+     preserveAspectRatio="none"</#if>>
 
-    <#-- Need to find out how to calculate the coordiante system -->
-    <#if coordinate??>
-        <line x1="${(coordinate.coordinateWidth / 2) * -1}" y1="0" x2="${coordinate.coordinateWidth / 2}" y2="0" stroke="#555" stroke-width="0.01"/>
-        <line x1="0" y1="${(coordinate.coordinateHeight / 2) * -1}" x2="0" y2="${coordinate.coordinateHeight / 2}" stroke="#555" stroke-width="0.01"/>
-    </#if>
+<#if showAxis>
+    <line x1="${minX}" x2="${maxX}" y1="${0}" y2="${0}" stroke="#555" stroke-width="0.01" />
+    <line x1="${0}" x2="${0}" y1="${minY}" y2="${maxY}" stroke="#555" stroke-width="0.01" />
+</#if>
+
 <#list shapes as shape>
   ${shape.render()}
 </#list>

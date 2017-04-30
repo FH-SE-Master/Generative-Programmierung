@@ -1,5 +1,5 @@
-<text x="${coordinate.x}"
-      y="${coordinate.y}"
+<text x="${origin.x}"
+      y="${origin.y}"
       font-family="${fontFamily}"
       font-size="${fontSize}">
 ${text}
