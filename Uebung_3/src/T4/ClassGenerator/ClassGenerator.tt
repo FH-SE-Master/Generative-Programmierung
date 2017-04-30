@@ -1,13 +1,92 @@
-﻿<#@ template debug="true" hostSpecific="true" language="C#" #>
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
 <#@ output extension=".cs" #>
 <#@ assembly name="System.Xml" #>
-<#@ import namespace="System.Xml" #>
-<#@ assembly name="System.Core.dll" #>
-<#@ import namespace="System.IO" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml.Linq, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Xml.Linq" #>
 
 <#
-    string modelFileName = Host.ResolvePath("Model.xml");
-	var doc = new XmlDocument();
-	doc.Load(modelFileName);
-	var model = doc.DocumentElement;
+    // Constants for attribute names of the XElements
+	const string ELEMENT_CLASS = "class";
+    const string ELEMENT_PROPERTY = "property";
+    const string ATTR_CLASS_NAME = "name";
+	const string ATTR_CLASS_MODIFIER = "modifier";
+    const string ATTR_NAMESPACE = "namespace";
+    const string ATTR_BASE_CLASS = "base";
+    const string ATTR_FIELD_NAME = "name";
+    const string ATTR_FIELD_TYPE = "type";
+		  
+    // Loading elements
+    var modelFile = Host.ResolvePath("Model.xml");
+    var xml = XElement.Load(modelFile);
+	// group by namespaces
+	var namespaceClasses = xml.Elements(ELEMENT_CLASS)
+		                    .GroupBy(el => (el.Attribute(ATTR_NAMESPACE) != null ? el.Attribute(ATTR_NAMESPACE).Value : null), 
+		                                    el => el);
+
+	// Create classes for each namespace
+    foreach (var group in namespaceClasses)
+    {
+
+#>
+<#=(group.Key != null) ? ("namespace " + group.Key + " {") : ""#>	
+<# 
+        // Create classes of namespace
+        foreach (var element in group)
+        {
+            // Get all all class level relevant attributes
+            var className = element.Attribute(ATTR_CLASS_NAME)?.Value;
+            var baseClass = element.Attribute(ATTR_BASE_CLASS)?.Value;
+            var classModifier = element.Attribute(ATTR_CLASS_MODIFIER);
+            var isAbstract = (classModifier != null) && (classModifier.Value.Equals("abstract"));
+            var propertyList = new List<Tuple<string, string>>(element.Elements("property")
+			                                                          .Select(prop => new Tuple<string, string>(prop.Attribute(ATTR_FIELD_TYPE)?.Value, prop.Attribute(ATTR_FIELD_NAME)?.Value)));
+#> 
+public <#=(classModifier != null ? classModifier.Value : "") #> class <#=className
+		  + (baseClass != null ? (": " + baseClass + "{") : "{") #>
+<#
+            // Create properties
+            foreach (var propElement in propertyList)
+            {
+#>
+public <#=propElement.Item1 + " " + propElement.Item2 #> { get; set; }
+<#
+            }
+#>
+public <#=className#>(){}
+<#
+			// Create Constructor ToString if properties are present
+            if (propertyList.Count > 0)
+            {
+#> 
+public override string ToString() {
+<#
+                // Create toString with all attributes
+				for (var i = 0; i < propertyList.Count; i++)
+				{
+				    var propItem = propertyList[i];
+                    var last = i + 1 == propertyList.Count;
+                    var first = i == 0;
+#>
+<#=(first ? "return " + ((baseClass != null) ? "base.ToString() + \"\\n\" + " : "") 
+                      + "\"Class: " + className + " \\n\" + " 
+          : " + ")  
+            + "\"" + propItem.Item2 + ": \" + " + propItem.Item2 
+ 		    + (last ? ";" : " + \"\\n\"") #>
+<#
+                }
+#>
+}
+<#
+            }
+#>
+		}    
+<#
+	}
+#>
+<#=(group.Key != null) ? "}": ""#>
+<#
+    }
 #>

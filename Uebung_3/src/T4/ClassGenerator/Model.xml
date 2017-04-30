@@ -1,10 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <model>
-  <class name="Person" namespace="GenerativeProgramming">
+  <class name="Person" namespace="Persons" modifier="abstract">
     <property name="Name" type="string"/>
     <property name="Age" type="int"/>
   </class>
-  <class name="Student" namespace="GenerativeProgramming" base="Person">
+  <class name="Student" namespace="Persons" base="Person">
     <property name="Id" type="string"/>
+  </class>
+  <class name="Teacher" namespace="Persons" base="Person">
+    <property name="Id" type="string"/>
+    <property name="Department" type="Department"/>
+  </class>
+  <class name="Department" namespace="Persons" base="Person">
+    <property name="Name" type="string"/>
+  </class>
+  
+  <!-- Other classes of another namespace -->
+  <class name="BaseShape" namespace="Shape">
+    <property name="Name" type="string"/>
+    <property name="Coordinate" type="Coordinate"/>
+    <property name="Stroke" type="int"/>
+    <property name="StrokeHexColor" type="string"/>
+    <property name="FillColor" type="string"/>
+  </class>
+  <class name="Rectangular" namespace="Shape" base="BaseShape">
+    <property name="Width" type="double"/>
+    <property name="Height" type="double"/>
+  </class>
+  <class name="Circle" namespace="Shape" base="BaseShape">
+    <property name="Radius" type="double"/>
+  </class>
+  
+  <!-- Other classes in no namespace -->
+  <class name="Coordinate">
+    <property name="XCoordinate" type="double"/>
+    <property name="YCoordinate" type="double"/>
   </class>
 </model>
