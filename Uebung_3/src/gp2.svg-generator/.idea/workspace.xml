@@ -1,33 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ecc1942a-daf2-48d7-b185-f7883a843a9c" name="Default" comment="-">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/at/fh/ooe/gp2/template/Main.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/at/fh/ooe/gp2/template/api/shape/PointShape.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/at/fh/ooe/gp2/template/generator/impl/AbstractFreemarkerGenerator.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/at/fh/ooe/gp2/template/generator/impl/FreemarkerGenerators.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/gp2/templating/Main.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/gp2/templating/generator/api/GeneratorFactory.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/gp2/templating/generator/impl/FreemarkerGenerator.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/gp2/templating/generator/impl/Generators.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/java/gp2/templating/shape/impl/svg/PointShape.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/gp2/templating/Main.class" afterPath="" />
+    <list default="true" id="ecc1942a-daf2-48d7-b185-f7883a843a9c" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/gp2/templating/generator/api/Generator.java" afterPath="$PROJECT_DIR$/src/main/java/at/fh/ooe/gp2/template/api/generator/Generator.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/gp2/templating/generator/exception/GeneratorException.java" afterPath="$PROJECT_DIR$/src/main/java/at/fh/ooe/gp2/template/api/exception/GeneratorException.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/gp2/templating/generator/exception/RenderException.java" afterPath="$PROJECT_DIR$/src/main/java/at/fh/ooe/gp2/template/api/exception/RenderException.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/gp2/templating/shape/api/AbstractShape.java" afterPath="$PROJECT_DIR$/src/main/java/at/fh/ooe/gp2/template/api/shape/AbstractShape.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/gp2/templating/shape/api/Coordinate.java" afterPath="$PROJECT_DIR$/src/main/java/at/fh/ooe/gp2/template/api/Coordinate.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/gp2/templating/shape/api/Shape.java" afterPath="$PROJECT_DIR$/src/main/java/at/fh/ooe/gp2/template/api/shape/Shape.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/gp2/templating/shape/impl/svg/Diagram.java" afterPath="$PROJECT_DIR$/src/main/java/at/fh/ooe/gp2/template/api/shape/Diagram.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/gp2/templating/shape/impl/svg/LineShape.java" afterPath="$PROJECT_DIR$/src/main/java/at/fh/ooe/gp2/template/api/shape/LineShape.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/gp2/templating/shape/impl/svg/RectangularShape.java" afterPath="$PROJECT_DIR$/src/main/java/at/fh/ooe/gp2/template/api/shape/RectangularShape.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/gp2/templating/shape/impl/svg/TextShape.java" afterPath="$PROJECT_DIR$/src/main/java/at/fh/ooe/gp2/template/api/shape/TextShape.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/templates/svg-shapes/diagram.ftl" afterPath="$PROJECT_DIR$/src/main/resources/templates/shapes/svg/diagram.ftl" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/templates/svg-shapes/line.ftl" afterPath="$PROJECT_DIR$/src/main/resources/templates/shapes/svg/line.ftl" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/templates/svg-shapes/point.ftl" afterPath="$PROJECT_DIR$/src/main/resources/templates/shapes/svg/point.ftl" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/templates/svg-shapes/rect.ftl" afterPath="$PROJECT_DIR$/src/main/resources/templates/shapes/svg/rect.ftl" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/resources/templates/svg-shapes/text.ftl" afterPath="$PROJECT_DIR$/src/main/resources/templates/shapes/svg/text.ftl" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -1057,7 +1032,7 @@
       <workItem from="1493058083704" duration="1539000" />
       <workItem from="1493061048963" duration="2049000" />
       <workItem from="1493552829268" duration="26000" />
-      <workItem from="1493552921678" duration="7901000" />
+      <workItem from="1493552921678" duration="7917000" />
     </task>
     <task id="LOCAL-00001" summary="- Excluded output folder from git&#10;- SVG implementation should work, but must take a look at the svg coordinate system">
       <created>1492971690351</created>
@@ -1080,11 +1055,18 @@
       <option name="project" value="LOCAL" />
       <updated>1493557584693</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="- done with svg generator">
+      <created>1493560951759</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1493560951759</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="21701000" />
+    <option name="totallyTimeSpent" value="21717000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1924" height="1056" extended-state="0" />
@@ -1147,7 +1129,8 @@
     <MESSAGE value="- Excluded output folder from git&#10;- SVG implementation should work, but must take a look at the svg coordinate system" />
     <MESSAGE value="- modified gitignore&#10;- further dev on svg elements and templates" />
     <MESSAGE value="- working example" />
-    <option name="LAST_COMMIT_MESSAGE" value="- working example" />
+    <MESSAGE value="- done with svg generator" />
+    <option name="LAST_COMMIT_MESSAGE" value="- done with svg generator" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
