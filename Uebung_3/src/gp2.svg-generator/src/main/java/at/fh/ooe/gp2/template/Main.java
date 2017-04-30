@@ -82,6 +82,6 @@ public class Main {
 
         createSvgFile(createDiagramBoxes(), generator, "boxes");
         createSvgFile(createDiagramPoint(), generator, "points");
-        createSvgFile(createDiagramRectangular(), generator, "rect");
+        createSvgFile(createDiagramRectangular(), generator, "all");
     }
 }
