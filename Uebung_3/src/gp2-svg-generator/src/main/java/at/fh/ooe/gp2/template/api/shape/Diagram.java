@@ -1,6 +1,6 @@
 package at.fh.ooe.gp2.template.api.shape;
 
-import at.fh.ooe.gp2.template.impl.FreemarkerGenerators;
+import at.fh.ooe.gp2.template.impl.generator.FreemarkerGenerators;
 import lombok.Getter;
 
 import java.util.LinkedList;
@@ -25,14 +25,14 @@ public class Diagram extends AbstractShape<Diagram> {
     @Getter
     private final List<AbstractShape> shapes = new LinkedList<>();
 
-    public Diagram(final FreemarkerGenerators.DiagramFreemarkerGenerator generator,
+    public Diagram(final FreemarkerGenerators.DiagramGenerator generator,
                    final int width,
                    final int height,
                    final boolean showAxis) {
         this(generator, width, height, null, null, null, null, showAxis);
     }
 
-    public Diagram(final FreemarkerGenerators.DiagramFreemarkerGenerator generator,
+    public Diagram(final FreemarkerGenerators.DiagramGenerator generator,
                    final int width,
                    final int height,
                    final Double minX,

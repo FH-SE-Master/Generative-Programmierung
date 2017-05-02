@@ -13,10 +13,10 @@ import java.util.Objects;
  * @author Thomas Herzog <t.herzog@curecomp.com>
  * @since 04/21/17
  */
-public abstract class AbstractShape<S extends at.fh.ooe.gp2.template.api.shape.Shape> implements at.fh.ooe.gp2.template.api.shape.Shape {
+public abstract class AbstractShape<S extends Shape> implements Shape {
 
     @Getter
-    private final at.fh.ooe.gp2.template.api.shape.Shape parent;
+    private final Shape parent;
     @Getter
     private final Generator<S> generator;
     @Getter

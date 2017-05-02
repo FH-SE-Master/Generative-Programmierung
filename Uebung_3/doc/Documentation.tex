@@ -39,8 +39,9 @@
 % the default java directory structure and the main packages
 \newcommand{\srcDirGenerator}{../src/T4/ClassGenerator}
 \newcommand{\srcDirClone}{../src/T4/CloningGenerator}
-\newcommand{\srcDirJavaSrc}{../src/gp2.svg-generator/src/main/java}
-\newcommand{\srcDirJavaRes}{../src/gp2.svg-generator/src/main/resources}
+\newcommand{\srcDirJavaSrc}{../src/gp2-svg-generator/src/main/java}
+\newcommand{\srcDirJavaRes}{../src/gp2-svg-generator/src/main/resources}
+\newcommand{\srcDirJavaOut}{../src/gp2-svg-generator/output}
 \newcommand{\imageDir}{images}
 % =============================================
 % Code Settings
@@ -57,6 +58,16 @@
 	fontsize=\footnotesize
 }
 \newmintedfile[xmlFile]{xml}{
+	linenos=true, 
+	frame=single, 
+	breaklines=true, 
+	tabsize=2,
+	numbersep=5pt,
+	xleftmargin=10pt,
+	baselinestretch=1,
+	fontsize=\footnotesize
+}
+\newmintedfile[javaFile]{java}{
 	linenos=true, 
 	frame=single, 
 	breaklines=true, 
@@ -213,12 +224,190 @@ Dieser Abschnitt enthält die Tests in Form von den generierten Quelltexten und 
 \end{figure}
 
 \section{SVG Generator}
-Dieser Abschnitt beschäftigt sich mit der Dokumentation der Lösungsidee der Aufgabenstellung \emph{SVG Generator}.
-
 \subsection{Lösungsidee}
+Dieser Abschnitt beschäftigt sich mit der Dokumentation der Lösungsidee der Aufgabenstellung SVG Generator. Es sollen zwei \emph{Exception}-Klassen implementiert werden, wobei eine \emph{Exception}-Klasse einen durch den Generator verursachten Fehler repräsentiert und die andere \emph{Exception}-Klasse einen durch eine \emph{Shape} ausgelösten Fehler repräsentiert.
+\newline
+\newline
+Es soll jeweils eine Schnittstelle für die Repräsentation eines \emph{Generators} und eines \emph{Shapes} implementiert werden um beide Aspekte von ihren Implementierungen zu trennen. Es sollen abstrakte Klassen für die Generatoren und die \emph{Shapes} implementiert werden, die deren gemeinsame Funktionalität kapseln. Die implementierten Generatoren und \emph{Shapes} solen von diesen Klassen erben und die spezifischen Funktionalitäten und Zustände implementieren.
+\newline
+\newline
+Damit nicht zu viele Klassendateien für die SVG Generatoren angelegt werden sollen die Generatorenklassen als statische innere Klassen in einer Klasse gebündelt werden. Es sollen die folgenden SVG-\emph{Tags}
+\begin{itemize}
+	\item\emph{PointShape},
+	\item\emph{LineShape},
+	\item\emph{RectangularShape} und
+	\item\emph{TextShape}
+\end{itemize}   
+implementiert werden.
+\newpage
+Um sich die \emph{Getter} und \emph{Setter}-Methoden zu ersparen wurde die Bibliothek \emph{lombok} verwendet, die über Annotationen die \emph{Getter} und \emph{Setter}-Methoden generiert, wobei der \emph{Compile} instrumentiert wird. Siehe folgenden Link wie \emph{lombok} verwendet wird und wie die Bibliothek \emph{lombok} in eine \emph{IDE} integriert wird \url{https://projectlombok.org/download.html}.
+\newline
+\newline
+Ohne diese Integration von der Bibliothek \emph{lombok} kann das Program nicht in einer IDE gebaut werden.
 
 \subsection{Quelltexte}
+\begin{code}
+	\caption{GeneratorException.java}
+	\javaFile{\srcDirJavaSrc/at/fh/ooe/gp2/template/api/exception/GeneratorException.java}
+	\label{src:generatorexception-java}
+\end{code}
+
+\begin{code}
+	\caption{GeneratorException.java}
+	\javaFile{\srcDirJavaSrc/at/fh/ooe/gp2/template/api/exception/RenderException.java}
+	\label{src:renderexception-java}
+\end{code}
+
+\begin{code}
+	\caption{Generator.java}
+	\javaFile{\srcDirJavaSrc/at/fh/ooe/gp2/template/api/generator/Generator.java}
+	\label{src:generator-java}
+\end{code}
+
+\begin{code}
+	\caption{Shape.java}
+	\javaFile{\srcDirJavaSrc/at/fh/ooe/gp2/template/api/shape/Shape.java}
+	\label{src:shape-java}
+\end{code}
+
+\begin{code}
+	\caption{Coordinate.java}
+	\javaFile{\srcDirJavaSrc/at/fh/ooe/gp2/template/api/Coordinate.java}
+	\label{src:coordinate-java}
+\end{code}
+
+\begin{code}
+	\caption{AbstractShape.java}
+	\javaFile{\srcDirJavaSrc/at/fh/ooe/gp2/template/api/shape/AbstractShape.java}
+	\label{src:shape-java}
+\end{code}
+
+\begin{code}
+	\caption{Diagram.java}
+	\javaFile{\srcDirJavaSrc/at/fh/ooe/gp2/template/api/shape/Diagram.java}
+	\label{src:diagram-shape-java}
+\end{code}
+
+\begin{code}
+	\caption{LineShape.java}
+	\javaFile{\srcDirJavaSrc/at/fh/ooe/gp2/template/api/shape/LineShape.java}
+	\label{src:line-shape-java}
+\end{code}
+
+\begin{code}
+	\caption{RectangularShape.java}
+	\javaFile{\srcDirJavaSrc/at/fh/ooe/gp2/template/api/shape/RectangularShape.java}
+	\label{src:rectangular-shape-java}
+\end{code}
+
+\begin{code}
+	\caption{TextShape.java}
+	\javaFile{\srcDirJavaSrc/at/fh/ooe/gp2/template/api/shape/TextShape.java}
+	\label{src:text-shape-java}
+\end{code}
+
+\begin{code}
+	\caption{AbstractFreemarkerGenerator.java}
+	\javaFile{\srcDirJavaSrc/at/fh/ooe/gp2/template/impl/generator/AbstractFreemarkerGenerator.java}
+	\label{src:abstract-freemarker-generator-java}
+\end{code}
+
+\begin{code}
+	\caption{FreemarkerGenerators.java}
+	\javaFile{\srcDirJavaSrc/at/fh/ooe/gp2/template/impl/generator/FreemarkerGenerators.java}
+	\label{src:freemarker-generators-java}
+\end{code}
+
+\begin{code}
+	\caption{Main.java}
+	\javaFile{\srcDirJavaSrc/at/fh/ooe/gp2/template/Main.java}
+	\label{src:main-java}
+\end{code}
+
+\begin{code}
+	\caption{diagram.ftl}
+	\xmlFile{\srcDirJavaRes/templates/shapes/svg/diagram.ftl}
+	\label{src:diagram-ftl}
+\end{code}
+
+\begin{code}
+	\caption{point.ftl}
+	\xmlFile{\srcDirJavaRes/templates/shapes/svg/point.ftl}
+	\label{src:point-ftl}
+\end{code}
+
+\begin{code}
+	\caption{line.ftl}
+	\xmlFile{\srcDirJavaRes/templates/shapes/svg/line.ftl}
+	\label{src:line-ftl}
+\end{code}
+
+\begin{code}
+	\caption{rect.ftl}
+	\xmlFile{\srcDirJavaRes/templates/shapes/svg/rect.ftl}
+	\label{src:rect-ftl}
+\end{code}
+
+\begin{code}
+	\caption{text.ftl}
+	\xmlFile{\srcDirJavaRes/templates/shapes/svg/text.ftl}
+	\label{src:text-ftl}
+\end{code}
 
 \subsection{Tests}
+Dieser Abschnitt beinhaltet die generierten SVG-Dateien und die dazugehörigen Bilder.
+\begin{code}
+	\caption{boxes.svg}
+	\xmlFile{\srcDirJavaOut/boxes.svg}
+	\label{src:boxes-svg}
+\end{code}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=1]{\imageDir/svg-boxes.JPG}
+	\caption{\emph{Boxes}}
+	\label{fig:svg-boxes}
+\end{figure}
+
+\begin{code}
+	\caption{points.svg}
+	\xmlFile{\srcDirJavaOut/points.svg}
+	\label{src:boxes-svg}
+\end{code}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=1]{\imageDir/svg-points.JPG}
+	\caption{\emph{Points}}
+	\label{fig:svg-points}
+\end{figure}
+
+\begin{code}
+	\caption{lines.svg}
+	\xmlFile{\srcDirJavaOut/lines.svg}
+	\label{src:lines-svg}
+\end{code}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=1]{\imageDir/svg-lines.JPG}
+	\caption{\emph{Lines}}
+	\label{fig:svg-lines}
+\end{figure}
+\ \newpage
+
+\begin{code}
+	\caption{all.svg}
+	\xmlFile{\srcDirJavaOut/all.svg}
+	\label{src:all-svg}
+\end{code}
+\ \newpage
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=1]{\imageDir/svg-all.JPG}
+	\caption{\emph{All}}
+	\label{fig:svg-all}
+\end{figure}
 
 \end{document}

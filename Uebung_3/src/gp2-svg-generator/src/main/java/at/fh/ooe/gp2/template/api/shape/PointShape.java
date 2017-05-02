@@ -1,7 +1,7 @@
 package at.fh.ooe.gp2.template.api.shape;
 
 import at.fh.ooe.gp2.template.api.*;
-import at.fh.ooe.gp2.template.impl.FreemarkerGenerators;
+import at.fh.ooe.gp2.template.impl.generator.FreemarkerGenerators;
 import lombok.Getter;
 
 import java.awt.*;
@@ -16,7 +16,7 @@ public class PointShape extends AbstractShape<PointShape> {
     private final double radius;
 
     public PointShape(final Shape diagram,
-                      final FreemarkerGenerators.PointFreemarkerGenerator generator,
+                      final FreemarkerGenerators.PointGenerator generator,
                       final Coordinate origin,
                       final Color stroke,
                       final Color fill,

@@ -1,6 +1,6 @@
 package at.fh.ooe.gp2.template.api.shape;
 
-import at.fh.ooe.gp2.template.impl.FreemarkerGenerators;
+import at.fh.ooe.gp2.template.impl.generator.FreemarkerGenerators;
 import at.fh.ooe.gp2.template.api.Coordinate;
 import lombok.Getter;
 
@@ -16,14 +16,14 @@ public class LineShape extends AbstractShape<LineShape> {
     private final Coordinate end;
 
     public LineShape(final Shape parent,
-                     final FreemarkerGenerators.LineFreemarkerGenerator generator,
+                     final FreemarkerGenerators.LineGenerator generator,
                      final Coordinate origin,
                      final Coordinate end) {
         this(parent, generator, origin, end, null, 1);
     }
 
     public LineShape(final Shape diagram,
-                     final FreemarkerGenerators.LineFreemarkerGenerator generator,
+                     final FreemarkerGenerators.LineGenerator generator,
                      final Coordinate origin,
                      final Coordinate end,
                      final Color stroke,

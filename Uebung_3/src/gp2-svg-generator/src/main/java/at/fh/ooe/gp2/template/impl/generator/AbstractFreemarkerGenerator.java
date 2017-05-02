@@ -1,4 +1,4 @@
-package at.fh.ooe.gp2.template.impl;
+package at.fh.ooe.gp2.template.impl.generator;
 
 import at.fh.ooe.gp2.template.api.generator.Generator;
 import at.fh.ooe.gp2.template.api.exception.GeneratorException;
