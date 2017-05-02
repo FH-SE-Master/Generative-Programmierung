@@ -7,12 +7,12 @@
 <#
         string assemblyFile = @"bin\Debug\CloningGenerator.exe";
         Assembly assembly = LoadProjectAssembly(assemblyFile);
-        var deepClonables = assembly.GetTypes()
-            .Where(x => !x.IsInterface && x.Name != "DeepCloneable" && x.GetInterfaces()
-                            .Any(y => y.Name == "IDeepCloneable"));
+        var deepClonables = assembly.GetTypes().Where(x => !x.IsInterface && x.Name != "DeepCloneable" && x.GetInterfaces()
+                                               .Any(y => y.Name == "IDeepCloneable"));
 #>
 namespace CloningGenerator {
 <#
+		// Iterate over each found type
 		foreach (var t in deepClonables)
         {
 #>
@@ -21,6 +21,7 @@ public partial class <#= t.Name #> {
 // Clone constructor
 protected <#= t.Name #>(<#= t.Name #> original, Cloner cloner): base(original, cloner) {
 <#
+            // Iterate over each found field of the found type
 			foreach (var fieldInfo in t.GetFields())
             {
                 var fieldType = fieldInfo.FieldType;
@@ -58,8 +59,12 @@ public override IDeepCloneable Clone(Cloner cloner){
         }
 #>
 }
-<# Cleanup(); #>
+<# 
+	// Cleanup after generation
+	Cleanup(); 
+#>
 <#+
+    // Class feature blocks for util methods 
     private string outputDir;
 
     private Assembly LoadProjectAssembly(string assemblyFile)

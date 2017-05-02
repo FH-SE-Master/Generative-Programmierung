@@ -40,8 +40,7 @@
             var className = element.Attribute(ATTR_CLASS_NAME)?.Value;
             var baseClass = element.Attribute(ATTR_BASE_CLASS)?.Value;
             var classModifier = element.Attribute(ATTR_CLASS_MODIFIER);
-            var isAbstract = (classModifier != null) && (classModifier.Value.Equals("abstract"));
-            var propertyList = new List<Tuple<string, string>>(element.Elements("property")
+            var propertyList = new List<Tuple<string, string>>(element.Elements(ELEMENT_PROPERTY)
 			                                                          .Select(prop => new Tuple<string, string>(prop.Attribute(ATTR_FIELD_TYPE)?.Value, prop.Attribute(ATTR_FIELD_NAME)?.Value)));
 #> 
 public <#=(classModifier != null ? classModifier.Value : "") #> class <#=className
@@ -54,9 +53,7 @@ public <#=(classModifier != null ? classModifier.Value : "") #> class <#=classNa
 public <#=propElement.Item1 + " " + propElement.Item2 #> { get; set; }
 <#
             }
-#>
-public <#=className#>(){}
-<#
+
 			// Create Constructor ToString if properties are present
             if (propertyList.Count > 0)
             {

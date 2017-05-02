@@ -8,17 +8,18 @@ namespace ClassGenerator {
     {
         static void Main(string[] args)
         {
-            testPersons();
-            testShapes();
+            TestPersons();
+            TestShapes();
 
+            // Just to kepp console open, which it wouldn't otherwise
             Console.Read();
         }
 
-        public static void testPersons()
+        public static void TestPersons()
         {
-            Console.WriteLine("################################################################ \n" 
+            Console.WriteLine("####################################################### \n" 
                             + "testPersons()\n"
-                            + "################################################################");
+                            + "#######################################################");
 
             Department department = new Department()
             {
@@ -30,25 +31,26 @@ namespace ClassGenerator {
                 Age = 50,
                 Department = department,
                 Id = "P00000001",
-                Name = "Thomas"
+                Name = "Dobler"
             };
 
-            Student student = new Student() { 
-            Id = "S1610454013"
+            Student student = new Student() {
+                Name = "Thomas",
+                Id = "S1610454013"
             };
 
             Console.WriteLine(department + "\n");
             Console.WriteLine(teacher + "\n");
             Console.WriteLine(student + "\n");
 
-            Console.WriteLine("################################################################\n");
+            Console.WriteLine("#######################################################\n");
         }
 
-        public static void testShapes()
+        public static void TestShapes()
         {
-            Console.WriteLine("################################################################ \n"
-                              + "testShapes()\n"
-                              + "################################################################");
+            Console.WriteLine("####################################################### \n"
+                            + "testShapes()\n"
+                            + "#######################################################");
 
             Coordinate coordinate = new Coordinate();
             coordinate.XCoordinate = 1.0;
@@ -77,7 +79,7 @@ namespace ClassGenerator {
             Console.WriteLine(rectangular + "\n");
             Console.WriteLine(circle + "\n");
 
-            Console.WriteLine("################################################################\n");
+            Console.WriteLine("#######################################################\n");
         }
     }
 }
