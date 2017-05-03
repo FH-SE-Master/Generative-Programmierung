@@ -126,20 +126,21 @@
 \includepdf[pages={1,2,3,4,5}]{GP_A03.pdf}
 
 \section{One, to generate them all}
-\subsection{Lösungsidee}
-Dieser Abschnitt beschäftigt sich mit der Dokumentation der Lösungsidee der Aufgabenstellung \emph{One, to generate them all}. Um von den \emph{XML-Tag}-Namen und dessen Attributen unabhängig zu sein sollen die \emph{XML-Tag}-Namen und dessen Attribute in Konstanten ausgelagert werden und sollen bei der Navigation durch das \emph{XML}-Dokument verwendet werden, um die \emph{XML-Tags} sowie dessen Attribute zu adressieren. Die Unabhängigkeit von der Struktur des \emph{XML}-Dokuments ist aber nicht möglich.
+Dieser Abschnitt beschäftigt sich mit der Dokumentation der Aufgabenstellung \emph{One, to generate them all}.
+\subsection{Lösungsidee} 
+Um von den \emph{XML-Tag}-Namen und dessen Attributnamen unabhängig zu sein, sollen die \emph{XML-Tag}-Namen und dessen Attributnamen in Konstanten ausgelagert werden und sollen bei der Navigation durch das \emph{XML}-Dokument verwendet werden, um die \emph{XML-Tags} sowie dessen Attributnamen zu adressieren. Die Unabhängigkeit von der Struktur des \emph{XML}-Dokuments wird aber nicht möglich sein.
 \newline
 \newline
-Da die im \emph{XML}-Dokument definierten Klassen sich im selben Namensraum befinden können,  sollen die definierten Klassen nach den Namensräumen gruppiert werden, damit die Namensräume nicht mehrfach in den generierten Klassen definiert werden müssen. Um das zu realisieren soll \emph{Linq} verwendet werden. Um sich zu viele \emph{If}-Blöcke im \emph{T4-Template} zu vermeiden soll mit dem \emph{?} Operator gearbeitet werden, um die resultierenden Zeichenketten des \emph{C\#}-Quelltextes zu generieren. Dadurch soll das \emph{T4-Template} übersichtlicher werden, da meiner Meinung nach das Verwenden von zu vielen \emph{If}-Anweisungen das \emph{Template} unübersichtlich macht.
+Da die im \emph{XML}-Dokument definierten Klassen sich im selben Namensraum befinden können, sollen die definierten Klassen nach den Namensräumen gruppiert werden, damit die Namensräume nicht mehrfach in den generierten Klassen definiert werden müssen. Um das zu realisieren soll \emph{Linq} verwendet werden. Um sich zu viele \emph{If}-Anweisungen im \emph{T4-Template} zu vermeiden soll mit dem \emph{?} Operator gearbeitet werden, um die resultierenden Zeichenketten des C\# Quelltextes zu generieren. Dadurch soll das \emph{T4-Template} übersichtlicher werden, da meiner Meinung nach das Verwenden von zu vielen \emph{If}-Anweisungen das \emph{Template} unübersichtlich macht.
 \newline
 \newline
-Zusätzlich zu den verlangten Attributen der \emph{XML-Tags} wurde noch auf Klassenebene ein \emph{Modifier} eingeführt, womit auch abstrakte Klassen möglich sind.  
+Zusätzlich zu den verlangten Attributen der \emph{XML-Tags} wurde noch auf Klassenebene ein \emph{Modifier}-Attribut eingeführt, womit auch abstrakte Klassen definiert werden können.  
 \newline
 \newline
-Die \emph{Tostring} Methode wurde so implementiert, dass wenn es eine Basisklasse gibt, zuerst an diese Basisklasse delegiert wird und dann erst die Ausgabe der konkreten Klasse erfolgt, wobei am Anfang einer jeder \emph{Tostring} Implementierung immer die der Klassennamen ausgegeben wird.     
+Die Methode \emph{ToString} wurde so implementiert, dass wenn es eine Basisklasse gibt, zuerst an diese Basisklasse delegiert wird und dann erst die Ausgabe der konkreten Klasse erfolgt, wobei am Anfang einer jeder \emph{ToString} Methodenimplementierung immer die der Klassennamen ausgegeben wird.     
 
 \subsection{Quelltexte}
-Folgender Abschnitt enthält die Quelltexte der Aufgabenstellung.
+Folgender Abschnitt enthält das \emph{T4-Template} und das Testprogramm.
 \begin{code}
 	\caption{ClassGenerator.tt}
 	\cppSourceFile{\srcDirGenerator/ClassGenerator.tt}
@@ -166,7 +167,6 @@ Folgender Abschnitt enthält die Tests der Aufgabenstellung in Form der generier
 	\cppSourceFile{\srcDirGenerator/ClassGenerator.cs}
 	\label{src:class-generator-cs}
 \end{code}
-\ \newpage
 
 \begin{figure}[h]
 	\centering
@@ -177,11 +177,11 @@ Folgender Abschnitt enthält die Tests der Aufgabenstellung in Form der generier
 \ \newpage
 
 \section{Clone 'Em All}
-\subsection{Lösungsidee}
-Dieser Abschnitt beschäftigt sich mit der Dokumentation der Lösungsidee der Aufgabenstellung \emph{Clone 'Em All}. Diese Aufgabenstellung wurde bereits in der Übung implementiert und nachträglich formatiert und einige Kommentare eingefügt.
+Dieser Abschnitt beschäftigt sich mit der Dokumentation der Aufgabenstellung \emph{Clone 'Em All}.
+\subsection{Lösungsidee} Diese Aufgabenstellung wurde bereits in der Übung implementiert und nachträglich formatiert und einige Kommentare eingefügt.
 
 \subsection{Quelltexte}
-In diesem Abschnit werden nur die selbst implementierten Quelltexte angeführt.
+In diesem Abschnit werden nur die selbst implementierten Quelltexte und das \emph{T4-Template} angeführt.
 
 \begin{code}
 	\caption{CloningGenerator.tt}
@@ -224,14 +224,14 @@ Dieser Abschnitt enthält die Tests in Form von den generierten Quelltexten und 
 \end{figure}
 
 \section{SVG Generator}
-\subsection{Lösungsidee}
-Dieser Abschnitt beschäftigt sich mit der Dokumentation der Lösungsidee der Aufgabenstellung SVG Generator. Es sollen zwei \emph{Exception}-Klassen implementiert werden, wobei eine \emph{Exception}-Klasse einen durch den Generator verursachten Fehler repräsentiert und die andere \emph{Exception}-Klasse einen durch eine \emph{Shape} ausgelösten Fehler repräsentiert.
+Dieser Abschnitt beschäftigt sich mit der Dokumentation der Aufgabenstellung \emph{SVG Generator}.
+\subsection{Lösungsidee} Es sollen zwei \emph{Exception}-Klassen implementiert werden, wobei eine \emph{Exception}-Klasse einen durch den Generator verursachten Fehler repräsentiert und die andere \emph{Exception}-Klasse einen durch eine \emph{Shape} verursachten Fehler repräsentiert.
 \newline
 \newline
-Es soll jeweils eine Schnittstelle für die Repräsentation eines \emph{Generators} und eines \emph{Shapes} implementiert werden um beide Aspekte von ihren Implementierungen zu trennen. Es sollen abstrakte Klassen für die Generatoren und die \emph{Shapes} implementiert werden, die deren gemeinsame Funktionalität kapseln. Die implementierten Generatoren und \emph{Shapes} solen von diesen Klassen erben und die spezifischen Funktionalitäten und Zustände implementieren.
+Es soll jeweils eine Schnittstelle für die Repräsentation eines \emph{Generators} und eines \emph{Shapes} implementiert werden um beide Aspekte von ihren Implementierungen zu trennen. Es sollen abstrakte Klassen für die Generatoren und die \emph{Shapes} implementiert werden, welche die gemeinsame Funktionalität kapseln. Die implementierten Generatoren und \emph{Shapes} sollen von diesen Klassen erben und die spezifischen Funktionalitäten und Zustände implementieren.
 \newline
 \newline
-Damit nicht zu viele Klassendateien für die SVG Generatoren angelegt werden sollen die Generatorenklassen als statische innere Klassen in einer Klasse gebündelt werden. Es sollen die folgenden SVG-\emph{Tags}
+Damit nicht zu viele Klassendateien für die SVG Generatoren angelegt werden sollen die Generatorenklassen als statische innere Klassen in einer Klasse gekapselt werden. Es sollen die folgenden SVG-\emph{Tags}
 \begin{itemize}
 	\item\emph{PointShape},
 	\item\emph{LineShape},
@@ -240,10 +240,24 @@ Damit nicht zu viele Klassendateien für die SVG Generatoren angelegt werden sol
 \end{itemize}   
 implementiert werden.
 \newpage
-Um sich die \emph{Getter} und \emph{Setter}-Methoden zu ersparen wurde die Bibliothek \emph{lombok} verwendet, die über Annotationen die \emph{Getter} und \emph{Setter}-Methoden generiert, wobei der \emph{Compile} instrumentiert wird. Siehe folgenden Link wie \emph{lombok} verwendet wird und wie die Bibliothek \emph{lombok} in eine \emph{IDE} integriert wird \url{https://projectlombok.org/download.html}.
+Da die \emph{Shapes} unabhängig von ihrer konkreten Repräsentation sind, sollen die \emph{Shape}-Klassen im \emph{api Package} organisiert werden, damit sie auch für andere \emph{Temlate-Engines} nutzbar sind.
+\newline
+\newline
+Um sich die \emph{Getter} und \emph{Setter}-Methoden zu ersparen wurde die Bibliothek \emph{lombok} verwendet, die über Annotationen die \emph{Getter} und \emph{Setter}-Methoden generiert, wobei der \emph{Compiler} instrumentiert wird. Siehe folgenden Link wie \emph{lombok} verwendet wird und wie die Bibliothek \emph{lombok} in eine \emph{IDE} integriert wird \url{https://projectlombok.org/download.html}.
 \newline
 \newline
 Ohne diese Integration von der Bibliothek \emph{lombok} kann das Program nicht in einer IDE gebaut werden.
+\newline
+\newline
+Die Abbildung \ref{fig:svg-project-structure} zeigt die Implementierte Projektstruktur und Organisation der \emph{Packages}.
+\newline
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=1]{\imageDir/svg-project-structure.JPG}
+	\caption{Projektstruktur}
+	\label{fig:svg-project-structure}
+\end{figure}
+\ \newpage
 
 \subsection{Quelltexte}
 \begin{code}
@@ -286,6 +300,12 @@ Ohne diese Integration von der Bibliothek \emph{lombok} kann das Program nicht i
 	\caption{Diagram.java}
 	\javaFile{\srcDirJavaSrc/at/fh/ooe/gp2/template/api/shape/Diagram.java}
 	\label{src:diagram-shape-java}
+\end{code}
+
+\begin{code}
+	\caption{PointShape.java}
+	\javaFile{\srcDirJavaSrc/at/fh/ooe/gp2/template/api/shape/PointShape.java}
+	\label{src:point-shape-java}
 \end{code}
 
 \begin{code}
@@ -390,7 +410,7 @@ Dieser Abschnitt beinhaltet die generierten SVG-Dateien und die dazugehörigen B
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=1]{\imageDir/svg-lines.JPG}
+	\includegraphics[scale=0.9]{\imageDir/svg-lines.JPG}
 	\caption{\emph{Lines}}
 	\label{fig:svg-lines}
 \end{figure}
@@ -401,7 +421,6 @@ Dieser Abschnitt beinhaltet die generierten SVG-Dateien und die dazugehörigen B
 	\xmlFile{\srcDirJavaOut/all.svg}
 	\label{src:all-svg}
 \end{code}
-\ \newpage
 
 \begin{figure}[h]
 	\centering

@@ -23,7 +23,7 @@ public class RectangularShape extends AbstractShape<RectangularShape> {
                             final Coordinate origin,
                             final Color stroke,
                             final Color fill,
-                            double height,
+                            final double height,
                             final double width,
                             final double strokeWidth) {
         super(diagram, generator, origin, stroke, fill,strokeWidth);
