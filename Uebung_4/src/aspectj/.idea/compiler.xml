@@ -17,7 +17,7 @@
         <module name="aspectj-tsp-solver" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="1.8">
       <module name="aspectj-caching" target="1.8" />
       <module name="aspectj-counting" target="1.8" />
       <module name="aspectj-tracing" target="1.8" />
