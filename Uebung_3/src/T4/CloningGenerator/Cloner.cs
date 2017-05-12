@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace CloningGenerator {
-  public sealed class Cloner {
+namespace CloningGenerator
+{
+    public sealed class Cloner {
     private Dictionary<IDeepCloneable, IDeepCloneable> cache;
 
     public Cloner() {

@@ -5,6 +5,7 @@ using System.Text;
 
 namespace CloningGenerator
 {
+    // Test class for cloning generator
     public partial class A : DeepCloneable
     {
         public int i;

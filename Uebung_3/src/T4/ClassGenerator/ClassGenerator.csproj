@@ -49,7 +49,6 @@
       <DependentUpon>ClassGenerator.tt</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassGenerator.tt">
@@ -70,6 +69,9 @@
       <Project>{7D943431-397E-4D96-B8A6-ADE12AD2C871}</Project>
       <Name>CloningGenerator</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
