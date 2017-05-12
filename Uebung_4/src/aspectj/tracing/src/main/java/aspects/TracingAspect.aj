@@ -23,31 +23,30 @@ public aspect TracingAspect {
             call(application.*.new(..));
 
     before(): methodCall(){
-        log.info("Before method '{}#{}'", new Object[]{thisJoinPointStaticPart.getSignature().getDeclaringType().getSimpleName(),
-                thisJoinPointStaticPart.getSignature().getName()});
+        log.info("Before method '{}#{}'", thisJoinPointStaticPart.getSignature().getDeclaringType().getSimpleName(),
+                 thisJoinPointStaticPart.getSignature().getName());
     }
 
     after() returning: methodCall(){
-        log.info("After method '{}#{}'", new Object[]{thisJoinPointStaticPart.getSignature().getDeclaringType().getSimpleName(),
-                thisJoinPointStaticPart.getSignature().getName()});
+        log.info("After method '{}#{}'", thisJoinPointStaticPart.getSignature().getDeclaringType().getSimpleName(),
+                 thisJoinPointStaticPart.getSignature().getName());
     }
 
     after() throwing(Throwable t): methodCall(){
-        // Via object[] because aspectj seems not be able to find proper method with varargs
-        log.info("After method '{}#{}' / exception={} / message={}", new Object[]{thisJoinPointStaticPart.getSignature().getDeclaringType().getSimpleName(),
-                thisJoinPointStaticPart.getSignature().getName(),
-                t.getClass().getName(),
-                t.getMessage()});
+        log.info("After method '{}#{}' / exception={} / message={}", thisJoinPointStaticPart.getSignature().getDeclaringType().getSimpleName(),
+                 thisJoinPointStaticPart.getSignature().getName(),
+                 t.getClass().getName(),
+                 t.getMessage());
     }
 
     before(): fieldAccess() {
-        log.info("Before field '{}#{}'", new Object[]{thisJoinPointStaticPart.getSignature().getDeclaringType().getSimpleName(),
-                thisJoinPointStaticPart.getSignature().getName()});
+        log.info("Before field '{}#{}'", thisJoinPointStaticPart.getSignature().getDeclaringType().getSimpleName(),
+                 thisJoinPointStaticPart.getSignature().getName());
     }
 
     after(): fieldAccess() {
-        log.info("After field '{}#{}'", new Object[]{thisJoinPointStaticPart.getSignature().getDeclaringType().getSimpleName(),
-                thisJoinPointStaticPart.getSignature().getName()});
+        log.info("After field '{}#{}'", thisJoinPointStaticPart.getSignature().getDeclaringType().getSimpleName(),
+                 thisJoinPointStaticPart.getSignature().getName());
     }
 
     before():newObject() {

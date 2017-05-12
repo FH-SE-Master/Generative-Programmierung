@@ -9,7 +9,6 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>tracing</module>
-        <module>counting</module>
         <module>caching</module>
         <module>tsp-solver</module>
     </modules>
@@ -20,15 +19,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-    <!-- SETTINGS
-
-     File -> Settings -> Build, Execution, Deployment -> Compiler -> Java Compiler:
-     Use compiler: Ajc
-     Delegate to Javac: unchecked
-
-     -->
-
-    <!-- DEPENDENCIES -->
 
     <dependencies>
         <dependency>
@@ -41,15 +31,15 @@
             <artifactId>aspectjtools</artifactId>
             <version>1.8.9</version>
         </dependency>
-        <dependency>
-            <groupId>com.hynnet</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.4</version>
-        </dependency>
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.hynnet</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.4</version>
+            </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
@@ -60,20 +50,29 @@
 
     <!-- BUILD -->
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>aspectj-maven-plugin</artifactId>
-                    <version>1.10</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>exec-maven-plugin</artifactId>
-                    <version>1.6.0</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.10</version>
+                <configuration>
+                    <complianceLevel>1.8</complianceLevel>
+                    <source>1.8</source>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+            </plugin>
+        </plugins>
     </build>
 
 </project>
