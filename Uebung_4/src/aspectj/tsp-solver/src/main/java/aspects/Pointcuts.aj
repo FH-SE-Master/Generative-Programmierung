@@ -1,8 +1,9 @@
 package aspects;
 
-import tsp.*;
-import tsp.api.Solution;
 
+import tsp.GA;
+import tsp.api.Solution;
+import tsp.api.Algorithm;
 
 public aspect Pointcuts {
     public pointcut execute(): call(Solution Algorithm.execute());

@@ -12,6 +12,8 @@ public class TSPSolver {
     public static boolean randomSelection = false;
     public static boolean cyclicCrossover = false;
     public static boolean maximalPreservativeCrossover = false;
+    public static boolean limitIterationsActive = false;
+    public static long maxSolutions = 1;
 
     public static void main(String[] args) {
         try {

@@ -1,6 +1,7 @@
 package aspects;
 
 import tsp.api.Solution;
+import tsp.TSPSolver;
 
 import java.util.Date;
 

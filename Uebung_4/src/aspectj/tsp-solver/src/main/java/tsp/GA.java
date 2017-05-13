@@ -41,7 +41,8 @@ public class GA implements Algorithm {
 
     public void setMutationRate(double mutationRate) { this.mutationRate = mutationRate; }
 
-    public boolean isTerminated() { return (currentIteration >= iterations); }
+    public boolean isTerminated() {
+        return (currentIteration >= iterations); }
 
     public Solution execute() {
         initialize();
