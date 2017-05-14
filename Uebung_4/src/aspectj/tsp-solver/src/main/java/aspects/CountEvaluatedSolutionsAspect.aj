@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This aspect counts the solution evaluation within the {@link tsp.GA} class.
+ * This aspect counts the solution evaluation within the {@link tsp.api.Algorithm} implementations.
  *
  * @author Thomas Herzog <t.herzog@curecomp.com>
  * @since 05/13/17
@@ -15,23 +15,18 @@ public abstract aspect CountEvaluatedSolutionsAspect {
 
     private static final Logger log = LoggerFactory.getLogger(CountEvaluatedSolutionsAspect.class);
 
-    before(): call(*.*.Solution *.GA.execute(..))
-            && !within(*.GA){
+    before(): call(*.*.Solution *.*.Algorithm.execute(..))
+            && !within(*.*.Algorithm+){
         solutionCount = 0;
     }
 
     after(): call(* *.*.Solution.evaluate(..))
-            && within(*.GA) {
+            && within(*.*.Algorithm+) {
         solutionCount++;
     }
 
-    after(): call(* *.*.Solution.evaluate(..))
-            && within(*.GA) {
-        solutionCount++;
-    }
-
-    after(): call(*.*.Solution *.GA.execute(..))
-            && !within(*.GA) {
+    after(): call(*.*.Solution *.*.Algorithm.execute(..))
+            && !within(*.*.Algorithm+) {
         log.info("Evaluation count: '{}'", solutionCount);
         solutionCount = 0;
     }

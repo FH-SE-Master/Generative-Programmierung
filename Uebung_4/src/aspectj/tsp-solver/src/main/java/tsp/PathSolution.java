@@ -1,6 +1,7 @@
 package tsp;
 
 import tsp.api.Solution;
+import tsp.config.AlgorithmConfig;
 
 import java.util.Arrays;
 
@@ -24,7 +25,7 @@ public class PathSolution implements Solution {
 
         // use Knuth Shuffle to create random permutation
         for (int i = 0; i < solution.tour.length - 1; i++) {
-            index = i + TSPSolver.random.nextInt(solution.tour.length - i);
+            index = i + AlgorithmConfig.random.nextInt(solution.tour.length - i);
             temp = solution.tour[i];
             solution.tour[i] = solution.tour[index];
             solution.tour[index] = temp;
@@ -73,8 +74,8 @@ public class PathSolution implements Solution {
         length = tour.length;
         cityCopied = new boolean[length];
 
-        breakPoint1 = TSPSolver.random.nextInt(length - 1);
-        breakPoint2 = breakPoint1 + 1 + TSPSolver.random.nextInt(length - (breakPoint1 + 1));
+        breakPoint1 = AlgorithmConfig.random.nextInt(length - 1);
+        breakPoint2 = breakPoint1 + 1 + AlgorithmConfig.random.nextInt(length - (breakPoint1 + 1));
 
         // copy part of first tour
         for (int i = breakPoint1; i <= breakPoint2; i++) {
@@ -101,8 +102,8 @@ public class PathSolution implements Solution {
         int breakPoint1, breakPoint2;
         int[] newTour = (int[]) tour.clone();
 
-        breakPoint1 = TSPSolver.random.nextInt(tour.length - 1);
-        breakPoint2 = breakPoint1 + 1 + TSPSolver.random.nextInt(tour.length - (breakPoint1 + 1));
+        breakPoint1 = AlgorithmConfig.random.nextInt(tour.length - 1);
+        breakPoint2 = breakPoint1 + 1 + AlgorithmConfig.random.nextInt(tour.length - (breakPoint1 + 1));
 
         // inverse tour between breakpoints
         for (int i = 0; i <= (breakPoint2 - breakPoint1); i++) {

@@ -2,21 +2,14 @@ package tsp;
 
 import tsp.api.Problem;
 import tsp.api.Solution;
-
-import java.util.Random;
+import tsp.config.AlgorithmConfig;
 
 public class TSPSolver {
-    public static Random random = new Random();
-
-    public static boolean measureRuntime = true;
-    public static boolean randomSelection = false;
-    public static boolean cyclicCrossover = false;
-    public static boolean maximalPreservativeCrossover = false;
-    public static boolean limitIterationsActive = false;
-    public static long maxSolutions = 1;
 
     public static void main(String[] args) {
         try {
+            AlgorithmConfig.init();
+
             Problem problem;
             GA ga;
             Solution best;

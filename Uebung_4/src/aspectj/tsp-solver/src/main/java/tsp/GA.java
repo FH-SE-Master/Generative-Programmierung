@@ -3,6 +3,7 @@ package tsp;
 import tsp.api.Algorithm;
 import tsp.api.Problem;
 import tsp.api.Solution;
+import tsp.config.AlgorithmConfig;
 
 import java.util.Arrays;
 
@@ -42,7 +43,8 @@ public class GA implements Algorithm {
     public void setMutationRate(double mutationRate) { this.mutationRate = mutationRate; }
 
     public boolean isTerminated() {
-        return (currentIteration >= iterations); }
+        return (currentIteration >= iterations);
+    }
 
     public Solution execute() {
         initialize();
@@ -76,8 +78,8 @@ public class GA implements Algorithm {
         Solution[] selected = new Solution[parents];
 
         for (int i = 0; i < parents; i++) {
-            index1 = TSPSolver.random.nextInt(population.length);
-            index2 = TSPSolver.random.nextInt(population.length);
+            index1 = AlgorithmConfig.random.nextInt(population.length);
+            index2 = AlgorithmConfig.random.nextInt(population.length);
             if (population[index1].compareTo(population[index2]) < 0)
                 selected[i] = population[index1];
             else
@@ -99,7 +101,7 @@ public class GA implements Algorithm {
 
     private Solution createChild(Solution[] parents) {
         Solution child = parents[0].cross(parents[1]);
-        if (TSPSolver.random.nextDouble() < mutationRate)
+        if (AlgorithmConfig.random.nextDouble() < mutationRate)
             child.mutate();
         child.evaluate();
         return child;

@@ -16,6 +16,13 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
         </dependency>
+        <dependency>
+            <groupId>gp2.svg-generator</groupId>
+            <artifactId>gp2.svg-generator</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/gp2.svg-generator-0.0.1-SNAPSHOT.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>

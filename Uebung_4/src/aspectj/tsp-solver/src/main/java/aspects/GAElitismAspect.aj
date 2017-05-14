@@ -8,16 +8,17 @@ import tsp.api.Solution;
 import java.util.Arrays;
 
 /**
- * This aspects realizes the 1-elitism mechanism by replacing the worst child with the best parent of the former run.
+ * This aspects realizes the 1-elitism mechanism by replacing the worst child with the best parent of the former run.<br>
+ * This aspect is for the implemented {@link GA} algorithm.
  *
  * @author Thomas Herzog <t.herzog@curecomp.com>
  * @since 05/13/17
  */
-public privileged aspect ElitismAspect {
+public privileged aspect GAElitismAspect {
 
     private Solution bestParent;
 
-    private static final Logger log = LoggerFactory.getLogger(ElitismAspect.class);
+    private static final Logger log = LoggerFactory.getLogger(GAElitismAspect.class);
 
     Solution[] around(): call(Solution[] *.GA.createChildren(..))
             && withincode(* *.GA.iterate(..)) {

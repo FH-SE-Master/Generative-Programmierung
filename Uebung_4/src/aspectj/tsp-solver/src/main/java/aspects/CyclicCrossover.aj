@@ -2,11 +2,12 @@ package aspects;
 
 import tsp.*;
 import tsp.api.Solution;
+import tsp.config.AlgorithmConfig;
 
 public privileged aspect CyclicCrossover {
     Solution around(Solution solution,
                     Solution other):
-            if (TSPSolver.cyclicCrossover) &&
+            if (AspectjConfig.cyclicCrossover) &&
                     Pointcuts.cross(solution, other) {
         PathSolution child = new PathSolution(((PathSolution) solution).tsp);
         int[] tourA, tourB, newTour;
@@ -21,7 +22,7 @@ public privileged aspect CyclicCrossover {
         indexCopied = new boolean[length];
 
         // copy whole cycle to new tour
-        index = TSPSolver.random.nextInt(length);
+        index = AlgorithmConfig.random.nextInt(length);
         while (!indexCopied[index]) {
             newTour[index] = tourA[index];
             city = tourB[index];

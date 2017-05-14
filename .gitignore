@@ -17,7 +17,6 @@ Thumbs.db
 **/bin/
 */**/maven/*
 */**/.tern-project
-*/**/*.jar
 */**/*.js.map
 */**/*.d.ts
 !*/**/resources/ts/typings/**/*.d.ts

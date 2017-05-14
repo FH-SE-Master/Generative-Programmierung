@@ -2,7 +2,6 @@ package aspects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tsp.TSPSolver;
 
 /**
  * This aspects limits the evaluated solutions, where the next iteration is skipped if the former onw
@@ -17,15 +16,15 @@ public aspect LimitEvaluatedSolutions extends CountEvaluatedSolutionsAspect {
 
     private static final Logger log = LoggerFactory.getLogger(LimitEvaluatedSolutions.class);
 
-    before(): call(*.*.Solution *.GA.execute(..))
-            && !within(*.GA){
+    before(): call(*.*.Solution *.*.Algorithm.execute(..))
+            && !within(*.*.Algorithm+){
         skipped = false;
     }
 
-    void around(): if(tsp.TSPSolver.limitIterationsActive)
-            &&  call(* *.GA.iterate(..))
-            && withincode(* *.GA.execute(..)) {
-        if (solutionCount < TSPSolver.maxSolutions) {
+    void around(): if(AspectjConfig.limitIterationsActive)
+            &&  call(* *.*.Algorithm.iterate(..))
+            && withincode(* *.*.Algorithm.execute(..)) {
+        if (solutionCount < AspectjConfig.maxSolutions) {
             proceed();
         } else if (!skipped) {
             skipped = true;
@@ -33,8 +32,8 @@ public aspect LimitEvaluatedSolutions extends CountEvaluatedSolutionsAspect {
         }
     }
 
-    boolean around(): call(boolean *.GA.isTerminated(..))
-            && withincode(* *.GA.execute(..)) {
+    boolean around(): call(boolean *.*.Algorithm.isTerminated(..))
+            && withincode(* *.*.Algorithm.execute(..)) {
         return (skipped) ? skipped : proceed();
     }
 }

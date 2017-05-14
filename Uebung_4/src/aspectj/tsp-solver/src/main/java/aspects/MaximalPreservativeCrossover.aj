@@ -2,12 +2,13 @@ package aspects;
 
 import tsp.*;
 import tsp.api.Solution;
+import tsp.config.AlgorithmConfig;
 
 
 public privileged aspect MaximalPreservativeCrossover {
     Solution around(Solution solution,
                     Solution other):
-            if (TSPSolver.maximalPreservativeCrossover) &&
+            if (AspectjConfig.maximalPreservativeCrossover) &&
                     Pointcuts.cross(solution, other) {
         PathSolution child = new PathSolution(((PathSolution) solution).tsp);
         int[] tourA, tourB, newTour;
@@ -21,12 +22,12 @@ public privileged aspect MaximalPreservativeCrossover {
         cityCopied = new boolean[length];
 
         if (length >= 20) {  // length of subtour must be >= 10 and <= length / 2
-            breakPoint1 = TSPSolver.random.nextInt(length - 9);
-            subtourLength = 10 + TSPSolver.random.nextInt((Math.min(length / 2, length - breakPoint1) + 1) - 10);
+            breakPoint1 = AlgorithmConfig.random.nextInt(length - 9);
+            subtourLength = 10 + AlgorithmConfig.random.nextInt((Math.min(length / 2, length - breakPoint1) + 1) - 10);
             breakPoint2 = breakPoint1 + subtourLength - 1;
         } else {
-            breakPoint1 = TSPSolver.random.nextInt(length - 1);
-            breakPoint2 = breakPoint1 + 1 + TSPSolver.random.nextInt(length - (breakPoint1 + 1));
+            breakPoint1 = AlgorithmConfig.random.nextInt(length - 1);
+            breakPoint2 = breakPoint1 + 1 + AlgorithmConfig.random.nextInt(length - (breakPoint1 + 1));
         }
 
         // copy part of first route
