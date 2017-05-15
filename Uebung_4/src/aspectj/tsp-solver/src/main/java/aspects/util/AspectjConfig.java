@@ -1,4 +1,4 @@
-package aspects;
+package aspects.util;
 
 import java.util.Random;
 
@@ -14,6 +14,11 @@ public class AspectjConfig {
     public static boolean randomSelection = false;
     public static boolean cyclicCrossover = false;
     public static boolean maximalPreservativeCrossover = false;
+
+    public static boolean elismEnabled = false;
+    public static boolean countSolutionsEnabled = false;
     public static boolean limitIterationsActive = false;
+    public static boolean reportAlgorithmEnabled = false;
     public static long maxSolutions = 100;
+    public static String reportFileName = "tsp-solver";
 }

@@ -15,17 +15,20 @@ public abstract aspect CountEvaluatedSolutionsAspect {
 
     private static final Logger log = LoggerFactory.getLogger(CountEvaluatedSolutionsAspect.class);
 
-    before(): call(*.*.Solution *.*.Algorithm.execute(..))
+    before(): if(aspects.util.AspectjConfig.countSolutionsEnabled)
+            && call(*.*.Solution *.*.Algorithm.execute(..))
             && !within(*.*.Algorithm+){
         solutionCount = 0;
     }
 
-    after(): call(* *.*.Solution.evaluate(..))
+    after(): if(aspects.util.AspectjConfig.countSolutionsEnabled)
+            &&call(* *.*.Solution.evaluate(..))
             && within(*.*.Algorithm+) {
         solutionCount++;
     }
 
-    after(): call(*.*.Solution *.*.Algorithm.execute(..))
+    after(): if(aspects.util.AspectjConfig.countSolutionsEnabled)
+            && call(*.*.Solution *.*.Algorithm.execute(..))
             && !within(*.*.Algorithm+) {
         log.info("Evaluation count: '{}'", solutionCount);
         solutionCount = 0;

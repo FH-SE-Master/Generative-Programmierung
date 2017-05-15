@@ -1,12 +1,11 @@
 package aspects;
 
 import tsp.api.Solution;
-import tsp.TSPSolver;
 
 import java.util.Date;
 
 public aspect MeasureRuntime {
-    Solution around(): if(AspectjConfig.measureRuntime) &&
+    Solution around(): if(aspects.util.AspectjConfig.measureRuntime) &&
             Pointcuts.execute() {
         Solution best;
 

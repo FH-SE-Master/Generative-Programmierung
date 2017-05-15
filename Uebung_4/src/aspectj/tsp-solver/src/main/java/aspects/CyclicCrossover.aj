@@ -7,7 +7,7 @@ import tsp.config.AlgorithmConfig;
 public privileged aspect CyclicCrossover {
     Solution around(Solution solution,
                     Solution other):
-            if (AspectjConfig.cyclicCrossover) &&
+            if (aspects.util.AspectjConfig.cyclicCrossover) &&
                     Pointcuts.cross(solution, other) {
         PathSolution child = new PathSolution(((PathSolution) solution).tsp);
         int[] tourA, tourB, newTour;

@@ -1,5 +1,6 @@
 package aspects;
 
+import aspects.util.AspectjConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +22,7 @@ public aspect LimitEvaluatedSolutions extends CountEvaluatedSolutionsAspect {
         skipped = false;
     }
 
-    void around(): if(AspectjConfig.limitIterationsActive)
+    void around(): if(aspects.util.AspectjConfig.limitIterationsActive)
             &&  call(* *.*.Algorithm.iterate(..))
             && withincode(* *.*.Algorithm.execute(..)) {
         if (solutionCount < AspectjConfig.maxSolutions) {
@@ -32,7 +33,8 @@ public aspect LimitEvaluatedSolutions extends CountEvaluatedSolutionsAspect {
         }
     }
 
-    boolean around(): call(boolean *.*.Algorithm.isTerminated(..))
+    boolean around(): if(aspects.util.AspectjConfig.limitIterationsActive)
+            && call(boolean *.*.Algorithm.isTerminated(..))
             && withincode(* *.*.Algorithm.execute(..)) {
         return (skipped) ? skipped : proceed();
     }

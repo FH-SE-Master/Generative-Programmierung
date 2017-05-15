@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>gp2.svg-generator</groupId>
+  <artifactId>gp2.svg-generator</artifactId>
+  <versioning>
+    <versions>
+      <version>0.0.1-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20170515175836</lastUpdated>
+  </versioning>
+</metadata>

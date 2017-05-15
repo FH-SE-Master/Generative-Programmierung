@@ -20,7 +20,8 @@ public privileged aspect GAElitismAspect {
 
     private static final Logger log = LoggerFactory.getLogger(GAElitismAspect.class);
 
-    Solution[] around(): call(Solution[] *.GA.createChildren(..))
+    Solution[] around(): if(aspects.util.AspectjConfig.elismEnabled)
+            && call(Solution[] *.GA.createChildren(..))
             && withincode(* *.GA.iterate(..)) {
         bestParent = ((GA) thisJoinPoint.getTarget()).best;
 
@@ -28,7 +29,7 @@ public privileged aspect GAElitismAspect {
 
         if (bestParent != null) {
             Arrays.sort(children);
-            Solution worstChild = children[children.length - 1];
+            final Solution worstChild = children[children.length - 1];
             children[children.length - 1] = bestParent;
             log.info("Replaced worst child with best of former run. worstChild={} / bestParent={}", worstChild.getQuality(), bestParent.getQuality());
         }

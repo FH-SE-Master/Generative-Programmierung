@@ -8,7 +8,7 @@ import tsp.config.AlgorithmConfig;
 public privileged aspect MaximalPreservativeCrossover {
     Solution around(Solution solution,
                     Solution other):
-            if (AspectjConfig.maximalPreservativeCrossover) &&
+            if (aspects.util.AspectjConfig.maximalPreservativeCrossover) &&
                     Pointcuts.cross(solution, other) {
         PathSolution child = new PathSolution(((PathSolution) solution).tsp);
         int[] tourA, tourB, newTour;

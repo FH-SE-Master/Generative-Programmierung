@@ -1,5 +1,6 @@
 package aspects;
 
+import aspects.util.AspectjConfig;
 import aspects.util.ReportContext;
 import tsp.GA;
 import tsp.api.Solution;
@@ -14,55 +15,55 @@ import tsp.api.Solution;
 public privileged aspect GAProtocolProgressAspect {
 
     private ReportContext reportCtx;
-    private Solution best;
-    private Solution worst;
 
     // Init
-    before(): call(* *.*.Algorithm.execute(..))
+    before(): if(aspects.util.AspectjConfig.reportAlgorithmEnabled)
+            && call(* *.*.Algorithm.execute(..))
             && !within(*.*.Algorithm+) {
-        best = worst = null;
-        reportCtx = new ReportContext(768, 1204);
+        reportCtx = new ReportContext(AspectjConfig.reportFileName);
     }
 
     // Report and Cleanup
-    after(): call(* *.*.Algorithm.execute(..))
+    after(): if(aspects.util.AspectjConfig.reportAlgorithmEnabled)
+            && call(* *.*.Algorithm.execute(..))
             && !within(*.*.Algorithm+) {
-        reportCtx.reportToConsole();
-        reportCtx.reportToSvg();
-
-        best = worst = null;
+        reportCtx.generateConsoleReport();
+        reportCtx.generateSvgReport();
         reportCtx = null;
     }
 
     // First population
-    after(): call(* *.*.Algorithm.initialize(..))
+    after(): if(aspects.util.AspectjConfig.reportAlgorithmEnabled)
+            && call(* *.*.Algorithm.initialize(..))
             && withincode(* *.*.Algorithm.execute(..)) {
         final GA target = ((GA) thisJoinPoint.getTarget());
-        handleBestAndWorstAndAverage(target.best, target.population);
+        handleBestAndWorstAndAverage(target.population);
     }
 
     // All other populations
-    after(): call(* *.*.Algorithm.iterate(..))
+    after(): if(aspects.util.AspectjConfig.reportAlgorithmEnabled)
+            && call(* *.*.Algorithm.iterate(..))
             && withincode(* *.*.Algorithm.execute(..)) {
         final GA target = ((GA) thisJoinPoint.getTarget());
-        handleBestAndWorstAndAverage(target.best, target.population);
+        handleBestAndWorstAndAverage(target.population);
     }
 
-    private void handleBestAndWorstAndAverage(final Solution newBest,
-                                              final Solution[] population) {
-        // Get new best and worst of population
-        best = ((best == null) || (best.compareTo(newBest) > 0)) ? newBest : best;
-        final Solution newWorst = population[population.length - 1];
-        worst = ((worst == null) || (worst.compareTo(newWorst) < 0)) ? newWorst : worst;
-
+    private void handleBestAndWorstAndAverage(final Solution[] population) {
         // calculate average of population
         double average = 0.0;
-        for (final Solution solution : population) {
-            average += solution.getQuality();
+        double best = 0.0;
+        double worst = 0.0;
+
+        if (population.length > 0) {
+            for (final Solution solution : population) {
+                average += solution.getQuality();
+            }
+            average = (average / population.length);
+            best = population[0].getQuality();
+            worst = population[population.length - 1].getQuality();
         }
-        average = (average / population.length);
 
         // Set calculated run results on report context
-        reportCtx.add(best.getQuality(), worst.getQuality(), average);
+        reportCtx.add(best, worst, average);
     }
 }
