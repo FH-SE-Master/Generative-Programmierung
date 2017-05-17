@@ -9,35 +9,84 @@ import org.slf4j.LoggerFactory;
  */
 public class Main {
 
-    private static final Logger log = LoggerFactory.getLogger(Main.class);
-    public static boolean ActivateLogging = false;
-    public static boolean ActivateCaching = false;
+    public static boolean LoggingEnabled = false;
+    public static boolean CachingEnabled = false;
+    public static boolean RuntimeMeasurementEnabled = false;
+    public static final String LOGGER_NAME = "aspect-caching";
+
+    private static final Logger log = LoggerFactory.getLogger(LOGGER_NAME);
 
     public static void main(String args[]) {
+        final int n = 45;
+        final int m = 10;
         log.info("-------------------------------------------------------------------");
-        log.info("Start");
-        log.info("Starting: cachingEnabled={} / logRecursiveCallsEnabled={}", ActivateCaching, ActivateLogging);
-        log.info("BinomialCoefficient.calculate(10, 7): {}", BinomialCoefficient.calculate(10, 7));
-        log.info("BinomialCoefficient.calculate(45, 10): {}", BinomialCoefficient.calculate(45, 10));
-        log.info("End");
+        log.info("testAllDisabled()");
         log.info("-------------------------------------------------------------------");
+        testAllDisabled(n, m);
+        log.info("-------------------------------------------------------------------");
+        log.info("");
+        log.info("-------------------------------------------------------------------");
+        log.info("testRuntimeMeasurementEnabled()");
+        log.info("-------------------------------------------------------------------");
+        testRuntimeMeasurementEnabled(n, m);
+        log.info("-------------------------------------------------------------------");
+        log.info("");
+        log.info("-------------------------------------------------------------------");
+        log.info("");
+        log.info("testRuntimeMeasurementAndLoggingEnabled()");
+        log.info("-------------------------------------------------------------------");
+        testRuntimeMeasurementAndLoggingEnabled(n, m);
+        log.info("-------------------------------------------------------------------");
+        log.info("");
+        log.info("-------------------------------------------------------------------");
+        log.info("");
+        log.info("testAllEnabled()");
+        log.info("-------------------------------------------------------------------");
+        testAllEnabled(n, m);
+        log.info("-------------------------------------------------------------------");
+    }
 
-        ActivateLogging = true;
-        log.info("-------------------------------------------------------------------");
-        log.info("Start");
-        log.info("Starting: cachingEnabled={} / logRecursiveCallsEnabled={}", ActivateCaching, ActivateLogging);
-        log.info("BinomialCoefficient.calculate(10, 7): {}", BinomialCoefficient.calculate(10, 7));
-        log.info("BinomialCoefficient.calculate(45, 10): {}", BinomialCoefficient.calculate(45, 10));
-        log.info("End");
-        log.info("-------------------------------------------------------------------");
+    private static void testAllDisabled(final int n,
+                                        final int m) {
+        LoggingEnabled = false;
+        CachingEnabled = false;
+        RuntimeMeasurementEnabled = false;
 
-        ActivateCaching = true;
-        log.info("-------------------------------------------------------------------");
-        log.info("Start");
-        log.info("Starting: cachingEnabled={} / logRecursiveCallsEnabled={}", ActivateCaching, ActivateLogging);
-        log.info("BinomialCoefficient.calculate(10, 7): {}", BinomialCoefficient.calculate(10, 7));
-        log.info("BinomialCoefficient.calculate(45, 10): {}", BinomialCoefficient.calculate(45, 10));
-        log.info("End");
-        log.info("-------------------------------------------------------------------");
+        log.info("Starting: measurement={} / cachingEnabled={} / logRecursiveCallsEnabled={}", RuntimeMeasurementEnabled, CachingEnabled, LoggingEnabled);
+        log.info("          n={} / m={}", n,m);
+        log.info("BinomialCoefficient.calculate(45, 10): {}", BinomialCoefficient.calculate(n, m));
+    }
+
+    private static void testRuntimeMeasurementEnabled(final int n,
+                                                      final int m) {
+        LoggingEnabled = false;
+        CachingEnabled = false;
+        RuntimeMeasurementEnabled = true;
+
+        log.info("Starting: measurement={} / cachingEnabled={} / logRecursiveCallsEnabled={}", RuntimeMeasurementEnabled, CachingEnabled, LoggingEnabled);
+        log.info("          n={} / m={}", n,m);
+        log.info("BinomialCoefficient.calculate(45, 10): {}", BinomialCoefficient.calculate(n, m));
+    }
+
+    private static void testRuntimeMeasurementAndLoggingEnabled(final int n,
+                                                                final int m) {
+        CachingEnabled = false;
+        LoggingEnabled = true;
+        RuntimeMeasurementEnabled = true;
+
+        log.info("Starting: measurement={} / cachingEnabled={} / logRecursiveCallsEnabled={}", RuntimeMeasurementEnabled, CachingEnabled, LoggingEnabled);
+        log.info("          n={} / m={}", n,m);
+        log.info("BinomialCoefficient.calculate(45, 10): {}", BinomialCoefficient.calculate(n, m));
+    }
+
+    private static void testAllEnabled(final int n,
+                                       final int m) {
+        LoggingEnabled = true;
+        CachingEnabled = true;
+        RuntimeMeasurementEnabled = true;
+
+        log.info("Starting: measurement={} / cachingEnabled={} / logRecursiveCallsEnabled={}", RuntimeMeasurementEnabled, CachingEnabled, LoggingEnabled);
+        log.info("          n={} / m={}", n,m);
+        log.info("BinomialCoefficient.calculate(45, 10): {}", BinomialCoefficient.calculate(n, m));
     }
 }

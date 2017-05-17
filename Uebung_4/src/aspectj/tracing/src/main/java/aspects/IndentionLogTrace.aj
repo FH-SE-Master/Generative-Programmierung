@@ -13,7 +13,8 @@ public aspect IndentionLogTrace {
     private static final int MAX_INDENT_IDX = INDENT.length() - 1;
 
     pointcut logCall(String msg):
-            call(void org.slf4j.Logger.* (String, ..)) && !within(IndentionLogTrace)
+            if(application.Main.logIndentionEnabled)
+                    && call(void org.slf4j.Logger.* (String, ..)) && !within(IndentionLogTrace)
                     && args(msg, ..)
                     && within(TracingAspect);
 

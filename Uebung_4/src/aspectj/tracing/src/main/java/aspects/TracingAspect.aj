@@ -1,5 +1,6 @@
 package aspects;
 
+import application.Main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,13 +12,15 @@ import org.slf4j.LoggerFactory;
  */
 public aspect TracingAspect {
 
-    private static Logger log = LoggerFactory.getLogger(TracingAspect.class);
+    private static Logger log = LoggerFactory.getLogger(Main.LOGGER_NAME);
 
     pointcut methodCall():
-            call(* application.*.*(..));
+            call(* application.*.*(..))
+                    && !within(application.Main);
 
     pointcut fieldAccess():
-            (get(* application..*.*) || set(* application..*.*));
+            (get(* application..*.*) || set(* application..*.*))
+                    && !within(application.Main);
 
     pointcut newObject():
             call(application.*.new(..));
@@ -33,9 +36,9 @@ public aspect TracingAspect {
     }
 
     after() throwing(Throwable t): methodCall(){
-        log.info("After method '{}#{}' / exception={} / message={}", thisJoinPointStaticPart.getSignature().getDeclaringType().getSimpleName(),
+        log.info("After method '{}#{}' / {}#'{}'", thisJoinPointStaticPart.getSignature().getDeclaringType().getSimpleName(),
                  thisJoinPointStaticPart.getSignature().getName(),
-                 t.getClass().getName(),
+                 t.getClass().getSimpleName(),
                  t.getMessage());
     }
 
