@@ -180,6 +180,12 @@ public class ReportContext {
                                                1.0));
                 diagram.addShape(new LineShape(diagram,
                                                lineGenerator,
+                                               new Coordinate(widthMargin, yPos),
+                                               new Coordinate(width - widthMargin, yPos),
+                                               Color.DARK_GRAY,
+                                               0.1));
+                diagram.addShape(new LineShape(diagram,
+                                               lineGenerator,
                                                new Coordinate(xPos, (height - heightMargin - 5)),
                                                new Coordinate(xPos, (height - heightMargin + 5)),
                                                Color.BLACK,
