@@ -1,7 +1,5 @@
 package aspects.util;
 
-import java.util.Random;
-
 /**
  * This class holds the global configuration for the aspects.
  *
@@ -15,7 +13,7 @@ public class AspectjConfig {
     public static boolean cyclicCrossover = false;
     public static boolean maximalPreservativeCrossover = false;
 
-    public static boolean elismEnabled = false;
+    public static boolean elitismEnabled = false;
     public static boolean countSolutionsEnabled = false;
     public static boolean limitIterationsActive = false;
     public static boolean reportAlgorithmEnabled = false;

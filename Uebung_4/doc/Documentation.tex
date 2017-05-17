@@ -96,7 +96,7 @@ Für das Testen des \emph{tracing} \emph{application.PositiveValueStore} impleme
 Der Aspekt \emph{TracingAspect} \emph{traced} alle Konstruktoraufrufe, Methodenaufrufe und Parameterzugriffe von Klassen bevor und nachdem Zugriff. Als \emph{Loggingframework} wird \emph{slf4j} verwendet. Alle Zugriffe werden in die Logdatei \emph{aspectj/logs/tracing-logfile.txt} geschrieben.
 \newline
 \newline
-Der Aspekt \emph{IndentionLogTrace} realisiert das Einrücken der logs um die Verschachtelung der Methodenaufrufe zu verdeutlichen. Es wird ein \emph{Pointcut} auf alle Methoden der Schnittstelle \emph{org.slf4j.Logger} definiert, und ein \emph{Around JoinPoint} implementiert der den übergebenen Text formatiert, je nachdem ob eine erwarteter Zeichenkette (\emph{Before method, After method, Before constructor, After constructor}) am Anfang des Textes gefunden wurde. Wird eine solche Zeichenkette am Anfang des Textes gefunden wird bei \emph{Before ...} eine definierte Anzahl von Leerzeichen am Anfang des Textes eingefügt und beim Finden des Textes \emph{After ...} einmalig die definierte Anzahl von Leerzeichen am Anfang des Textes entfernt.
+Der Aspekt \emph{IndentionLogTrace} realisiert das Einrücken der logs um die Verschachtelung der Methodenaufrufe zu verdeutlichen. Es wird ein \emph{Pointcut} auf alle Methoden der Schnittstelle \emph{org.slf4j.Logger} definiert, und ein \emph{Around Advice} implementiert der den übergebenen Text formatiert, je nachdem ob eine erwarteter Zeichenkette (\emph{Before method, After method, Before constructor, After constructor}) am Anfang des Textes gefunden wurde. Wird eine solche Zeichenkette am Anfang des Textes gefunden wird bei \emph{Before ...} eine definierte Anzahl von Leerzeichen am Anfang des Textes eingefügt und beim Finden des Textes \emph{After ...} einmalig die definierte Anzahl von Leerzeichen am Anfang des Textes entfernt.
 
 \subsection{Quelltexte}
 Folgender Abschnitt enthält die implementierten Klassen, Aspekte und das implementierte Testprogramm.
@@ -149,10 +149,10 @@ Dieser Abschnitt beschäftigt sich mit der Dokumentation der Aufgabenstellung \e
 Der Algorithmus für die Berechnung des Binominialkoeffizienten wird in der Klasse \emph{BinomialCoefficient} implementiert.
 \newline
 \newline
-Es wird ein abstrakter Aspekt \emph{AbstractAspect} implementiert, der die \emph{Pointcut} \emph{firstCall}, \emph{allCallsWithArgs} und \emph{innerCalls} definiert, sowie \emph{JoinPoint} für \emph{firstCall}, die abstrakte Methoden aufrufen. Dies soll so strukturiert werden, da alle Aspekte auf den ersten Aufruf der Berechnungsmethode reagieren sollen, um ihre Zustände zu initialisieren und zurückzusetzen. Dazu werden zwei Methoden \emph{beforeFristCall} und \emph{afterFirstCall} zur Verfügung gestellt, die von den konkreten Aspekten überschrieben werden können. Die Methoden \emph{beforeFristCall} und \emph{afterFirstCall} sind mit leeren Methodenrumpf in der Klasse \emph{AbstractAspect} implementiert. 
+Es wird ein abstrakter Aspekt \emph{AbstractAspect} implementiert, der die \emph{Pointcut} \emph{firstCall}, \emph{allCallsWithArgs} und \emph{innerCalls} definiert, sowie \emph{Advices} für \emph{firstCall}, die abstrakte Methoden aufrufen. Dies soll so strukturiert werden, da alle Aspekte auf den ersten Aufruf der Berechnungsmethode reagieren sollen, um ihre Zustände zu initialisieren und zurückzusetzen. Dazu werden zwei Methoden \emph{beforeFristCall} und \emph{afterFirstCall} zur Verfügung gestellt, die von den konkreten Aspekten überschrieben werden können. Die Methoden \emph{beforeFristCall} und \emph{afterFirstCall} sind mit leeren Methodenrumpf in der Klasse \emph{AbstractAspect} implementiert. 
 \newline
 \newline
-Es wird der Aspekt \emph{LogRecursiveCallsAspect} implementiert, der einen \emph{JoinPoint} definiert, der nur ausgeführt wird wenn das \emph{Logging} aktiviert wurde und die Bedingungen definiert im \emph{PointCut innerCalls} erfüllt sind. Beim ersten Aufruf der Berechnungsmethode wird vor dem Aufruf der Methode der Zähler initialisiert und nach dem Aufruf das Resultat über den \emph{Logger} in die \emph{Logs} geschrieben und der Zähler wieder zurückgesetzt.
+Es wird der Aspekt \emph{LogRecursiveCallsAspect} implementiert, der einen \emph{Advice} definiert, der nur ausgeführt wird wenn das \emph{Logging} aktiviert wurde und die Bedingungen definiert im \emph{PointCut innerCalls} erfüllt sind. Beim ersten Aufruf der Berechnungsmethode wird vor dem Aufruf der Methode der Zähler initialisiert und nach dem Aufruf das Resultat über den \emph{Logger} in die \emph{Logs} geschrieben und der Zähler wieder zurückgesetzt.
 \newline
 \newline
 Es wird der Aspekt \emph{BinomialCacheAspect} implementiert, der die Berechnungsergebnisse zwischenspeichert um sie bei einem erneuten Auftreten der Variablen \emph{n, m} zurückliefert und so einen weiteren rekursiven Abstiegt verhindert. Es wird die Klasse \emph{BinomMapKey} implementiert, die als Schlüssel in einer \emph{java.util.HashMap} fungiert, die wiederum die berechneten Werte speichert. Das Zwischenspeichern wird nur dann durchgeführt, wenn \emph{Main.CachingEnabled} auf den Wert \emph{true} gesetzt ist.
@@ -220,7 +220,20 @@ Während der Tests hat sich gezeigt, das mit aktiviertem \emph{Caching} sich das
 \ \newpage
 
 \section{Asepct-Oriented TSP Solver}
+Dieser Abschnitt beschäftigt sich mit der Dokumentation der Aufgabenstellung \emph{Asepct-Oriented TSP Solver}.
 \subsection{Lösungsidee}
+Die Projektstruktur wurde dahingehend verändert, dass die Schnittstellen und die \emph{Exceptions} in eigene Pakete ausgelagert wurden. Die Konfiguration der Aspekte wurde in der Klasse \emph{util.AspectjConfig} zusammengeführt, die jetzt alle booleschen Variablen enthält die von den Aspekten verwendet werden, um zu entscheiden, ob sie aktiviert sind oder nicht. Die nötigen Änderungen in den bestehenden Aspekten wurden vorgenommen, damit die Aspekte mit der geänderten Projektkonfiguration arbeiten können.
+\newline
+\newline
+Es wird der Aspekt \emph{CountEvaluatedSolutionsAspect} implementiert, der die Anzahl der evaluierten Lösungen zählt. Es wird ein \emph{PointCut executeCall} definiert, auf den die beiden \emph{before advice, after advivce} hängen, wobei der \emph{before advice} vor dem Methodenaufruf der Methode \emph{Algorithm.execute} den Zähler initialisiert der \emph{after advice} nach dem Methodenaufruf der Methode \emph{Algorithm.execute} das Resultat über einen \emph{Logger} in die \emph{Logs} schreibt und den Zähler zurücksetzt. Ein weiterer \emph{after advice} erhöht den Zähler nach dem Methodenaufruf der Methode \emph{Solution.evaluate}. Dieser Aspekt arbeitet nur gegen die Schnittstellen \emph{Algorithm} und \emph{Solution} und ist daher auf alle Implementierungen dieser Schnittstellen anwendbar. Dieser Aspekt greift nur wenn die Variable \emph{AspectjConfig.countSolutionsEnabled} auf den Wert \emph{true} gesetzt ist.
+\newline
+\newline
+Es wird der Aspekt \emph{GAElitismAspect} implementiert, der die schlechteste Lösung der neu erstellten Kinder durch die beste Lösung des vorherigen Durchlaufs ersetzt. Es wird ein \emph{around advice} für die Methode \emph{GA.createChildren} implementiert, der das zurückgelieferte \emph{Array} der Kinder verändert. Wird ein Kind ausgetauscht so wird eine Meldung über einen \emph{Logger} in die \emph{Logs} geschrieben. Dieser Aspekt ist abhängig von der Klasse \emph{GA}, da die Schnittstelle \emph{Algorithm} die Methode \emph{createChildren} nicht definiert.
+\newline
+\newline
+
+ 
+
 \subsection{Quelltexte}
 \subsection{Tests}
 

@@ -15,9 +15,17 @@ public abstract aspect CountEvaluatedSolutionsAspect {
 
     private static final Logger log = LoggerFactory.getLogger(CountEvaluatedSolutionsAspect.class);
 
-    before(): if(aspects.util.AspectjConfig.countSolutionsEnabled)
-            && call(*.*.Solution *.*.Algorithm.execute(..))
-            && !within(*.*.Algorithm+){
+    pointcut executeCall():
+            if(aspects.util.AspectjConfig.countSolutionsEnabled)
+                    && call(* *.*.Algorithm.execute(..))
+                    && !within(*.*.Algorithm+);
+
+    before(): executeCall() {
+        solutionCount = 0;
+    }
+
+    after(): executeCall() {
+        log.info("Evaluation count: '{}'", solutionCount);
         solutionCount = 0;
     }
 
@@ -25,12 +33,5 @@ public abstract aspect CountEvaluatedSolutionsAspect {
             &&call(* *.*.Solution.evaluate(..))
             && within(*.*.Algorithm+) {
         solutionCount++;
-    }
-
-    after(): if(aspects.util.AspectjConfig.countSolutionsEnabled)
-            && call(*.*.Solution *.*.Algorithm.execute(..))
-            && !within(*.*.Algorithm+) {
-        log.info("Evaluation count: '{}'", solutionCount);
-        solutionCount = 0;
     }
 }

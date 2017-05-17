@@ -16,17 +16,18 @@ public privileged aspect GAProtocolProgressAspect {
 
     private ReportContext reportCtx;
 
+    pointcut firstExecuteCall():
+            if(aspects.util.AspectjConfig.reportAlgorithmEnabled)
+                    && call(* *.*.Algorithm.execute(..))
+                    && !within(*.*.Algorithm+);
+
     // Init
-    before(): if(aspects.util.AspectjConfig.reportAlgorithmEnabled)
-            && call(* *.*.Algorithm.execute(..))
-            && !within(*.*.Algorithm+) {
+    before(): firstExecuteCall() {
         reportCtx = new ReportContext(AspectjConfig.reportFileName);
     }
 
     // Report and Cleanup
-    after(): if(aspects.util.AspectjConfig.reportAlgorithmEnabled)
-            && call(* *.*.Algorithm.execute(..))
-            && !within(*.*.Algorithm+) {
+    after(): firstExecuteCall() {
         reportCtx.generateConsoleReport();
         reportCtx.generateSvgReport();
         reportCtx = null;

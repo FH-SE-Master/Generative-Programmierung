@@ -20,7 +20,7 @@ public privileged aspect GAElitismAspect {
 
     private static final Logger log = LoggerFactory.getLogger(GAElitismAspect.class);
 
-    Solution[] around(): if(aspects.util.AspectjConfig.elismEnabled)
+    Solution[] around(): if(aspects.util.AspectjConfig.elitismEnabled)
             && call(Solution[] *.GA.createChildren(..))
             && withincode(* *.GA.iterate(..)) {
         bestParent = ((GA) thisJoinPoint.getTarget()).best;

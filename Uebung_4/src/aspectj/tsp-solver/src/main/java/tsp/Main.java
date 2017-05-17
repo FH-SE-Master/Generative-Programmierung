@@ -62,7 +62,7 @@ public class Main {
 
         AspectjConfig.countSolutionsEnabled = false;
         AspectjConfig.cyclicCrossover = false;
-        AspectjConfig.elismEnabled = false;
+        AspectjConfig.elitismEnabled = false;
         AspectjConfig.maximalPreservativeCrossover = false;
         AspectjConfig.reportAlgorithmEnabled = false;
         AspectjConfig.measureRuntime = false;
@@ -78,7 +78,7 @@ public class Main {
         log.info("iterations={} / populationSize={}", iterations, populationSize);
 
         AspectjConfig.cyclicCrossover = false;
-        AspectjConfig.elismEnabled = false;
+        AspectjConfig.elitismEnabled = false;
         AspectjConfig.maximalPreservativeCrossover = false;
         AspectjConfig.reportAlgorithmEnabled = false;
         AspectjConfig.measureRuntime = false;
@@ -96,7 +96,7 @@ public class Main {
 
 
         AspectjConfig.cyclicCrossover = false;
-        AspectjConfig.elismEnabled = false;
+        AspectjConfig.elitismEnabled = false;
         AspectjConfig.maximalPreservativeCrossover = false;
         AspectjConfig.reportAlgorithmEnabled = false;
         AspectjConfig.measureRuntime = false;
@@ -127,7 +127,7 @@ public class Main {
         AspectjConfig.randomSelection = false;
         AspectjConfig.limitIterationsActive = false;
 
-        AspectjConfig.elismEnabled = true;
+        AspectjConfig.elitismEnabled = true;
         AspectjConfig.countSolutionsEnabled = true;
 
         createAlgorithm(iterations, populationSize).execute();
@@ -146,7 +146,7 @@ public class Main {
         AspectjConfig.limitIterationsActive = false;
         AspectjConfig.countSolutionsEnabled = false;
 
-        AspectjConfig.elismEnabled = true;
+        AspectjConfig.elitismEnabled = true;
         AspectjConfig.reportAlgorithmEnabled = true;
         AspectjConfig.reportFileName = "tsp-solver-elitism";
 
@@ -164,7 +164,7 @@ public class Main {
         AspectjConfig.measureRuntime = false;
         AspectjConfig.randomSelection = false;
         AspectjConfig.limitIterationsActive = false;
-        AspectjConfig.elismEnabled = false;
+        AspectjConfig.elitismEnabled = false;
         AspectjConfig.countSolutionsEnabled = false;
 
         AspectjConfig.reportAlgorithmEnabled = true;
@@ -183,7 +183,7 @@ public class Main {
         AspectjConfig.measureRuntime = false;
         AspectjConfig.randomSelection = false;
         AspectjConfig.limitIterationsActive = false;
-        AspectjConfig.elismEnabled = false;
+        AspectjConfig.elitismEnabled = false;
         AspectjConfig.countSolutionsEnabled = false;
         AspectjConfig.reportAlgorithmEnabled = true;
 
