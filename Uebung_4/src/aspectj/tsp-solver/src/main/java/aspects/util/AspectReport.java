@@ -59,7 +59,8 @@ public class AspectReport {
     private final Color bestStrokeColor;
     private final Color worstStrokeColor;
     private final Color avgStrokeColor;
-    private final String filename;
+    private final String chartFilename;
+    private final String pathFilename;
     private List<YValue> yValues;
 
     private static final Logger log = LoggerFactory.getLogger(AspectjConfig.LOGGER_NAME);
@@ -68,14 +69,16 @@ public class AspectReport {
     private static final Color DEFAULT_WORST_COLOR = Color.RED;
     private static final Color DEFAULT_AVG_COLOR = Color.ORANGE;
 
-    public AspectReport(final String filename) {
+    public AspectReport(final String chartFilename,
+                        final String pathFilename) {
         this.height = 700;
         this.width = 900;
         stokeWidth = DEFAULT_STROKE_WIDTH;
         bestStrokeColor = DEFAULT_BEST_COLOR;
         worstStrokeColor = DEFAULT_WORST_COLOR;
         avgStrokeColor = DEFAULT_AVG_COLOR;
-        this.filename = filename;
+        this.chartFilename = chartFilename;
+        this.pathFilename = pathFilename;
 
         reset();
     }
@@ -107,7 +110,7 @@ public class AspectReport {
     /**
      * Generates the svg reports.
      */
-    public void generateSvgReport() {
+    public void generateChartSvgReport() {
         try {
             // get max value for normalization over all values of all captured types
             final Set<Double> allValues = new HashSet<Double>() {{
@@ -222,15 +225,113 @@ public class AspectReport {
             }
 
             // Generate svg files
-            String svgContent = diagramGenerator.generate(diagram);
-            File svgFile = File.createTempFile(filename, ".svg");
-            try (final Writer fileWriter = new FileWriter(svgFile)) {
-                fileWriter.write(svgContent);
-            }
-            log.info("SVG file location: {}", svgFile.getAbsolutePath());
+            generateFile(chartFilename, diagram, diagramGenerator);
         } catch (Throwable e) {
             log.error("Svg report could not be generated", e);
         }
+    }
+
+
+    /**
+     * Generates the svg reports.
+     */
+    public void generatePathSvgReport() {
+        try {
+            // Lower bound is 0.0 if value not smaller than 0
+            double minValue = yValues.stream().map(YValue::getBest).min(Double::compare).orElse(0.0);
+
+            // get maximum value which will be the upper bound
+            double maxValue = yValues.stream().map(YValue::getBest).max(Double::compare).orElse(minValue);
+
+            // freemarker generators
+            final FreemarkerGenerators.DiagramGenerator diagramGenerator = new FreemarkerGenerators.DiagramGenerator();
+            final FreemarkerGenerators.LineGenerator lineGenerator = new FreemarkerGenerators.LineGenerator();
+            final FreemarkerGenerators.TextGenerator textGenerator = new FreemarkerGenerators.TextGenerator();
+            final Diagram diagram = new Diagram(diagramGenerator, width, height, 0.0, (double) width, 0.0, (double) height, false);
+
+            // chart margins and dimensions
+            final double widthMargin = 50.0;
+            final double heightMargin = 25.0;
+            final double chartWidth = width - (widthMargin * 2);
+            final double chartHeight = height - (heightMargin * 2);
+
+            // Coordinate lines
+            final LineShape xAxis = new LineShape(diagram, lineGenerator, new Coordinate(0.0, (height - heightMargin)), new Coordinate(width - widthMargin, (height - heightMargin)), Color.BLACK, 1.0);
+            final LineShape yAxis = new LineShape(diagram, lineGenerator, new Coordinate(widthMargin, height), new Coordinate(widthMargin, heightMargin), Color.BLACK, 1.0);
+            diagram.addShape(xAxis);
+            diagram.addShape(yAxis);
+
+            // Add xAxis marker
+            final int markerStep = 25;
+            boolean flip = false;
+            for (int i = 1; i <= markerStep; i++) {
+                // calculate x and y positions for markers
+                final double xPos = widthMargin + ((chartWidth / markerStep) * i);
+                final double yPos = (height - heightMargin) - ((chartHeight / markerStep) * i);
+
+                // Calculate marker values
+                final String markerValue = (i == markerStep)
+                        ? BigDecimal.valueOf(maxValue).setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()
+                        : BigDecimal.valueOf(maxValue)
+                                    .setScale(2, BigDecimal.ROUND_DOWN)
+                                    .divide(BigDecimal.valueOf(markerStep), BigDecimal.ROUND_HALF_EVEN)
+                                    .multiply(BigDecimal.valueOf(i))
+                                    .toString();
+
+                // Add axis markers
+                diagram.addShape(new LineShape(diagram,
+                                               lineGenerator,
+                                               new Coordinate(widthMargin - 5, yPos),
+                                               new Coordinate(widthMargin + 5, yPos),
+                                               Color.BLACK,
+                                               1.0));
+                diagram.addShape(new LineShape(diagram,
+                                               lineGenerator,
+                                               new Coordinate(xPos, (height - heightMargin - 5)),
+                                               new Coordinate(xPos, (height - heightMargin + 5)),
+                                               Color.BLACK,
+                                               1.0));
+                diagram.addShape(new LineShape(diagram,
+                                               lineGenerator,
+                                               new Coordinate(widthMargin, yPos),
+                                               new Coordinate(width - widthMargin, yPos),
+                                               Color.DARK_GRAY,
+                                               0.1));
+
+                // Adda xis marker texts
+                final int markerValueYOffset = ((i % 2) != 0) ? 0 : 9;
+                diagram.addShape(new TextShape(diagram, textGenerator, new Coordinate(xPos - 15, height - heightMargin + 15 + markerValueYOffset), Color.BLACK, null, markerValue, "Arial", 10.0, 0.25));
+                diagram.addShape(new TextShape(diagram, textGenerator, new Coordinate(5, yPos - 5), Color.BLACK, null, markerValue, "Arial", 8.5, 0.25));
+            }
+
+            // remember origin for next value
+            Coordinate origBest = null;
+            for (final YValue value : yValues) {
+                final double yBest = normalizeValue(minValue, maxValue, 0.0, chartHeight, value.best);
+                final double xBest = normalizeValue(minValue, maxValue, 0.0, chartWidth, value.best);
+
+                // coordinates with inverted y position
+                final Coordinate destBest = new Coordinate(xBest + widthMargin, (chartHeight - yBest + heightMargin));
+                diagram.addShape(new LineShape(diagram, lineGenerator, (origBest != null) ? origBest : destBest, destBest, bestStrokeColor, 0.1));
+
+                origBest = destBest;
+            }
+            generateFile(pathFilename, diagram, diagramGenerator);
+        } catch (Throwable e) {
+            log.error("Svg report could not be generated", e);
+        }
+    }
+
+    private void generateFile(final String filename,
+                              final Diagram diagram,
+                              final FreemarkerGenerators.DiagramGenerator diagramGenerator) throws Exception {
+        // Generate svg files
+        String svgContent = diagramGenerator.generate(diagram);
+        File svgFile = File.createTempFile(filename, ".svg");
+        try (final Writer fileWriter = new FileWriter(svgFile)) {
+            fileWriter.write(svgContent);
+        }
+        log.info("SVG file location: {}", svgFile.getAbsolutePath());
     }
 
     /**

@@ -23,13 +23,15 @@ public privileged aspect GAProtocolProgressAspect {
 
     // Init
     before(): firstExecuteCall() {
-        report = new AspectReport(AspectjConfig.reportFileName);
+        report = new AspectReport(AspectjConfig.reportFileName + "-chart",
+                                  AspectjConfig.reportFileName + "-path");
     }
 
     // Report and Cleanup
     after(): firstExecuteCall() {
         report.generateConsoleReport();
-        report.generateSvgReport();
+        report.generateChartSvgReport();
+        report.generatePathSvgReport();
         report = null;
     }
 
