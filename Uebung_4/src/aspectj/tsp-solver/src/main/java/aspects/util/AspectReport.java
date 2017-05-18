@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @author Thomas Herzog <t.herzog@curecomp.com>
  * @since 05/14/17
  */
-public class ReportContext {
+public class AspectReport {
 
     private static final class YValue {
         public final double best;
@@ -62,13 +62,13 @@ public class ReportContext {
     private final String filename;
     private List<YValue> yValues;
 
-    private static final Logger log = LoggerFactory.getLogger(ReportContext.class);
+    private static final Logger log = LoggerFactory.getLogger(AspectjConfig.LOGGER_NAME);
     private static final double DEFAULT_STROKE_WIDTH = 0.8;
     private static final Color DEFAULT_BEST_COLOR = Color.GREEN;
     private static final Color DEFAULT_WORST_COLOR = Color.RED;
     private static final Color DEFAULT_AVG_COLOR = Color.ORANGE;
 
-    public ReportContext(final String filename) {
+    public AspectReport(final String filename) {
         this.height = 700;
         this.width = 900;
         stokeWidth = DEFAULT_STROKE_WIDTH;

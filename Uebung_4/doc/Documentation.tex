@@ -134,7 +134,7 @@ Folgender Abschnitt enthält die Tests der Aufgabenstellung in Form der generier
 	\label{fig:tracing-non-indention-log}
 \end{figure}
 \ \newpage
-\begin{figure}[h]
+\begin{figure}
 	\centering
 	\includegraphics[scale=0.5]{\imageDir/tracing-indention-log.JPG}
 	\caption{Eingerückter \emph{log}}
@@ -228,13 +228,111 @@ Die Projektstruktur wurde dahingehend verändert, dass die Schnittstellen und di
 Es wird der Aspekt \emph{CountEvaluatedSolutionsAspect} implementiert, der die Anzahl der evaluierten Lösungen zählt. Es wird ein \emph{PointCut executeCall} definiert, auf den die beiden \emph{before advice, after advivce} hängen, wobei der \emph{before advice} vor dem Methodenaufruf der Methode \emph{Algorithm.execute} den Zähler initialisiert der \emph{after advice} nach dem Methodenaufruf der Methode \emph{Algorithm.execute} das Resultat über einen \emph{Logger} in die \emph{Logs} schreibt und den Zähler zurücksetzt. Ein weiterer \emph{after advice} erhöht den Zähler nach dem Methodenaufruf der Methode \emph{Solution.evaluate}. Dieser Aspekt arbeitet nur gegen die Schnittstellen \emph{Algorithm} und \emph{Solution} und ist daher auf alle Implementierungen dieser Schnittstellen anwendbar. Dieser Aspekt greift nur wenn die Variable \emph{AspectjConfig.countSolutionsEnabled} auf den Wert \emph{true} gesetzt ist.
 \newline
 \newline
-Es wird der Aspekt \emph{GAElitismAspect} implementiert, der die schlechteste Lösung der neu erstellten Kinder durch die beste Lösung des vorherigen Durchlaufs ersetzt. Es wird ein \emph{around advice} für die Methode \emph{GA.createChildren} implementiert, der das zurückgelieferte \emph{Array} der Kinder verändert. Wird ein Kind ausgetauscht so wird eine Meldung über einen \emph{Logger} in die \emph{Logs} geschrieben. Dieser Aspekt ist abhängig von der Klasse \emph{GA}, da die Schnittstelle \emph{Algorithm} die Methode \emph{createChildren} nicht definiert.
+Es wird der Aspekt \emph{GAElitismAspect} implementiert, der die schlechteste Lösung der neu erstellten Kinder durch die beste Lösung des vorherigen Durchlaufs ersetzt. Es wird ein \emph{around advice} für die Methode \emph{GA.createChildren} implementiert, der das zurückgelieferte \emph{Array} der Kinder verändert. Wird ein Kind ausgetauscht so wird eine Meldung über einen \emph{Logger} in die \emph{Logs} geschrieben. Dieser Aspekt ist abhängig von der Klasse \emph{GA}, da die Schnittstelle \emph{Algorithm} die Methode \emph{createChildren} nicht definiert. Dieser Aspekt greift nur wenn die Variable \emph{AspectjConfig.elitismEnabled} auf den Wert \emph{true} gesetzt ist.
 \newline
 \newline
-
- 
+Es wird der Aspekt \emph{GAProtocolProgressAspect} implementiert, der die beste Lösung, schlechteste Lösung und den Durchschnitt der Lösungen einer Population einer Iteration speichert und nach dem Ausführen des Algorithmus über einen \emph{Logger} in die \emph{Logs} schreibt und ein SVG-Diagramm mit der Bibliothek \emph{gp2.svg-generator} erstellt. Es wird der \emph{PointCut firstExecuteCall} definiert, für den die beiden \emph{advices before, after} definiert werden, wobei der \emph{advice before} die Zustände des Aspekts initialisiert und der \emph{advice after} die Zustände des Aspekts zurücksetzt. Es werden zwei \emph{after advices} definiert, wobei ein \emph{after advice} nach der Ausführung der Methode \emph{Algorithm.initialize} und der andere \emph{after advice} nach der Ausführung der Methode \emph{Algorithm.iterate} greift. Der \emph{after advice} für die Methode \emph{Algorithm.initialize} ist notwendig, weil dort die erste Population erstellt wird. Dieser Aspekt greift nur wenn die Variable \emph{AspectjConfig.reportAlgorithmEnabled} auf den Wert \emph{true} gesetzt ist.
+\newline
+\newline
+Es wird eine Klasse \emph{AspectReport} implementiert, welche die gesammelten Daten einerseits über einen \emph{Logger} in die \emph{Logs} schreibt und andererseits ein SVG-Diagramm erstellt. 
+\newpage
 
 \subsection{Quelltexte}
+Folgender Abschnitt enthält die implementierten Klassen, Aspekte und das implementierte Testprogramm.
+
+\begin{code}
+	\caption{CountEvaluatedSolutionsAspect.aj}
+	\javaFile{\srcDirTspSolver/aspects/CountEvaluatedSolutionsAspect.aj}
+	\label{src:class-tsp-solver-count-eval-aspect}
+\end{code}
+
+\begin{code}
+	\caption{GAElitismAspect.aj}
+	\javaFile{\srcDirTspSolver/aspects/GAElitismAspect.aj}
+	\label{src:class-tsp-solver-ga-elitism-aspect}
+\end{code}
+
+\begin{code}
+	\caption{GAProtocolProgressAspect.aj}
+	\javaFile{\srcDirTspSolver/aspects/GAProtocolProgressAspect.aj}
+	\label{src:class-tsp-solver-ga-protocol-aspect}
+\end{code}
+
+\begin{code}
+	\caption{AspectjConfig.java}
+	\javaFile{\srcDirTspSolver/aspects/util/AspectjConfig.java}
+\end{code}
+
+\begin{code}
+	\caption{AspectReport.java}
+	\javaFile{\srcDirTspSolver/aspects/util/AspectReport.java}
+\end{code}
+
+\begin{code}
+	\caption{Main.java}
+	\javaFile{\srcDirTspSolver/tsp/Main.java}
+\end{code}
+\ \newpage
+
 \subsection{Tests}
+Folgender Abschnitt enthält die Tests der Aufgabenstellung in Form der generierten \emph{logs} und der generierten SVG-Diagramme.
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{\imageDir/tsp-solver-log-1.JPG}
+	\caption{\emph{TSP-Solver Logs} Teil 1}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{\imageDir/tsp-solver-log-2.JPG}
+	\caption{\emph{TSP-Solver Logs} Teil 2}
+\end{figure}
+\ \newpage
+
+\begin{figure}[h]
+\centering
+	\includegraphics[scale=0.5]{\imageDir/tsp-solver-log-3.JPG}
+	\caption{\emph{TSP-Solver Logs} Teil 3}
+\end{figure}
+\ \newline
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{\imageDir/tsp-solver-elitism-random-1.JPG}
+	\caption{\emph{TSP-Solver, Random Seed, Elitism} erster Durchlauf}
+\end{figure}
+\ \newpage
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{\imageDir/tsp-solver-elitism-random-2.JPG}
+	\caption{\emph{TSP-Solver, Random Seed, Elitism} zweiter Durchlauf}
+\end{figure}
+\ \newpage
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{\imageDir/tsp-solver-elitism-random-3.JPG}
+	\caption{\emph{TSP-Solver, Random Seed, Elitism} dritter Durchlauf}
+\end{figure}
+\ \newpage
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{\imageDir/tsp-solver-random-1.JPG}
+	\caption{\emph{TSP-Solver, Random Seed} erster Durchlauf}
+\end{figure}
+
+\ \newpage
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{\imageDir/tsp-solver-random-2.JPG}
+	\caption{\emph{TSP-Solver, Random Seed} zweiter Durchlauf}
+\end{figure}
+
+\ \newpage
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{\imageDir/tsp-solver-random-3.JPG}
+	\caption{\emph{TSP-Solver, Random Seed} dritterDurchlauf}
+\end{figure}
 
 \end{document}

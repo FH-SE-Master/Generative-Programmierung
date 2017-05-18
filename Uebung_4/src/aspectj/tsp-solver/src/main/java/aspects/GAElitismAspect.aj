@@ -1,5 +1,6 @@
 package aspects;
 
+import aspects.util.AspectjConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tsp.GA;
@@ -18,7 +19,7 @@ public privileged aspect GAElitismAspect {
 
     private Solution bestParent;
 
-    private static final Logger log = LoggerFactory.getLogger(GAElitismAspect.class);
+    private static final Logger log = LoggerFactory.getLogger(AspectjConfig.LOGGER_NAME);
 
     Solution[] around(): if(aspects.util.AspectjConfig.elitismEnabled)
             && call(Solution[] *.GA.createChildren(..))
@@ -31,7 +32,7 @@ public privileged aspect GAElitismAspect {
             Arrays.sort(children);
             final Solution worstChild = children[children.length - 1];
             children[children.length - 1] = bestParent;
-            log.info("Replaced worst child with best of former run. worstChild={} / bestParent={}", worstChild.getQuality(), bestParent.getQuality());
+            //log.info("Replaced worst child with best of former run. worstChild={} / bestParent={}", worstChild.getQuality(), bestParent.getQuality());
         }
 
         return children;

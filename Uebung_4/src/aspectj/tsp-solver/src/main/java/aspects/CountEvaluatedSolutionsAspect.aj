@@ -1,5 +1,6 @@
 package aspects;
 
+import aspects.util.AspectjConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,7 @@ public abstract aspect CountEvaluatedSolutionsAspect {
 
     long solutionCount = 0;
 
-    private static final Logger log = LoggerFactory.getLogger(CountEvaluatedSolutionsAspect.class);
+    private static final Logger log = LoggerFactory.getLogger(AspectjConfig.LOGGER_NAME);
 
     pointcut executeCall():
             if(aspects.util.AspectjConfig.countSolutionsEnabled)

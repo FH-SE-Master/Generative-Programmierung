@@ -19,4 +19,6 @@ public class AspectjConfig {
     public static boolean reportAlgorithmEnabled = false;
     public static long maxSolutions = 100;
     public static String reportFileName = "tsp-solver";
+
+    public static final String LOGGER_NAME = "aspectj-tsp-solver";
 }

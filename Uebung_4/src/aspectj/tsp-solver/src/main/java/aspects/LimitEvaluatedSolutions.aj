@@ -15,7 +15,7 @@ public aspect LimitEvaluatedSolutions extends CountEvaluatedSolutionsAspect {
 
     private boolean skipped;
 
-    private static final Logger log = LoggerFactory.getLogger(LimitEvaluatedSolutions.class);
+    private static final Logger log = LoggerFactory.getLogger(AspectjConfig.LOGGER_NAME);
 
     before(): call(*.*.Solution *.*.Algorithm.execute(..))
             && !within(*.*.Algorithm+){

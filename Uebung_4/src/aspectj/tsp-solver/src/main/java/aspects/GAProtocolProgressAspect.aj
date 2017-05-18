@@ -1,7 +1,7 @@
 package aspects;
 
 import aspects.util.AspectjConfig;
-import aspects.util.ReportContext;
+import aspects.util.AspectReport;
 import tsp.GA;
 import tsp.api.Solution;
 
@@ -14,7 +14,7 @@ import tsp.api.Solution;
  */
 public privileged aspect GAProtocolProgressAspect {
 
-    private ReportContext reportCtx;
+    private AspectReport report;
 
     pointcut firstExecuteCall():
             if(aspects.util.AspectjConfig.reportAlgorithmEnabled)
@@ -23,14 +23,14 @@ public privileged aspect GAProtocolProgressAspect {
 
     // Init
     before(): firstExecuteCall() {
-        reportCtx = new ReportContext(AspectjConfig.reportFileName);
+        report = new AspectReport(AspectjConfig.reportFileName);
     }
 
     // Report and Cleanup
     after(): firstExecuteCall() {
-        reportCtx.generateConsoleReport();
-        reportCtx.generateSvgReport();
-        reportCtx = null;
+        report.generateConsoleReport();
+        report.generateSvgReport();
+        report = null;
     }
 
     // First population
@@ -65,6 +65,6 @@ public privileged aspect GAProtocolProgressAspect {
         }
 
         // Set calculated run results on report context
-        reportCtx.add(best, worst, average);
+        report.add(best, worst, average);
     }
 }
