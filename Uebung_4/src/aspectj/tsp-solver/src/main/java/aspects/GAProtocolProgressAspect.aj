@@ -1,9 +1,13 @@
 package aspects;
 
-import aspects.util.AspectjConfig;
 import aspects.util.AspectReport;
+import aspects.util.AspectjConfig;
+import at.fh.ooe.gp2.template.api.Coordinate;
 import tsp.GA;
+import tsp.PathSolution;
 import tsp.api.Solution;
+
+import java.util.Arrays;
 
 /**
  * This aspect protocols the best and worst found solution during the algorithm execution.
@@ -15,7 +19,6 @@ import tsp.api.Solution;
 public privileged aspect GAProtocolProgressAspect {
 
     private AspectReport report;
-
     pointcut firstExecuteCall():
             if(aspects.util.AspectjConfig.reportAlgorithmEnabled)
                     && call(* *.*.Algorithm.execute(..))
@@ -23,12 +26,18 @@ public privileged aspect GAProtocolProgressAspect {
 
     // Init
     before(): firstExecuteCall() {
-        report = new AspectReport(AspectjConfig.reportFileName + "-chart",
-                                  AspectjConfig.reportFileName + "-path");
+        report = new AspectReport(AspectjConfig.reportFileName + "-chart-",
+                                  AspectjConfig.reportFileName + "-path-");
     }
 
     // Report and Cleanup
-    after(): firstExecuteCall() {
+    after():firstExecuteCall() {
+        final Solution solution = (((GA) thisJoinPoint.getTarget())).best;
+        if (solution instanceof PathSolution) {
+            final int[] bestTour = ((PathSolution) solution).tour;
+            final double[][] vertices = ((PathSolution) solution).tsp.vertices;
+            Arrays.stream(bestTour).mapToObj(i -> new Coordinate(vertices[i][0], vertices[i][1])).forEach(report::addPathValue);
+        }
         report.generateConsoleReport();
         report.generateChartSvgReport();
         report.generatePathSvgReport();
@@ -67,6 +76,6 @@ public privileged aspect GAProtocolProgressAspect {
         }
 
         // Set calculated run results on report context
-        report.add(best, worst, average);
+        report.addRunValue(best, worst, average);
     }
 }

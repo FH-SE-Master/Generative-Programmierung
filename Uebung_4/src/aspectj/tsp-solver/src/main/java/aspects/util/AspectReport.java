@@ -3,6 +3,7 @@ package aspects.util;
 import at.fh.ooe.gp2.template.api.Coordinate;
 import at.fh.ooe.gp2.template.api.shape.Diagram;
 import at.fh.ooe.gp2.template.api.shape.LineShape;
+import at.fh.ooe.gp2.template.api.shape.PointShape;
 import at.fh.ooe.gp2.template.api.shape.TextShape;
 import at.fh.ooe.gp2.template.impl.generator.FreemarkerGenerators;
 import org.slf4j.Logger;
@@ -56,15 +57,18 @@ public class AspectReport {
     private final int height;
     private final int width;
     private final double stokeWidth;
+    private final double pathStokeWidth;
     private final Color bestStrokeColor;
     private final Color worstStrokeColor;
     private final Color avgStrokeColor;
     private final String chartFilename;
     private final String pathFilename;
-    private List<YValue> yValues;
+    private final List<YValue> yRunValues;
+    private final List<Coordinate> pathCoordinates;
 
     private static final Logger log = LoggerFactory.getLogger(AspectjConfig.LOGGER_NAME);
     private static final double DEFAULT_STROKE_WIDTH = 0.8;
+    private static final double DEFAULT_PATH_STROKE_WIDTH = 0.5;
     private static final Color DEFAULT_BEST_COLOR = Color.GREEN;
     private static final Color DEFAULT_WORST_COLOR = Color.RED;
     private static final Color DEFAULT_AVG_COLOR = Color.ORANGE;
@@ -77,23 +81,22 @@ public class AspectReport {
         bestStrokeColor = DEFAULT_BEST_COLOR;
         worstStrokeColor = DEFAULT_WORST_COLOR;
         avgStrokeColor = DEFAULT_AVG_COLOR;
+        pathStokeWidth = DEFAULT_PATH_STROKE_WIDTH;
         this.chartFilename = chartFilename;
         this.pathFilename = pathFilename;
 
-        reset();
+        pathCoordinates = new LinkedList<>();
+        yRunValues = new LinkedList<>();
     }
 
-    /**
-     * Rests the report context for accepting new values
-     */
-    public void reset() {
-        yValues = new LinkedList<>();
+    public void addRunValue(final double best,
+                            final double worst,
+                            final double average) {
+        yRunValues.add(new YValue(best, worst, average));
     }
 
-    public void add(final double best,
-                    final double worst,
-                    final double average) {
-        yValues.add(new YValue(best, worst, average));
+    public void addPathValue(final Coordinate coordinate) {
+        pathCoordinates.add(coordinate);
     }
 
     /**
@@ -101,7 +104,7 @@ public class AspectReport {
      */
     public void generateConsoleReport() {
         int run = 0;
-        for (final YValue item : yValues) {
+        for (final YValue item : yRunValues) {
             log.info("run={}: best={} / worst={} / average={}", run, item.best, item.worst, item.average);
             run++;
         }
@@ -114,9 +117,9 @@ public class AspectReport {
         try {
             // get max value for normalization over all values of all captured types
             final Set<Double> allValues = new HashSet<Double>() {{
-                addAll(yValues.stream().map(YValue::getBest).collect(Collectors.toList()));
-                addAll(yValues.stream().map(YValue::getAverage).collect(Collectors.toList()));
-                addAll(yValues.stream().map(YValue::getWorst).collect(Collectors.toList()));
+                addAll(yRunValues.stream().map(YValue::getBest).collect(Collectors.toList()));
+                addAll(yRunValues.stream().map(YValue::getAverage).collect(Collectors.toList()));
+                addAll(yRunValues.stream().map(YValue::getWorst).collect(Collectors.toList()));
             }};
 
             // Lower bound is 0.0 if value not smaller than 0
@@ -138,7 +141,7 @@ public class AspectReport {
             final double heightMargin = 20.0;
             final double chartWidth = width - (widthMargin * 2);
             final double chartHeight = height - (heightMargin * 2);
-            final double chartStep = chartWidth / yValues.size();
+            final double chartStep = chartWidth / yRunValues.size();
 
             // Coordinate lines
             final LineShape xAxis = new LineShape(diagram, lineGenerator, new Coordinate(0.0, (height - heightMargin)), new Coordinate(width - widthMargin, (height - heightMargin)), Color.BLACK, 1.0);
@@ -171,8 +174,8 @@ public class AspectReport {
                                     .multiply(BigDecimal.valueOf(i))
                                     .toString();
                 final String xMarkerValue = (i == markerStep)
-                        ? String.valueOf(yValues.size())
-                        : String.valueOf(((yValues.size() / markerStep) * i));
+                        ? String.valueOf(yRunValues.size())
+                        : String.valueOf(((yRunValues.size() / markerStep) * i));
 
                 // Add axis markers
                 diagram.addShape(new LineShape(diagram,
@@ -204,7 +207,7 @@ public class AspectReport {
             // remember origin for next value
             Coordinate origBest, origWorst, origAvg;
             origBest = origWorst = origAvg = null;
-            for (final YValue value : yValues) {
+            for (final YValue value : yRunValues) {
                 final double yBest = normalizeValue(minValue, maxValue, 0.0, chartHeight, value.best);
                 final double yWorst = normalizeValue(minValue, maxValue, 0.0, chartHeight, value.worst);
                 final double yAvg = normalizeValue(minValue, maxValue, 0.0, chartHeight, value.average);
@@ -237,16 +240,16 @@ public class AspectReport {
      */
     public void generatePathSvgReport() {
         try {
-            // Lower bound is 0.0 if value not smaller than 0
-            double minValue = yValues.stream().map(YValue::getBest).min(Double::compare).orElse(0.0);
-
-            // get maximum value which will be the upper bound
-            double maxValue = yValues.stream().map(YValue::getBest).max(Double::compare).orElse(minValue);
+            double minXValue = pathCoordinates.stream().map(Coordinate::getX).min(Double::compare).orElse(0.0);
+            double maxXValue = pathCoordinates.stream().map(Coordinate::getX).max(Double::compare).orElse(0.0);
+            double minYValue = pathCoordinates.stream().map(Coordinate::getY).min(Double::compare).orElse(0.0);
+            double maxYValue = pathCoordinates.stream().map(Coordinate::getY).max(Double::compare).orElse(0.0);
 
             // freemarker generators
             final FreemarkerGenerators.DiagramGenerator diagramGenerator = new FreemarkerGenerators.DiagramGenerator();
             final FreemarkerGenerators.LineGenerator lineGenerator = new FreemarkerGenerators.LineGenerator();
             final FreemarkerGenerators.TextGenerator textGenerator = new FreemarkerGenerators.TextGenerator();
+            final FreemarkerGenerators.PointGenerator pointGenerator = new FreemarkerGenerators.PointGenerator();
             final Diagram diagram = new Diagram(diagramGenerator, width, height, 0.0, (double) width, 0.0, (double) height, false);
 
             // chart margins and dimensions
@@ -270,9 +273,16 @@ public class AspectReport {
                 final double yPos = (height - heightMargin) - ((chartHeight / markerStep) * i);
 
                 // Calculate marker values
-                final String markerValue = (i == markerStep)
-                        ? BigDecimal.valueOf(maxValue).setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()
-                        : BigDecimal.valueOf(maxValue)
+                final String yMarkerValue = (i == markerStep)
+                        ? BigDecimal.valueOf(maxYValue).setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()
+                        : BigDecimal.valueOf(maxYValue - minYValue)
+                                    .setScale(2, BigDecimal.ROUND_DOWN)
+                                    .divide(BigDecimal.valueOf(markerStep), BigDecimal.ROUND_HALF_EVEN)
+                                    .multiply(BigDecimal.valueOf(i))
+                                    .toString();
+                final String xMarkerValue = (i == markerStep)
+                        ? BigDecimal.valueOf(maxXValue).setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()
+                        : BigDecimal.valueOf(maxXValue - minXValue)
                                     .setScale(2, BigDecimal.ROUND_DOWN)
                                     .divide(BigDecimal.valueOf(markerStep), BigDecimal.ROUND_HALF_EVEN)
                                     .multiply(BigDecimal.valueOf(i))
@@ -300,21 +310,39 @@ public class AspectReport {
 
                 // Adda xis marker texts
                 final int markerValueYOffset = ((i % 2) != 0) ? 0 : 9;
-                diagram.addShape(new TextShape(diagram, textGenerator, new Coordinate(xPos - 15, height - heightMargin + 15 + markerValueYOffset), Color.BLACK, null, markerValue, "Arial", 10.0, 0.25));
-                diagram.addShape(new TextShape(diagram, textGenerator, new Coordinate(5, yPos - 5), Color.BLACK, null, markerValue, "Arial", 8.5, 0.25));
+                diagram.addShape(new TextShape(diagram,
+                                               textGenerator,
+                                               new Coordinate(xPos - 15, height - heightMargin + 15 + markerValueYOffset),
+                                               Color.BLACK,
+                                               null,
+                                               xMarkerValue,
+                                               "Arial",
+                                               10.0,
+                                               0.25));
+                diagram.addShape(new TextShape(diagram, textGenerator, new Coordinate(5, yPos - 5), Color.BLACK, null, yMarkerValue, "Arial", 8.5, 0.25));
             }
 
             // remember origin for next value
             Coordinate origBest = null;
-            for (final YValue value : yValues) {
-                final double yBest = normalizeValue(minValue, maxValue, 0.0, chartHeight, value.best);
-                final double xBest = normalizeValue(minValue, maxValue, 0.0, chartWidth, value.best);
+            int counter = 1;
+            for (final Coordinate coordinate : pathCoordinates) {
+                final double x = normalizeValue(minXValue, maxXValue, 0.0, chartWidth, coordinate.getX());
+                final double y = normalizeValue(minYValue, maxYValue, 0.0, chartHeight, coordinate.getY());
 
                 // coordinates with inverted y position
-                final Coordinate destBest = new Coordinate(xBest + widthMargin, (chartHeight - yBest + heightMargin));
-                diagram.addShape(new LineShape(diagram, lineGenerator, (origBest != null) ? origBest : destBest, destBest, bestStrokeColor, 0.1));
+                final Coordinate destBest = new Coordinate(x + widthMargin, (chartHeight - y + heightMargin));
+                diagram.addShape(new LineShape(diagram, lineGenerator, (origBest != null) ? origBest : destBest, destBest, bestStrokeColor, pathStokeWidth));
+                double radius = 1.0;
+                if ((counter == 1) || (counter == pathCoordinates.size())) {
+                    radius = 2.5;
+                }
+                diagram.addShape(new PointShape(diagram, pointGenerator, destBest, Color.RED, Color.RED, radius, 1.0));
+                if ((counter == 1) || (counter == pathCoordinates.size())) {
+                    diagram.addShape(new TextShape(diagram, textGenerator, destBest, Color.BLACK, null, String.valueOf(counter), "Arial", 9.0, 0.5));
+                }
 
                 origBest = destBest;
+                counter++;
             }
             generateFile(pathFilename, diagram, diagramGenerator);
         } catch (Throwable e) {

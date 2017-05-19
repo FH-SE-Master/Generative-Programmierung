@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
 
-    private static final int ITERATIONS = 50;
+    private static final int ITERATIONS = 1000;
     private static final int POPULATION_SIZE = 100;
     private static final int RANDOM_RUN = 3;
     private static final Logger log = LoggerFactory.getLogger(AspectjConfig.LOGGER_NAME);
