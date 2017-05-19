@@ -31,16 +31,14 @@ public privileged aspect GAProtocolProgressAspect {
     }
 
     // Report and Cleanup
-    after():firstExecuteCall() {
+    after(): firstExecuteCall() {
         final Solution solution = (((GA) thisJoinPoint.getTarget())).best;
         if (solution instanceof PathSolution) {
             final int[] bestTour = ((PathSolution) solution).tour;
             final double[][] vertices = ((PathSolution) solution).tsp.vertices;
             Arrays.stream(bestTour).mapToObj(i -> new Coordinate(vertices[i][0], vertices[i][1])).forEach(report::addPathValue);
         }
-        report.generateConsoleReport();
-        report.generateChartSvgReport();
-        report.generatePathSvgReport();
+        report.generateAllReports();
         report = null;
     }
 

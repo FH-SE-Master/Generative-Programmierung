@@ -28,6 +28,9 @@ import java.util.stream.Collectors;
  */
 public class AspectReport {
 
+    /**
+     * Represents a y value of a run report
+     */
     private static final class YValue {
         public final double best;
         public final double worst;
@@ -64,7 +67,7 @@ public class AspectReport {
     private final String chartFilename;
     private final String pathFilename;
     private final List<YValue> yRunValues;
-    private final List<Coordinate> pathCoordinates;
+    private final List<Coordinate> pathValues;
 
     private static final Logger log = LoggerFactory.getLogger(AspectjConfig.LOGGER_NAME);
     private static final double DEFAULT_STROKE_WIDTH = 0.8;
@@ -73,6 +76,10 @@ public class AspectReport {
     private static final Color DEFAULT_WORST_COLOR = Color.RED;
     private static final Color DEFAULT_AVG_COLOR = Color.ORANGE;
 
+    /**
+     * @param chartFilename the filename of the run report
+     * @param pathFilename  the filename of the path report
+     */
     public AspectReport(final String chartFilename,
                         final String pathFilename) {
         this.height = 700;
@@ -85,22 +92,43 @@ public class AspectReport {
         this.chartFilename = chartFilename;
         this.pathFilename = pathFilename;
 
-        pathCoordinates = new LinkedList<>();
+        pathValues = new LinkedList<>();
         yRunValues = new LinkedList<>();
     }
 
+    /**
+     * Adds a run y value
+     *
+     * @param best    the best of the run
+     * @param worst   the worst of the run
+     * @param average the average of the run
+     */
     public void addRunValue(final double best,
                             final double worst,
                             final double average) {
         yRunValues.add(new YValue(best, worst, average));
     }
 
+    /**
+     * Adds a path coordinate.
+     *
+     * @param coordinate the coordinate of the path
+     */
     public void addPathValue(final Coordinate coordinate) {
-        pathCoordinates.add(coordinate);
+        pathValues.add(coordinate);
     }
 
     /**
-     * Generates the console report
+     * Generates all supported reports.
+     */
+    public void generateAllReports() {
+        generateConsoleReport();
+        generateRunSvgReport();
+        generatePathSvgReport();
+    }
+
+    /**
+     * Generates the console run report.
      */
     public void generateConsoleReport() {
         int run = 0;
@@ -111,9 +139,13 @@ public class AspectReport {
     }
 
     /**
-     * Generates the svg reports.
+     * Generates the run svg report.
      */
-    public void generateChartSvgReport() {
+    public void generateRunSvgReport() {
+        if(yRunValues.isEmpty()) {
+            log.warn("Cannot create run report because no run data available");
+            return;
+        }
         try {
             // get max value for normalization over all values of all captured types
             final Set<Double> allValues = new HashSet<Double>() {{
@@ -132,76 +164,16 @@ public class AspectReport {
             // freemarker generators
             final FreemarkerGenerators.DiagramGenerator diagramGenerator = new FreemarkerGenerators.DiagramGenerator();
             final FreemarkerGenerators.LineGenerator lineGenerator = new FreemarkerGenerators.LineGenerator();
-            final FreemarkerGenerators.TextGenerator textGenerator = new FreemarkerGenerators.TextGenerator();
-            final FreemarkerGenerators.RectangularGenerator rectGenerator = new FreemarkerGenerators.RectangularGenerator();
             final Diagram diagram = new Diagram(diagramGenerator, width, height, 0.0, (double) width, 0.0, (double) height, false);
 
             // chart margins and dimensions
             final double widthMargin = 50.0;
-            final double heightMargin = 20.0;
+            final double heightMargin = 25.0;
             final double chartWidth = width - (widthMargin * 2);
             final double chartHeight = height - (heightMargin * 2);
             final double chartStep = chartWidth / yRunValues.size();
 
-            // Coordinate lines
-            final LineShape xAxis = new LineShape(diagram, lineGenerator, new Coordinate(0.0, (height - heightMargin)), new Coordinate(width - widthMargin, (height - heightMargin)), Color.BLACK, 1.0);
-            final LineShape yAxis = new LineShape(diagram, lineGenerator, new Coordinate(widthMargin, height), new Coordinate(widthMargin, heightMargin), Color.BLACK, 1.0);
-            diagram.addShape(xAxis);
-            diagram.addShape(yAxis);
-
-            // Value legends
-            final double xLegendLinePos = width - widthMargin - 50;
-            diagram.addShape(new LineShape(diagram, lineGenerator, new Coordinate(xLegendLinePos, heightMargin), new Coordinate(xLegendLinePos + 10, heightMargin), bestStrokeColor, 2));
-            diagram.addShape(new LineShape(diagram, lineGenerator, new Coordinate(xLegendLinePos, heightMargin + 10), new Coordinate(xLegendLinePos + 10, heightMargin + 10), worstStrokeColor, 2));
-            diagram.addShape(new LineShape(diagram, lineGenerator, new Coordinate(xLegendLinePos, heightMargin + 20), new Coordinate(xLegendLinePos + 10, heightMargin + 20), avgStrokeColor, 2));
-            diagram.addShape(new TextShape(diagram, textGenerator, new Coordinate(xLegendLinePos + 15, heightMargin + 3), Color.BLACK, null, "Best", "Arial", 8.5, 0.25));
-            diagram.addShape(new TextShape(diagram, textGenerator, new Coordinate(xLegendLinePos + 15, heightMargin + 13), Color.BLACK, null, "Worst", "Arial", 8.5, 0.25));
-            diagram.addShape(new TextShape(diagram, textGenerator, new Coordinate(xLegendLinePos + 15, heightMargin + 23), Color.BLACK, null, "Average", "Arial", 8.5, 0.25));
-
-            // Add xAxis marker
-            final int markerStep = 25;
-            for (int i = 1; i <= markerStep; i++) {
-                // calculate x and y positions for markers
-                final double xPos = widthMargin + ((chartWidth / markerStep) * i);
-                final double yPos = (height - heightMargin) - ((chartHeight / markerStep) * i);
-
-                // Calculate marker values
-                final String yMarkerValue = (i == markerStep)
-                        ? BigDecimal.valueOf(maxValue).setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()
-                        : BigDecimal.valueOf(maxValue)
-                                    .setScale(2, BigDecimal.ROUND_DOWN)
-                                    .divide(BigDecimal.valueOf(markerStep), BigDecimal.ROUND_HALF_EVEN)
-                                    .multiply(BigDecimal.valueOf(i))
-                                    .toString();
-                final String xMarkerValue = (i == markerStep)
-                        ? String.valueOf(yRunValues.size())
-                        : String.valueOf(((yRunValues.size() / markerStep) * i));
-
-                // Add axis markers
-                diagram.addShape(new LineShape(diagram,
-                                               lineGenerator,
-                                               new Coordinate(widthMargin - 5, yPos),
-                                               new Coordinate(widthMargin + 5, yPos),
-                                               Color.BLACK,
-                                               1.0));
-                diagram.addShape(new LineShape(diagram,
-                                               lineGenerator,
-                                               new Coordinate(widthMargin, yPos),
-                                               new Coordinate(width - widthMargin, yPos),
-                                               Color.DARK_GRAY,
-                                               0.1));
-                diagram.addShape(new LineShape(diagram,
-                                               lineGenerator,
-                                               new Coordinate(xPos, (height - heightMargin - 5)),
-                                               new Coordinate(xPos, (height - heightMargin + 5)),
-                                               Color.BLACK,
-                                               1.0));
-
-                // Adda xis marker texts
-                final int xMarkerOffset = (i < 10) ? 3 : 7;
-                diagram.addShape(new TextShape(diagram, textGenerator, new Coordinate(xPos - xMarkerOffset, height - heightMargin + 15), Color.BLACK, null, xMarkerValue, "Arial", 10.0, 0.25));
-                diagram.addShape(new TextShape(diagram, textGenerator, new Coordinate(5, yPos - 5), Color.BLACK, null, yMarkerValue, "Arial", 8.5, 0.25));
-            }
+            generatePlotAxis(diagram, 0.0, yRunValues.size(), minValue, maxValue, widthMargin, heightMargin);
 
             double currentStep = 0.0 + widthMargin;
             // remember origin for next value
@@ -236,14 +208,18 @@ public class AspectReport {
 
 
     /**
-     * Generates the svg reports.
+     * Generates the path svg report.
      */
     public void generatePathSvgReport() {
+        if(pathValues.isEmpty()) {
+            log.warn("Cannot create path report because no path data available");
+            return;
+        }
         try {
-            double minXValue = pathCoordinates.stream().map(Coordinate::getX).min(Double::compare).orElse(0.0);
-            double maxXValue = pathCoordinates.stream().map(Coordinate::getX).max(Double::compare).orElse(0.0);
-            double minYValue = pathCoordinates.stream().map(Coordinate::getY).min(Double::compare).orElse(0.0);
-            double maxYValue = pathCoordinates.stream().map(Coordinate::getY).max(Double::compare).orElse(0.0);
+            double minXValue = pathValues.stream().map(Coordinate::getX).min(Double::compare).orElse(0.0);
+            double maxXValue = pathValues.stream().map(Coordinate::getX).max(Double::compare).orElse(0.0);
+            double minYValue = pathValues.stream().map(Coordinate::getY).min(Double::compare).orElse(0.0);
+            double maxYValue = pathValues.stream().map(Coordinate::getY).max(Double::compare).orElse(0.0);
 
             // freemarker generators
             final FreemarkerGenerators.DiagramGenerator diagramGenerator = new FreemarkerGenerators.DiagramGenerator();
@@ -258,74 +234,12 @@ public class AspectReport {
             final double chartWidth = width - (widthMargin * 2);
             final double chartHeight = height - (heightMargin * 2);
 
-            // Coordinate lines
-            final LineShape xAxis = new LineShape(diagram, lineGenerator, new Coordinate(0.0, (height - heightMargin)), new Coordinate(width - widthMargin, (height - heightMargin)), Color.BLACK, 1.0);
-            final LineShape yAxis = new LineShape(diagram, lineGenerator, new Coordinate(widthMargin, height), new Coordinate(widthMargin, heightMargin), Color.BLACK, 1.0);
-            diagram.addShape(xAxis);
-            diagram.addShape(yAxis);
-
-            // Add xAxis marker
-            final int markerStep = 25;
-            boolean flip = false;
-            for (int i = 1; i <= markerStep; i++) {
-                // calculate x and y positions for markers
-                final double xPos = widthMargin + ((chartWidth / markerStep) * i);
-                final double yPos = (height - heightMargin) - ((chartHeight / markerStep) * i);
-
-                // Calculate marker values
-                final String yMarkerValue = (i == markerStep)
-                        ? BigDecimal.valueOf(maxYValue).setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()
-                        : BigDecimal.valueOf(maxYValue - minYValue)
-                                    .setScale(2, BigDecimal.ROUND_DOWN)
-                                    .divide(BigDecimal.valueOf(markerStep), BigDecimal.ROUND_HALF_EVEN)
-                                    .multiply(BigDecimal.valueOf(i))
-                                    .toString();
-                final String xMarkerValue = (i == markerStep)
-                        ? BigDecimal.valueOf(maxXValue).setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()
-                        : BigDecimal.valueOf(maxXValue - minXValue)
-                                    .setScale(2, BigDecimal.ROUND_DOWN)
-                                    .divide(BigDecimal.valueOf(markerStep), BigDecimal.ROUND_HALF_EVEN)
-                                    .multiply(BigDecimal.valueOf(i))
-                                    .toString();
-
-                // Add axis markers
-                diagram.addShape(new LineShape(diagram,
-                                               lineGenerator,
-                                               new Coordinate(widthMargin - 5, yPos),
-                                               new Coordinate(widthMargin + 5, yPos),
-                                               Color.BLACK,
-                                               1.0));
-                diagram.addShape(new LineShape(diagram,
-                                               lineGenerator,
-                                               new Coordinate(xPos, (height - heightMargin - 5)),
-                                               new Coordinate(xPos, (height - heightMargin + 5)),
-                                               Color.BLACK,
-                                               1.0));
-                diagram.addShape(new LineShape(diagram,
-                                               lineGenerator,
-                                               new Coordinate(widthMargin, yPos),
-                                               new Coordinate(width - widthMargin, yPos),
-                                               Color.DARK_GRAY,
-                                               0.1));
-
-                // Adda xis marker texts
-                final int markerValueYOffset = ((i % 2) != 0) ? 0 : 9;
-                diagram.addShape(new TextShape(diagram,
-                                               textGenerator,
-                                               new Coordinate(xPos - 15, height - heightMargin + 15 + markerValueYOffset),
-                                               Color.BLACK,
-                                               null,
-                                               xMarkerValue,
-                                               "Arial",
-                                               10.0,
-                                               0.25));
-                diagram.addShape(new TextShape(diagram, textGenerator, new Coordinate(5, yPos - 5), Color.BLACK, null, yMarkerValue, "Arial", 8.5, 0.25));
-            }
+            generatePlotAxis(diagram, minXValue, maxXValue, minYValue, maxYValue, widthMargin, heightMargin);
 
             // remember origin for next value
             Coordinate origBest = null;
             int counter = 1;
-            for (final Coordinate coordinate : pathCoordinates) {
+            for (final Coordinate coordinate : pathValues) {
                 final double x = normalizeValue(minXValue, maxXValue, 0.0, chartWidth, coordinate.getX());
                 final double y = normalizeValue(minYValue, maxYValue, 0.0, chartHeight, coordinate.getY());
 
@@ -333,11 +247,11 @@ public class AspectReport {
                 final Coordinate destBest = new Coordinate(x + widthMargin, (chartHeight - y + heightMargin));
                 diagram.addShape(new LineShape(diagram, lineGenerator, (origBest != null) ? origBest : destBest, destBest, bestStrokeColor, pathStokeWidth));
                 double radius = 1.0;
-                if ((counter == 1) || (counter == pathCoordinates.size())) {
+                if ((counter == 1) || (counter == pathValues.size())) {
                     radius = 2.5;
                 }
                 diagram.addShape(new PointShape(diagram, pointGenerator, destBest, Color.RED, Color.RED, radius, 1.0));
-                if ((counter == 1) || (counter == pathCoordinates.size())) {
+                if ((counter == 1) || (counter == pathValues.size())) {
                     diagram.addShape(new TextShape(diagram, textGenerator, destBest, Color.BLACK, null, String.valueOf(counter), "Arial", 9.0, 0.5));
                 }
 
@@ -350,6 +264,105 @@ public class AspectReport {
         }
     }
 
+    /**
+     * Generates the plot axis with markers.
+     *
+     * @param diagram      the diagram to add plot to
+     * @param minX         the minimum x value for axis markers
+     * @param maxX         the maximum x value for axis markers
+     * @param minY         the minimum y value for axis markers
+     * @param maxY         the maximum y value for axis markers
+     * @param widthMargin  the margin to the left and right
+     * @param heightMargin the margin to the top and bottom
+     * @throws Exception if the generation fails for any reason
+     */
+    private void generatePlotAxis(final Diagram diagram,
+                                  final double minX,
+                                  final double maxX,
+                                  final double minY,
+                                  final double maxY,
+                                  final double widthMargin,
+                                  final double heightMargin) throws Exception {
+        // freemarker generators
+        final FreemarkerGenerators.LineGenerator lineGenerator = new FreemarkerGenerators.LineGenerator();
+        final FreemarkerGenerators.TextGenerator textGenerator = new FreemarkerGenerators.TextGenerator();
+
+        // chart dimensions
+        final double chartWidth = width - (widthMargin * 2);
+        final double chartHeight = height - (heightMargin * 2);
+
+        // Coordinate lines
+        final LineShape xAxis = new LineShape(diagram, lineGenerator, new Coordinate(0.0, (height - heightMargin)), new Coordinate(width - widthMargin, (height - heightMargin)), Color.BLACK, 1.0);
+        final LineShape yAxis = new LineShape(diagram, lineGenerator, new Coordinate(widthMargin, height), new Coordinate(widthMargin, heightMargin), Color.BLACK, 1.0);
+        diagram.addShape(xAxis);
+        diagram.addShape(yAxis);
+
+        // Add xAxis markers
+        final int markerStep = 25;
+        for (int i = 1; i <= markerStep; i++) {
+            // x, y position for x,y marker
+            final double xPos = widthMargin + ((chartWidth / markerStep) * i);
+            final double yPos = (height - heightMargin) - ((chartHeight / markerStep) * i);
+
+            // Calculate marker values
+            final String yMarkerValue = (i == markerStep)
+                    ? BigDecimal.valueOf(maxY).setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()
+                    : BigDecimal.valueOf(maxY - minY)
+                                .setScale(2, BigDecimal.ROUND_DOWN)
+                                .divide(BigDecimal.valueOf(markerStep), BigDecimal.ROUND_HALF_EVEN)
+                                .multiply(BigDecimal.valueOf(i))
+                                .toString();
+            final String xMarkerValue = (i == markerStep)
+                    ? BigDecimal.valueOf(maxX).setScale(2, BigDecimal.ROUND_HALF_DOWN).toString()
+                    : BigDecimal.valueOf(maxX - minX)
+                                .setScale(2, BigDecimal.ROUND_DOWN)
+                                .divide(BigDecimal.valueOf(markerStep), BigDecimal.ROUND_HALF_EVEN)
+                                .multiply(BigDecimal.valueOf(i))
+                                .toString();
+
+            // Add axis markers
+            diagram.addShape(new LineShape(diagram,
+                                           lineGenerator,
+                                           new Coordinate(widthMargin - 5, yPos),
+                                           new Coordinate(widthMargin + 5, yPos),
+                                           Color.BLACK,
+                                           1.0));
+            diagram.addShape(new LineShape(diagram,
+                                           lineGenerator,
+                                           new Coordinate(xPos, (height - heightMargin - 5)),
+                                           new Coordinate(xPos, (height - heightMargin + 5)),
+                                           Color.BLACK,
+                                           1.0));
+            diagram.addShape(new LineShape(diagram,
+                                           lineGenerator,
+                                           new Coordinate(widthMargin, yPos),
+                                           new Coordinate(width - widthMargin, yPos),
+                                           Color.DARK_GRAY,
+                                           0.1));
+
+            // Adda xis marker texts
+            final int markerValueYOffset = ((i % 2) != 0) ? 0 : 9;
+            diagram.addShape(new TextShape(diagram,
+                                           textGenerator,
+                                           new Coordinate(xPos - 15, height - heightMargin + 15 + markerValueYOffset),
+                                           Color.BLACK,
+                                           null,
+                                           xMarkerValue,
+                                           "Arial",
+                                           8.5,
+                                           0.25));
+            diagram.addShape(new TextShape(diagram, textGenerator, new Coordinate(5, yPos - 5), Color.BLACK, null, yMarkerValue, "Arial", 8.5, 0.25));
+        }
+    }
+
+    /**
+     * Generate the svg diagram file.
+     *
+     * @param filename         the filename of the svg diagram
+     * @param diagram          the diagram to be saved
+     * @param diagramGenerator the generator for the diagram
+     * @throws Exception if the generation fails for any reason
+     */
     private void generateFile(final String filename,
                               final Diagram diagram,
                               final FreemarkerGenerators.DiagramGenerator diagramGenerator) throws Exception {
