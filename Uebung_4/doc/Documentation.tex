@@ -90,13 +90,13 @@
 \section{Tracing}
 Dieser Abschnitt beschäftigt sich mit der Dokumentation der Aufgabenstellung \emph{Tracing}.
 \subsection{Lösungsidee} 
-Für das Testen des \emph{tracing} \emph{application.PositiveValueStore} implementiert, die mehrere verschachtelte Aufrufe sowie das Auslösen einer Ausnahme simuliert. Die Klasse \emph{application.Main} wurde von en Aspekten ausgenommen, damit die implementierten Testmethoden nicht in den \emph{Logs} aufscheinen.
+Für das Testen des \emph{Tracings} wurde die Klasse \emph{application.PositiveValueStore} implementiert, die mehrere verschachtelte Aufrufe sowie das Auslösen einer Ausnahme implementiert. Die Klasse \emph{application.Main} wurde von den Aspekten ausgenommen, damit die implementierten Testmethoden nicht in den \emph{Logs} aufscheinen.
 \newline
 \newline
-Der Aspekt \emph{TracingAspect} \emph{traced} alle Konstruktoraufrufe, Methodenaufrufe und Parameterzugriffe von Klassen bevor und nachdem Zugriff. Als \emph{Loggingframework} wird \emph{slf4j} verwendet. Alle Zugriffe werden in die Logdatei \emph{aspectj/logs/tracing-logfile.txt} geschrieben.
+Der Aspekt \emph{TracingAspect} \emph{logged} alle Aufrufe von Konstruktoren, Methoden  und Zugriffe auf \emph{Properties} von Klassen und zwar vor und nach dem Aufruf. Es wurden die \emph{PointCuts methodCall, fieldAccess, newObject} implementiert, für welche die \emph{before, after Advices} definiert wurden. Die \emph{Advices loggen} die Zugriffe, wobei die \emph{Logs} immer mit den Wörtern '\emph{[Before$\vert$After]}' beginnt. 
 \newline
 \newline
-Der Aspekt \emph{IndentionLogTrace} realisiert das Einrücken der logs um die Verschachtelung der Methodenaufrufe zu verdeutlichen. Es wird ein \emph{Pointcut} auf alle Methoden der Schnittstelle \emph{org.slf4j.Logger} definiert, und ein \emph{Around Advice} implementiert der den übergebenen Text formatiert, je nachdem ob eine erwarteter Zeichenkette (\emph{Before method, After method, Before constructor, After constructor}) am Anfang des Textes gefunden wurde. Wird eine solche Zeichenkette am Anfang des Textes gefunden wird bei \emph{Before ...} eine definierte Anzahl von Leerzeichen am Anfang des Textes eingefügt und beim Finden des Textes \emph{After ...} einmalig die definierte Anzahl von Leerzeichen am Anfang des Textes entfernt.
+Der Aspekt \emph{IndentionLogTrace} implementiert das Einrücken der \emph{Logs}, um die Schachtelung der Methodenaufrufe zu verdeutlichen. Es wird ein \emph{PointCut} auf alle Methoden der Schnittstelle \emph{org.slf4j.Logger} definiert und ein \emph{around Advice} implementiert, der den übergebenen Text formatiert, je nachdem ob die erwartende  Zeichenkette (\emph{[Before$\vert$After]}) am Anfang des Textes gefunden wurde. Wird eine solche Zeichenkette am Anfang des Textes gefunden, wird bei \emph{Before} eine definierte Anzahl von Leerzeichen am Anfang des Textes eingefügt und beim Finden des Textes \emph{After} einmalig die definierte Anzahl von Leerzeichen am Anfang des Textes entfernt.
 
 \subsection{Quelltexte}
 Folgender Abschnitt enthält die implementierten Klassen, Aspekte und das implementierte Testprogramm.
@@ -125,7 +125,7 @@ Folgender Abschnitt enthält die implementierten Klassen, Aspekte und das implem
 \end{code}
 
 \subsection{Tests}
-Folgender Abschnitt enthält die Tests der Aufgabenstellung in Form der generierten \emph{logs}
+Folgender Abschnitt enthält die Tests der Aufgabenstellung in Form der generierten \emph{logs}.
 
 \begin{figure}[h]
 	\centering
@@ -146,19 +146,19 @@ Folgender Abschnitt enthält die Tests der Aufgabenstellung in Form der generier
 Dieser Abschnitt beschäftigt sich mit der Dokumentation der Aufgabenstellung \emph{Caching}.
 
 \subsection{Lösungsidee} 
-Der Algorithmus für die Berechnung des Binominialkoeffizienten wird in der Klasse \emph{BinomialCoefficient} implementiert.
+Der Algorithmus für die Berechnung des Binominialkoeffizienten wird in der Klasse \emph{BinomialCoefficient} als statische Methode \emph{calculate} implementiert.
 \newline
 \newline
-Es wird ein abstrakter Aspekt \emph{AbstractAspect} implementiert, der die \emph{Pointcut} \emph{firstCall}, \emph{allCallsWithArgs} und \emph{innerCalls} definiert, sowie \emph{Advices} für \emph{firstCall}, die abstrakte Methoden aufrufen. Dies soll so strukturiert werden, da alle Aspekte auf den ersten Aufruf der Berechnungsmethode reagieren sollen, um ihre Zustände zu initialisieren und zurückzusetzen. Dazu werden zwei Methoden \emph{beforeFristCall} und \emph{afterFirstCall} zur Verfügung gestellt, die von den konkreten Aspekten überschrieben werden können. Die Methoden \emph{beforeFristCall} und \emph{afterFirstCall} sind mit leeren Methodenrumpf in der Klasse \emph{AbstractAspect} implementiert. 
+Es wird ein abstrakter Aspekt \emph{AbstractAspect} implementiert, der die \emph{Pointcut} \emph{firstCall}, \emph{allCallsWithArgs} und \emph{innerCalls} definiert, sowie \emph{before, after Advices} für \emph{firstCall} definiert, die vordefinierte implementierte Methoden aufrufen, die von den abgeleiteten Aspekten überschrieben werden können. Dies wird so strukturiert, damit alle Aspekte auf den ersten Aufruf der Berechnungsmethode reagieren können, um ihre Zustände zu initialisieren und zurückzusetzen. Dazu werden zwei Methoden \emph{beforeFristCall} und \emph{afterFirstCall} zur Verfügung gestellt, die von den konkreten Aspekten überschrieben werden können. Die Methoden \emph{beforeFristCall} und \emph{afterFirstCall} sind mit leeren Methodenrumpf in der Klasse \emph{AbstractAspect} implementiert. 
 \newline
 \newline
-Es wird der Aspekt \emph{LogRecursiveCallsAspect} implementiert, der einen \emph{Advice} definiert, der nur ausgeführt wird wenn das \emph{Logging} aktiviert wurde und die Bedingungen definiert im \emph{PointCut innerCalls} erfüllt sind. Beim ersten Aufruf der Berechnungsmethode wird vor dem Aufruf der Methode der Zähler initialisiert und nach dem Aufruf das Resultat über den \emph{Logger} in die \emph{Logs} geschrieben und der Zähler wieder zurückgesetzt.
+Es wird der Aspekt \emph{LogRecursiveCallsAspect} implementiert, der einen \emph{after Advice} definiert, der nur dann ausgeführt wird wenn die boolesche Variable  \emph{Main.LoggingEnabled} auf den Wert \emph{true} gesetzt ist und die Bedingungen definiert im \emph{PointCut innerCalls()} erfüllt sind. Beim ersten Aufruf der Berechnungsmethode wird vor dem Aufruf der Methode der Zähler initialisiert und nach dem Aufruf das Resultat über den \emph{Logger} in die \emph{Logs} geschrieben und der Zähler zurückgesetzt.
 \newline
 \newline
-Es wird der Aspekt \emph{BinomialCacheAspect} implementiert, der die Berechnungsergebnisse zwischenspeichert um sie bei einem erneuten Auftreten der Variablen \emph{n, m} zurückliefert und so einen weiteren rekursiven Abstiegt verhindert. Es wird die Klasse \emph{BinomMapKey} implementiert, die als Schlüssel in einer \emph{java.util.HashMap} fungiert, die wiederum die berechneten Werte speichert. Das Zwischenspeichern wird nur dann durchgeführt, wenn \emph{Main.CachingEnabled} auf den Wert \emph{true} gesetzt ist.
+Es wird der Aspekt \emph{BinomialCacheAspect} implementiert, der einen \emph{around Advice} definiert, der nur ausgeführt wird  wenn die boolesche Variable  \emph{Main.CachingEnabled} auf den Wert \emph{true} gesetzt ist und die Bedingungen definiert im \emph{PointCut allCallsWithArgs(n,m)} erfüllt sind. Der \emph{around Advice} speichert die Berechnungsergebnisse, um sie bei einem erneuten Auftreten der Variablen \emph{n, m} zurückzuliefern, um so einen weiteren rekursiven Abstiegt zu verhindern. Beim ersten Aufruf der Berechnungsmethode wird vor dem Aufruf der Methode der \emph{Cache} initialisiert und nach dem Aufruf der \emph{Cache} geleert. Es wird die Klasse \emph{BinomMapKey} implementiert, die als Schlüssel in einer \emph{java.util.HashMap} fungiert, welche die berechneten Werte speichert.
 \newline
 \newline
-Es wird der Aspekt \emph{RuntimeMeasurementAspect} implementiert, der die Dauer der gesamten Berechnung misst und über den \emph{Logger} ind \emph{Logs} schreibt. Das Messen der Zeit wird nur dann durchgeführt wenn \emph{Main.LoggingEnabled} auf den Wert \emph{true} gesetzt ist.
+Es wird der Aspekt \emph{RuntimeMeasurementAspect} implementiert, der die Dauer der gesamten Berechnung misst und über den \emph{Logger} in die \emph{Logs} schreibt. Dieser Aspekt überschreibt die beiden Methoden \emph{beforeFristCall} und \emph{afterFirstCall}, die von der abgeleiteten Klasse \emph{AbstraktAspect} zur Verfügung gestellt werden. Dieser Aspekt wird nur dann ausgeführt, wenn die boolesche Variable  \emph{Main.RuntimeMeasurementEnabled} auf den Wert \emph{true} gesetzt ist  
 
 \subsection{Quelltexte}
 Folgender Abschnitt enthält die implementierten Klassen, Aspekte und das implementierte Testprogramm.
@@ -209,7 +209,7 @@ Folgender Abschnitt enthält die implementierten Klassen, Aspekte und das implem
 Folgender Abschnitt enthält die Tests der Aufgabenstellung in Form der generierten \emph{logs}.
 \newline
 \newline
-Während der Tests hat sich gezeigt, das mit aktiviertem \emph{Caching} sich das Laufzeitverhalten deutlich verbessert hat, da die rekursiven Aufrufe deutlich weniger geworden sind und daher auch die Anzahl der Berechnungen sich deutlich verringert hat.
+Während der Tests hat sich gezeigt, dass mit aktiviertem \emph{Caching} sich das Laufzeitverhalten deutlich verbessert hat, da die rekursiven Aufrufe deutlich weniger geworden sind und daher auch die Anzahl der Berechnungen sich deutlich verringert hat.
 
 \begin{figure}[h]
 	\centering
@@ -217,25 +217,27 @@ Während der Tests hat sich gezeigt, das mit aktiviertem \emph{Caching} sich das
 	\caption{\emph{Caching} Test \emph{Logs}}
 	\label{fig:caching-log}
 \end{figure}
-\ \newpage
 
 \section{Asepct-Oriented TSP Solver}
 Dieser Abschnitt beschäftigt sich mit der Dokumentation der Aufgabenstellung \emph{Asepct-Oriented TSP Solver}.
+
 \subsection{Lösungsidee}
 Die Projektstruktur wurde dahingehend verändert, dass die Schnittstellen und die \emph{Exceptions} in eigene Pakete ausgelagert wurden. Die Konfiguration der Aspekte wurde in der Klasse \emph{util.AspectjConfig} zusammengeführt, die jetzt alle booleschen Variablen enthält die von den Aspekten verwendet werden, um zu entscheiden, ob sie aktiviert sind oder nicht. Die nötigen Änderungen in den bestehenden Aspekten wurden vorgenommen, damit die Aspekte mit der geänderten Projektkonfiguration arbeiten können.
 \newline
 \newline
-Es wird der Aspekt \emph{CountEvaluatedSolutionsAspect} implementiert, der die Anzahl der evaluierten Lösungen zählt. Es wird ein \emph{PointCut executeCall} definiert, auf den die beiden \emph{before advice, after advivce} hängen, wobei der \emph{before advice} vor dem Methodenaufruf der Methode \emph{Algorithm.execute} den Zähler initialisiert der \emph{after advice} nach dem Methodenaufruf der Methode \emph{Algorithm.execute} das Resultat über einen \emph{Logger} in die \emph{Logs} schreibt und den Zähler zurücksetzt. Ein weiterer \emph{after advice} erhöht den Zähler nach dem Methodenaufruf der Methode \emph{Solution.evaluate}. Dieser Aspekt arbeitet nur gegen die Schnittstellen \emph{Algorithm} und \emph{Solution} und ist daher auf alle Implementierungen dieser Schnittstellen anwendbar. Dieser Aspekt greift nur wenn die Variable \emph{AspectjConfig.countSolutionsEnabled} auf den Wert \emph{true} gesetzt ist.
+Es wird der Aspekt \emph{CountEvaluatedSolutionsAspect} implementiert, der die Anzahl der evaluierten Lösungen zählt. Es wird ein \emph{PointCut executeCall} definiert, für den die beiden \emph{before, after Advices} definiert werden, wobei der \emph{before Advice} vor dem Methodenaufruf der Methode \emph{Algorithm.execute} den Zähler initialisiert der \emph{after Advice} nach dem Methodenaufruf der Methode \emph{Algorithm.execute} das Resultat über einen \emph{Logger} in die \emph{Logs} schreibt und den Zähler zurücksetzt. Ein weiterer \emph{after Advice} erhöht den Zähler nach dem Methodenaufruf der Methode \emph{Solution.evaluate}. Dieser Aspekt arbeitet nur gegen die Schnittstellen \emph{Algorithm} und \emph{Solution} und ist daher auf alle Implementierungen dieser Schnittstellen anwendbar. Dieser Asüect wird als abstrakt ausgewiesen, da der zu implementierende Aspekt \emph{LimitEvaluatedSolutions}, von diesem Aspekt ableiten soll.  Dieser Aspekt greift nur wenn die boolesche Variable \emph{AspectjConfig.countSolutionsEnabled} auf den Wert \emph{true} gesetzt ist.
 \newline
 \newline
-Es wird der Aspekt \emph{GAElitismAspect} implementiert, der die schlechteste Lösung der neu erstellten Kinder durch die beste Lösung des vorherigen Durchlaufs ersetzt. Es wird ein \emph{around advice} für die Methode \emph{GA.createChildren} implementiert, der das zurückgelieferte \emph{Array} der Kinder verändert. Wird ein Kind ausgetauscht so wird eine Meldung über einen \emph{Logger} in die \emph{Logs} geschrieben. Dieser Aspekt ist abhängig von der Klasse \emph{GA}, da die Schnittstelle \emph{Algorithm} die Methode \emph{createChildren} nicht definiert. Dieser Aspekt greift nur wenn die Variable \emph{AspectjConfig.elitismEnabled} auf den Wert \emph{true} gesetzt ist.
+Es wird der Aspekt \emph{GAElitismAspect} implementiert, der die schlechteste Lösung der neu erstellten Kinder durch die beste Lösung des vorherigen Durchlaufs ersetzt. Es wird ein \emph{around Advice} für die Methode \emph{GA.createChildren} implementiert, der das zurückgelieferte \emph{Array} der Kinder manipuliert. Wird ein Kind ausgetauscht, so wird eine Meldung über einen \emph{Logger} in die \emph{Logs} geschrieben. Dieser Aspekt ist abhängig von der Klasse \emph{GA}, da die Schnittstelle \emph{Algorithm} die Methode \emph{createChildren} nicht definiert. Dieser Aspekt greift nur wenn die boolesche Variable \emph{AspectjConfig.elitismEnabled} auf den Wert \emph{true} gesetzt ist.
 \newline
 \newline
-Es wird der Aspekt \emph{GAProtocolProgressAspect} implementiert, der die beste Lösung, schlechteste Lösung und den Durchschnitt der Lösungen einer Population einer Iteration speichert und nach dem Ausführen des Algorithmus über einen \emph{Logger} in die \emph{Logs} schreibt und ein SVG-Diagramm mit der Bibliothek \emph{gp2.svg-generator} erstellt. Es wird der \emph{PointCut firstExecuteCall} definiert, für den die beiden \emph{advices before, after} definiert werden, wobei der \emph{advice before} die Zustände des Aspekts initialisiert und der \emph{advice after} die Zustände des Aspekts zurücksetzt. Es werden zwei \emph{after advices} definiert, wobei ein \emph{after advice} nach der Ausführung der Methode \emph{Algorithm.initialize} und der andere \emph{after advice} nach der Ausführung der Methode \emph{Algorithm.iterate} greift. Der \emph{after advice} für die Methode \emph{Algorithm.initialize} ist notwendig, weil dort die erste Population erstellt wird. Dieser Aspekt greift nur wenn die Variable \emph{AspectjConfig.reportAlgorithmEnabled} auf den Wert \emph{true} gesetzt ist.
+Es wird der Aspekt \emph{LimitEvaluatedSolutions} implementiert, der die Iteration beim Erreichen einer vorgegebenen Anzahl von evaluierten Lösungen abbricht. Es wird hierbei das Ausführen der nächsten Iteration verhindert, wodurch in der aktuellen Iteration trotzdem mehr als die vorgegebenen Lösungen evaluiert werden können, daher muss die vorgegebene Anzahl der Iterationen ein Vielfaches der evaluierten Lösungen/Iteration sein, damit genau bei der vorgegebenen Anzahl abgebrochen wird. Dieser Aspekt erbt von dem implementierten abstrakten Aspekt \emph{CountEvaluatedSolutionsAspect} und verwendet dessen Zähler. Ein \emph{around advice} für die Methode \emph{Algorithm.iterate} verhindert das Ausführen der Iteration und setzt eine boolesche Variable auf \emph{true}, die beim \emph{around advice} für die Methode \emph{Algorithm.isTerminated} \emph{true} als Resultat liefert, wenn die Iteration abgebrochen werden soll. Diese Aspekt ist anwendbar auf alle Implementierungen der Schnittstelle \emph{Algorithm}.
 \newline
 \newline
-Es wird eine Klasse \emph{AspectReport} implementiert, welche die gesammelten Daten einerseits über einen \emph{Logger} in die \emph{Logs} schreibt und andererseits ein SVG-Diagramm erstellt. 
-\newpage
+Es wird der Aspekt \emph{GAProtocolProgressAspect} implementiert, der die beste Lösung, schlechteste Lösung und den Durchschnitt der Lösungen einer Population einer Iteration speichert und nach dem Ausführen des Algorithmus über einen \emph{Logger} in die \emph{Logs} schreibt und ein SVG-Diagramm mit der Bibliothek \emph{gp2.svg-generator} erstellt. Zusätzlich wird ein SVG-Diagramm mit dem besten \emph{roundtrip}, der besten Lösung, die vom Algorithmus gefunden wurde erstellt. Es wird der \emph{PointCut firstExecuteCall} definiert, für den die beiden \emph{before, after Advices} definiert werden, wobei der \emph{before Advice} die Zustände des Aspekts initialisiert und der \emph{after Advice} die Zustände des Aspekts zurücksetzt. Es werden zwei \emph{after Advices} definiert, wobei ein \emph{after Advice} nach der Ausführung der Methode \emph{Algorithm.initialize} und der andere \emph{after Advice} nach der Ausführung der Methode \emph{Algorithm.iterate} ausgeführt werden. Der \emph{after Advice} für die Methode \emph{Algorithm.initialize} ist notwendig, weil dort die erste Population erstellt wird. Dieser Aspekt greift nur wenn die Variable \emph{AspectjConfig.reportAlgorithmEnabled} auf den Wert \emph{true} gesetzt ist.
+\newline
+\newline
+Es wird eine Klasse \emph{AspectReport} implementiert, welche die gesammelten Daten über einen \emph{Logger} in die \emph{Logs} schreibt, ein SVG-Diagramm für \emph{best, worst, average} erstellt und ein SVG-Diagramm für den besten \emph{rountrip} der besten vom Algorithmus gefundenen Lösung erstellt. Um das SVG-Diagramm zu zeichnen, wurde der in der vorherigen Übung implementierte SVG-Generator verwendet. Da in der letzten Übung kein \emph{PolylineShape} implementiert wurde, wird der Verlauf mi einem \emph{LineShape} gezeichnet, wobei die \emph{Destination} der vorherigen Iteration als \emph{Origin} der aktuellen Iteration verwendet wird. Eine \emph{Polyline} wäre zwar effizienter und das SVG-Dokument würde weitaus kleiner ausfallen, jedoch stand mir kein implementiertes \emph{PolylineShape} zur Verfügung.    
 
 \subsection{Quelltexte}
 Folgender Abschnitt enthält die implementierten Klassen, Aspekte und das implementierte Testprogramm.
@@ -278,9 +280,10 @@ Folgender Abschnitt enthält die implementierten Klassen, Aspekte und das implem
 Folgender Abschnitt enthält die Tests der Aufgabenstellung in Form der generierten \emph{logs} und der generierten SVG-Diagramme.
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.5]{\imageDir/tsp-solver-log-1.JPG}
+	\includegraphics[scale=0.6]{\imageDir/tsp-solver-log-1.JPG}
 	\caption{\emph{TSP-Solver Logs} Teil 1}
 \end{figure}
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.5]{\imageDir/tsp-solver-log-2.JPG}
@@ -289,15 +292,58 @@ Folgender Abschnitt enthält die Tests der Aufgabenstellung in Form der generier
 \ \newpage
 
 \begin{figure}[h]
-\centering
-	\includegraphics[scale=0.5]{\imageDir/tsp-solver-log-3.JPG}
-	\caption{\emph{TSP-Solver Logs} Teil 3}
+	\centering
+	\includegraphics[scale=0.7]{\imageDir/tsp-solver-random-1.JPG}
+	\caption{\emph{TSP-Solver, Random Seed} erster Durchlauf}
 \end{figure}
-\ \newline
+\ \newpage
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{\imageDir/tsp-solver-random-1-roundtrip.JPG}
+	\caption{\emph{TSP-Solver, Random Seed} erster Durchlauf \emph{roundtrip}}
+\end{figure}
+\ \newpage
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{\imageDir/tsp-solver-random-2.JPG}
+	\caption{\emph{TSP-Solver, Random Seed} zweiter Durchlauf}
+\end{figure}
+\ \newpage
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{\imageDir/tsp-solver-random-2-roundtrip.JPG}
+	\caption{\emph{TSP-Solver, Random Seed} zweiter Durchlauf \emph{roundtrip}}
+\end{figure}
+\ \newpage
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{\imageDir/tsp-solver-random-3.JPG}
+	\caption{\emph{TSP-Solver, Random Seed} dritterDurchlauf}
+\end{figure}
+\ \newpage
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{\imageDir/tsp-solver-random-3-roundtrip.JPG}
+	\caption{\emph{TSP-Solver, Random Seed} dritter Durchlauf \emph{roundtrip}}
+\end{figure}
+\ \newpage
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.7]{\imageDir/tsp-solver-elitism-random-1.JPG}
 	\caption{\emph{TSP-Solver, Random Seed, Elitism} erster Durchlauf}
+\end{figure}
+\ \newpage
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{\imageDir/tsp-solver-elitism-random-1-roundtrip.JPG}
+	\caption{\emph{TSP-Solver, Random Seed, Elitism} erster Durchlauf \emph{roundtrip}}
 \end{figure}
 \ \newpage
 
@@ -310,6 +356,13 @@ Folgender Abschnitt enthält die Tests der Aufgabenstellung in Form der generier
 
 \begin{figure}[h]
 	\centering
+	\includegraphics[scale=0.7]{\imageDir/tsp-solver-elitism-random-2-roundtrip.JPG}
+	\caption{\emph{TSP-Solver, Random Seed, Elitism} zweiter Durchlauf \emph{roundtrip}}
+\end{figure}
+\ \newpage
+
+\begin{figure}[h]
+	\centering
 	\includegraphics[scale=0.7]{\imageDir/tsp-solver-elitism-random-3.JPG}
 	\caption{\emph{TSP-Solver, Random Seed, Elitism} dritter Durchlauf}
 \end{figure}
@@ -317,22 +370,9 @@ Folgender Abschnitt enthält die Tests der Aufgabenstellung in Form der generier
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.7]{\imageDir/tsp-solver-random-1.JPG}
-	\caption{\emph{TSP-Solver, Random Seed} erster Durchlauf}
+	\includegraphics[scale=0.7]{\imageDir/tsp-solver-elitism-random-3-roundtrip.JPG}
+	\caption{\emph{TSP-Solver, Random Seed, Elitism} dritter Durchlauf \emph{roundtrip}}
 \end{figure}
-
 \ \newpage
-\begin{figure}[h]
-	\centering
-	\includegraphics[scale=0.7]{\imageDir/tsp-solver-random-2.JPG}
-	\caption{\emph{TSP-Solver, Random Seed} zweiter Durchlauf}
-\end{figure}
-
-\ \newpage
-\begin{figure}[h]
-	\centering
-	\includegraphics[scale=0.7]{\imageDir/tsp-solver-random-3.JPG}
-	\caption{\emph{TSP-Solver, Random Seed} dritterDurchlauf}
-\end{figure}
 
 \end{document}

@@ -19,11 +19,11 @@ public aspect IndentionLogTrace {
                     && within(TracingAspect);
 
     void around(String msg): logCall(msg){
-        if ((msg.startsWith("After method") || msg.startsWith("After constructor")) && (currentIndent.length() >= MAX_INDENT_IDX)) {
+        if ((msg.startsWith("After")) && (currentIndent.length() >= MAX_INDENT_IDX)) {
             currentIndent = currentIndent.substring(MAX_INDENT_IDX, currentIndent.length() - 1);
         }
         proceed(currentIndent + msg);
-        if (msg.startsWith("Before method") || msg.startsWith("Before constructor")) {
+        if (msg.startsWith("Before")) {
             currentIndent = INDENT + currentIndent;
         }
     }
