@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflection.Emit", "Reflection.Emit\Reflection.Emit.csproj", "{7A93088A-FBD1-40FB-A14F-11502C0668D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Symbolic.Computation", "Symbolic.Computation\Symbolic.Computation.csproj", "{10E47473-CA0E-483F-87FA-022FCD800388}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7A93088A-FBD1-40FB-A14F-11502C0668D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A93088A-FBD1-40FB-A14F-11502C0668D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A93088A-FBD1-40FB-A14F-11502C0668D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A93088A-FBD1-40FB-A14F-11502C0668D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10E47473-CA0E-483F-87FA-022FCD800388}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10E47473-CA0E-483F-87FA-022FCD800388}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10E47473-CA0E-483F-87FA-022FCD800388}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10E47473-CA0E-483F-87FA-022FCD800388}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
