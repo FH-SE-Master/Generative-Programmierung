@@ -36,9 +36,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DynamicProxies.cs" />
+    <Compile Include="IInterception.cs" />
+    <Compile Include="ISecondTest.cs" />
+    <Compile Include="ITest.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="ProxyGenerator.cs" />
-    <Compile Include="TestProxy.cs" />
+    <Compile Include="SecondTest.cs" />
+    <Compile Include="Test.cs" />
+    <Compile Include="LogInterception.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
