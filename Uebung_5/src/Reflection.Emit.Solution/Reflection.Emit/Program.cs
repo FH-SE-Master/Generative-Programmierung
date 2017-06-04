@@ -9,10 +9,12 @@ namespace Reflection.Emit
     {
         static void Main(string[] args)
         {
-            ITest firstObj = new Test();
-            ISecondTest secondObj = new Test();
+            var firstObj = new Test();
+            var secondObj = new Test();
+            var thirdObj = new Test();
             var firstInterceptor = new LogInterception<ITest>();
             var secondInterceptor = new LogInterception<ISecondTest>();
+            var thirdInterceptor = new LogInterception<Test>();
 
             try
             {
@@ -23,32 +25,43 @@ namespace Reflection.Emit
                 Console.WriteLine("testNoInterceptor:");
                 Console.WriteLine("-------------------------------------------------");
                 InvokeMethodsITest(firstObj);
-                InvokeMethodsISecondText((ISecondTest)firstObj);
                 Console.WriteLine("-------------------------------------------------");
                 Console.WriteLine("testWithInterceptor:");
                 Console.WriteLine("-------------------------------------------------");
-                // Create proxy an apply interceptor on ITest interface methods
-                firstObj = ProxyGenerator.Create<ITest>(firstObj, firstInterceptor);
+                // Create proxy and apply interceptor on ITest interface methods
+                firstObj = (Test)ProxyGenerator.Create(firstObj, firstInterceptor);
                 InvokeMethodsITest(firstObj);
-                InvokeMethodsISecondText((ISecondTest)firstObj);
                 Console.WriteLine("-------------------------------------------------");
-
-
+                Console.WriteLine("");
+                
                 Console.WriteLine("-------------------------------------------------");
                 Console.WriteLine("DynamicProxy Tests ProxyGenerator.Create<ISecondTest>():");
                 Console.WriteLine("-------------------------------------------------");
                 Console.WriteLine("-------------------------------------------------");
                 Console.WriteLine("testNoInterceptor:");
                 Console.WriteLine("-------------------------------------------------");
-                InvokeMethodsITest((ITest)secondObj);
-                InvokeMethodsISecondText(secondObj);
+                InvokeMethodsITest(secondObj);
                 Console.WriteLine("-------------------------------------------------");
                 Console.WriteLine("testWithInterceptor:");
                 Console.WriteLine("-------------------------------------------------");
-                // Create proxy an apply interceptor on ISecondTest interface methods
-                secondObj = ProxyGenerator.Create<ISecondTest>(secondObj, secondInterceptor);
-                InvokeMethodsITest((ITest)secondObj);
-                InvokeMethodsISecondText(secondObj);
+                // Create proxy and apply interceptor on ISecondTest interface methods
+                secondObj = (Test)ProxyGenerator.Create(secondObj, secondInterceptor);
+                InvokeMethodsITest(secondObj);
+                Console.WriteLine("-------------------------------------------------");
+
+                Console.WriteLine("-------------------------------------------------");
+                Console.WriteLine("DynamicProxy Tests ProxyGenerator.Create<Test>():");
+                Console.WriteLine("-------------------------------------------------");
+                Console.WriteLine("-------------------------------------------------");
+                Console.WriteLine("testNoInterceptor:");
+                Console.WriteLine("-------------------------------------------------");
+                InvokeMethodsITest(thirdObj);
+                Console.WriteLine("-------------------------------------------------");
+                Console.WriteLine("testWithInterceptor:");
+                Console.WriteLine("-------------------------------------------------");
+                // Create proxy and apply interceptor on Test methods
+                thirdObj = ProxyGenerator.Create(thirdObj, thirdInterceptor);
+                InvokeMethodsITest(thirdObj);
                 Console.WriteLine("-------------------------------------------------");
             }
             catch (Exception e)
@@ -61,19 +74,13 @@ namespace Reflection.Emit
         /// Performs method invocation on ITest instances.
         /// </summary>
         /// <param name="obj">the ITest instance</param>
-        private static void InvokeMethodsITest(ITest obj)
+        private static void InvokeMethodsITest(Test obj)
         {
+            // ITest methods 
             Console.WriteLine($"DoStuff(1, 2): {obj.DoStuff(1, 2)}");
             Console.WriteLine($"DoStuff(2, 2): {obj.DoStuff(2, 2)}");
             Console.WriteLine($"DoStuff(4, 4): {obj.DoStuff(4, 4)}");
-        }
-
-        /// <summary>
-        /// Performs method invocation on ISecondTest instances.
-        /// </summary>
-        /// <param name="obj">the ISecondTest instance</param>
-        private static void InvokeMethodsISecondText(ISecondTest obj)
-        {
+            // ISecondTest methods 
             Console.WriteLine($"DoOtherStuff: {obj.DoOtherStuff()}");
             Console.WriteLine($"DoOtherStuff: {obj.DoOtherStuff()}");
             Console.WriteLine($"DoOtherStuff: {obj.DoOtherStuff()}");

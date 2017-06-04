@@ -37,11 +37,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IInterception.cs" />
-    <Compile Include="ISecondTest.cs" />
-    <Compile Include="ITest.cs" />
+    <Compile Include="Interfaces.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProxyGenerator.cs" />
-    <Compile Include="SecondTest.cs" />
     <Compile Include="Test.cs" />
     <Compile Include="LogInterception.cs" />
   </ItemGroup>

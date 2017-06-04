@@ -15,13 +15,13 @@ namespace Reflection.Emit
         private static readonly string AssemblyName = typeof(ProxyGenerator).Namespace + ".Proxy";
         private static readonly string ModuleName = AssemblyName;
         private static readonly string AssemblyFullName = AssemblyName + ".dll";
-        public const string WrappedFieldName = "proxied";
-        public const string InterceptorFieldName = "interceptor";
+        private const string WrappedFieldName = "proxied";
+        private const string InterceptorFieldName = "interceptor";
 
         /// <summary>
         /// Creates the proxied object for the given object.
         /// </summary>
-        /// <typeparam name="T">the type of the given and proxied object</typeparam>
+        /// <typeparam name="T">the type of the given, proxied and intercepted object</typeparam>
         /// <param name="obj">the object to proxy</param>
         /// <returns>the proxied object</returns>
         public static T Create<T>(T obj)
@@ -33,7 +33,7 @@ namespace Reflection.Emit
         /// Creates the proxied object for the given object and applies the interceptor to the methods 
         /// accessible by the Type T.
         /// </summary>
-        /// <typeparam name="T">the type of the given and proxied object</typeparam>
+        /// <typeparam name="T">the type of the given, proxied and intercepted object</typeparam>
         /// <param name="obj">the object to proxy</param>
         /// <param name="interceptor">the interceptor applied to the proxied object method invocations</param>
         /// <returns>the proxied object</returns>
@@ -92,7 +92,7 @@ namespace Reflection.Emit
 
             #region Create proxied methods
 
-            // only intercept interface method visible to interceptor
+            // only intercept interface methods visible to interceptor
             IList interceptableInterfaces;
             if (typeof(T).IsInterface)
             {
@@ -120,6 +120,13 @@ namespace Reflection.Emit
                         methodInfo.Attributes,
                         methodInfo.ReturnType,
                         parameterTypes);
+
+                    // Ensure that proxied method is called, even when proxied object is cast to implementation class
+                    // Needs the implementation class to mark methods as virtual
+                    if (methodInfo.IsVirtual)
+                    {
+                        typeBuilder.DefineMethodOverride(methodBuilder, methodInfo);
+                    }
 
                     il = methodBuilder.GetILGenerator();
 

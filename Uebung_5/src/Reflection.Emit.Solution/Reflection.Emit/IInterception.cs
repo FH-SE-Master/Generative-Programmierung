@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 namespace Reflection.Emit
 {
     /// <summary>
-    /// Specifies an interceptor which can perform before and after actions on a proxied object.
+    /// Specifies an interceptor which can perform before and after actions 
+    /// on a intercepted method invocation.
     /// </summary>
-    public interface IInterception<T>
+    public interface IInterception<in T>
     {
         /// <summary>
-        /// Action performed before the actual method execution
+        /// Action performed before the actual method execution.
         /// </summary>
         /// <param name="intercepted">the intercepted object</param>
         /// <param name="methodName">the intercepted method name</param>

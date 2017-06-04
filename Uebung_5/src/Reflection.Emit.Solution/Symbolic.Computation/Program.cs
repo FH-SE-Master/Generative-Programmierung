@@ -42,9 +42,10 @@ namespace Symbolic.Computation
             Console.WriteLine("-------------------------------------------------");
             TestEvaluation(() => variable(data, 0, 2, 2.0), (data[0][2] * 2.0));
             Console.WriteLine("-------------------------------------------------");
+            Console.WriteLine();
 
             Console.WriteLine("-------------------------------------------------");
-            Console.WriteLine("Test syntax trees:");
+            Console.WriteLine("Test evaluation trees:");
             Console.WriteLine("-------------------------------------------------");
             Console.WriteLine("TestExample1()");
             Console.WriteLine("-------------------------------------------------");
@@ -64,7 +65,7 @@ namespace Symbolic.Computation
         private static void TestEvaluation(Func<double> function, double expected)
         {
             double actual = function();
-            Console.WriteLine($"actual:{actual} / expected: {actual} / result={actual.IsAlmost(expected)}");
+            Console.WriteLine($"actual:{actual} / expected: {actual} / result={actual.AssertAlmostEqual(expected)}");
         }
 
         /// <summary>
@@ -74,29 +75,33 @@ namespace Symbolic.Computation
             TerminalEvaluation variable)
         {
             Console.WriteLine("ADD([1.2*VAR_1], MULT([-2.9*VAR_0], [0.3*VAR_2]))");
+            Console.WriteLine("-------------------------------------------------");
 
             const int variableCount = 3;
             const int sampleCount = 5;
             double[][] data = CreateTestData(variableCount, sampleCount);
 
-            Node multNode = new Node(multiplication, new List<Node>()
+            INode multNode = new FunctionalNode(multiplication, new List<INode>()
             {
-                new Node(variable, 2, 0.3),
-                new Node(variable, 0, -2.9)
+                new TerminalNode(variable, 2, 0.3),
+                new TerminalNode(variable, 0, -2.9)
             });
-            Node rootNode = new Node(addition, new List<Node>()
+            INode rootNode = new FunctionalNode(addition, new List<INode>()
             {
                 multNode,
-                new Node(variable, 1, 1.2)
+                new TerminalNode(variable, 1, 1.2)
             });
 
             for (var sampleIdx = 0; sampleIdx < sampleCount; sampleIdx++)
             {
+                double actual = rootNode.Evaluate(data, sampleIdx);
+                double expected = ((1.2 * data[1][sampleIdx]) + (-2.9 * data[0][sampleIdx] * 0.3 * data[2][sampleIdx]));
                 Console.WriteLine(
                     $"ADD([1.2*{data[1][sampleIdx]}], "
                     + $"MULT([-2.9*{data[0][sampleIdx]}], [0.3*{data[2][sampleIdx]}])) "
-                    + $"= {rootNode.Evaluate(data, sampleIdx)} "
-                    + $"= {((1.2 * data[1][sampleIdx]) + (-2.9 * data[0][sampleIdx] * 0.3 * data[2][sampleIdx]))} ");
+                    + $"= {actual} "
+                    + $"= {expected} "
+                    + $"= {actual.AssertAlmostEqual(expected)} ");
             }
         }
 
@@ -107,41 +112,48 @@ namespace Symbolic.Computation
             TerminalEvaluation variable)
         {
             Console.WriteLine("ADD([2*VAR_0], MULT([4*VAR_1], ADD([-2*VAR_2], MULT([4*VAR_3], [-2*VAR_4]))))");
+            Console.WriteLine("-------------------------------------------------");
 
             const int variableCount = 5;
             const int sampleCount = 5;
             double[][] data = CreateTestData(variableCount, sampleCount);
 
-            Node mult0Node = new Node(multiplication, new List<Node>()
+            INode mult0Node = new FunctionalNode(multiplication, new List<INode>()
             {
-                new Node(variable, 4, -2),
-                new Node(variable, 3, 4)
+                new TerminalNode(variable, 4, -2),
+                new TerminalNode(variable, 3, 4)
             });
-            Node add1Node = new Node(addition, new List<Node>()
+            INode add1Node = new FunctionalNode(addition, new List<INode>()
             {
                 mult0Node,
-                new Node(variable, 2, -2)
+                new TerminalNode(variable, 2, -2)
             });
-            Node mult2Node = new Node(multiplication, new List<Node>()
+            INode mult2Node = new FunctionalNode(multiplication, new List<INode>()
             {
                 add1Node,
-                new Node(variable, 1, 4)
+                new TerminalNode(variable, 1, 4)
             });
-            Node rootNode = new Node(addition, new List<Node>()
+            INode rootNode = new FunctionalNode(addition, new List<INode>()
             {
                 mult2Node,
-                new Node(variable, 0, 2)
+                new TerminalNode(variable, 0, 2)
             });
 
             for (var sampleIdx = 0; sampleIdx < sampleCount; sampleIdx++)
             {
+                double actual = rootNode.Evaluate(data, sampleIdx);
+                double expected = ((2 * data[0][sampleIdx]) +
+                                   ((4 * data[1][sampleIdx]) *
+                                    (((-2) * data[2][sampleIdx]) +
+                                     (4 * data[3][sampleIdx] * (-2) * data[4][sampleIdx]))));
                 Console.WriteLine(
                     $"ADD([2*{data[0][sampleIdx]}], "
                     + $"MULT([4*{data[1][sampleIdx]}], "
                     + $"ADD([-2*{data[2][sampleIdx]}], "
                     + $"MULT([4*{data[3][sampleIdx]}], [-2*{data[4][sampleIdx]}])))) "
-                    + $"= {rootNode.Evaluate(data, sampleIdx)} "
-                    + $"= {((2 * data[0][sampleIdx]) + ((4 * data[1][sampleIdx]) * (((-2) * data[2][sampleIdx]) + (4 * data[3][sampleIdx] * (-2) * data[4][sampleIdx]))))} ");
+                    + $"= {actual} "
+                    + $"= {expected} "
+                    + $"= {actual.AssertAlmostEqual(expected)} ");
             }
         }
 
