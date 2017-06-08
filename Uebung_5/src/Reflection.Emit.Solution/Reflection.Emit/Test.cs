@@ -13,9 +13,20 @@ namespace Reflection.Emit
             return i + j;
         }
 
+        public virtual void DoVoidStuff()
+        {
+            Console.WriteLine("void DoVoidStuff() called");
+        }
+
+
         public virtual string DoOtherStuff()
         {
-            return "DoOtherStuff called";
+            return "string DoOtherStuff() called";
+        }
+
+        public virtual void DoOtherVoidStuff()
+        {
+            Console.WriteLine("void DoOtherVoidStuff() called");
         }
     }
 }

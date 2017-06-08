@@ -4,10 +4,6 @@ using Microsoft.CSharp;
 
 namespace Symbolic.Computation
 {
-    public delegate double TerminalEvaluation(double[][] data, int variableIndex, int sampleIndex, double coefficient);
-
-    public delegate double FunctionEvaluation(double[] parameters);
-
     /// <summary>
     /// This class provides static methods for creating evaluation methods
     /// </summary>
@@ -18,19 +14,21 @@ namespace Symbolic.Computation
         /// <summary>
         /// Compiles a terminal evaluation method
         /// </summary>
+        /// <typeparam name="T">The type of the create terminal method</typeparam>
         /// <param name="methodCode">the code for the method body</param>
         /// <param name="arguments">the string array representing the methd arguments</param>
         /// <param name="compilationResults">the out parameter holdng the comiplation result</param>
         /// <returns>the created terminal evaluation delegate</returns>
-        public static TerminalEvaluation CompileTerminal(
-            string methodCode, string[] arguments, Type resType, out CompilationResults compilationResults)
+        /// <summary>
+        public static T CompileTerminal<T>(
+            string methodCode, string[] arguments, Type resType, out CompilationResults compilationResults) where T:class
         {
             string namespaceName = typeof(TerminalEvaluation).Namespace;
             string methodName = typeof(TerminalEvaluation).Name;
             string resultType = resType.Name;
             string argumentsCode = string.Join(",", arguments);
 
-            return Compile<TerminalEvaluation>(
+            return Compile<T>(
                 namespaceName, ClassName, methodName, resultType, argumentsCode, methodCode,
                 out compilationResults);
         }
@@ -38,20 +36,21 @@ namespace Symbolic.Computation
         /// <summary>
         /// Creates a functional evaluation method.
         /// </summary>
+        /// <typeparam name="T">The type of the create functional method</typeparam>
         /// <param name="methodCode">the code for the method body</param>
         /// <param name="argument">the string representing the method argument</param>
         /// <param name="resType">the type of the method result</param>
         /// <param name="compilationResults">the out parameter holdng the comiplation result</param>
         /// <returns>the created functional evaluation delegate</returns>
-        public static FunctionEvaluation CompileFunction(
-            string methodCode, string argument, Type resType, out CompilationResults compilationResults)
+        public static T CompileFunction<T>(
+            string methodCode, string argument, Type resType, out CompilationResults compilationResults) where T : class
         {
             string namespaceName = typeof(TerminalEvaluation).Namespace;
             string methodName = typeof(TerminalEvaluation).Name;
             string resultType = resType.Name;
             string argumentsCode = argument;
 
-            return Compile<FunctionEvaluation>(
+            return Compile<T>(
                 namespaceName, ClassName, methodName, resultType, argumentsCode, methodCode,
                 out compilationResults);
         }

@@ -150,10 +150,14 @@ namespace Reflection.Emit
                     }
                     il.Emit(OpCodes.Callvirt, wrappedFieldBuilder.FieldType.GetMethod(methodInfo.Name));
 
-                    var localBuilder = il.DeclareLocal(methodInfo.ReturnType);
-                    il.Emit(OpCodes.Stloc, localBuilder);
-                    il.Emit(OpCodes.Ldloc, localBuilder);
-                    
+                    // Void return type cannot be saved as local variable in method body
+                    if (typeof(void) != methodInfo.ReturnType)
+                    {
+                        var localBuilder = il.DeclareLocal(methodInfo.ReturnType);
+                        il.Emit(OpCodes.Stloc, localBuilder);
+                        il.Emit(OpCodes.Ldloc, localBuilder);
+                    }
+
                     // after interceptor call if interceptor is present
                     if ((interceptor != null) && (interceptableInterfaces.Contains(interfaceType)))
                     {

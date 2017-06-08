@@ -7,6 +7,13 @@ using System.Threading.Tasks;
 
 namespace Symbolic.Computation
 {
+    #region Supported Evaluation methods
+    public delegate double TerminalEvaluation(double[][] data, int variableIndex, int sampleIndex, double coefficient);
+
+    public delegate double FunctionEvaluation(double[] parameters);
+    #endregion
+
+    #region Node specification
     /// <summary>
     /// Interface which specifies a Node.
     /// </summary>
@@ -18,7 +25,7 @@ namespace Symbolic.Computation
     /// <summary>
     /// The abstract implementation of the INode interface which encapsulates the common members
     /// </summary>
-    public abstract class BaseNode<T> : INode
+    public abstract class BaseNode<T> : INode where T : class
     {
         protected readonly T Evaluation;
 
@@ -28,7 +35,7 @@ namespace Symbolic.Computation
         /// <param name="evaluation">to evaluation for this node</param>
         protected BaseNode(T evaluation)
         {
-            Evaluation = evaluation;
+            Evaluation = evaluation ?? throw new ArgumentException("Node must hold an evaluation");
         }
 
         /// <summary>
@@ -39,7 +46,9 @@ namespace Symbolic.Computation
         /// <returns></returns>
         public abstract double Evaluate(double[][] data, int sampleIdx);
     }
+    #endregion
 
+    #region Node implementation
     /// <summary>
     /// Node implementation for functional evaluations
     /// </summary>
@@ -52,10 +61,10 @@ namespace Symbolic.Computation
         /// </summary>
         /// <param name="evaluation">the functional evaluation for this node</param>
         /// <param name="children">the children of the functional node</param>
-        public FunctionalNode(FunctionEvaluation evaluation, List<INode> children): base(evaluation)
+        public FunctionalNode(FunctionEvaluation evaluation, List<INode> children) : base(evaluation)
         {
             this._children = children
-                            ?? throw new ArgumentException("Children list must not be null on a functional node");
+                             ?? throw new ArgumentException("Children list must not be null on a functional node");
             if (children.Count == 0)
             {
                 throw new ArgumentException("Children list must not be empty on a functional node");
@@ -93,4 +102,5 @@ namespace Symbolic.Computation
             return Evaluation(data, _variableIdx, sampleIdx, _coefficient);
         }
     }
+    #endregion
 }

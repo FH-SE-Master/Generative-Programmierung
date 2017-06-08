@@ -190,7 +190,7 @@ namespace Symbolic.Computation
         private static TerminalEvaluation CreateTerminal(string[] arguments, Type resultType, string code)
         {
             CompilationResults compilationResults;
-            TerminalEvaluation variable =FunctionalBasis.CompileTerminal(code, arguments, resultType, out compilationResults);
+            TerminalEvaluation variable =FunctionalBasis.CompileTerminal<TerminalEvaluation>(code, arguments, resultType, out compilationResults);
             if (compilationResults.HasErrors)
             {
                 throw new InvalidProgramException(
@@ -210,7 +210,7 @@ namespace Symbolic.Computation
         private static FunctionEvaluation CreateFunctional(string argument, Type resultType, string code)
         {
             CompilationResults compilationResults;
-            FunctionEvaluation function = FunctionalBasis.CompileFunction(code, argument, resultType, out compilationResults);
+            FunctionEvaluation function = FunctionalBasis.CompileFunction<FunctionEvaluation>(code, argument, resultType, out compilationResults);
             if (compilationResults.HasErrors)
             {
                 throw new InvalidProgramException(

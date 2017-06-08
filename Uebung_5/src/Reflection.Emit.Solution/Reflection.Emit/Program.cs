@@ -80,10 +80,12 @@ namespace Reflection.Emit
             Console.WriteLine($"DoStuff(1, 2): {obj.DoStuff(1, 2)}");
             Console.WriteLine($"DoStuff(2, 2): {obj.DoStuff(2, 2)}");
             Console.WriteLine($"DoStuff(4, 4): {obj.DoStuff(4, 4)}");
+            obj.DoVoidStuff();
             // ISecondTest methods 
             Console.WriteLine($"DoOtherStuff: {obj.DoOtherStuff()}");
             Console.WriteLine($"DoOtherStuff: {obj.DoOtherStuff()}");
             Console.WriteLine($"DoOtherStuff: {obj.DoOtherStuff()}");
+            obj.DoOtherVoidStuff();
         }
     }
 }

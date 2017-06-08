@@ -89,10 +89,10 @@
 Dieser Abschnitt behandelt die Aufgabenstellung \emph{Dynamic Generation of Proxies using Reflection.Emit}.
 
 \subsection{Lösungsidee} 
-Es wird die Klasse \emph{ProxyGenerator} implementiert, welche die beiden generischen Methoden \emph{Create$<T>$(T obj)} und \emph{Create$<T>$(T obj, IInterception$<T>$ interceptor)} zur Verfügung stellt, die für das übergebene Objekt eine Proxyklasse erstellen und das Proxyobjekt zurückliefern. Damit der Proxy auch bei einem \emph{Cast} auf den implementierten Typ greift, müssen die implementierten Methoden als \emph{virtual} markiert werden, ansonsten wird die Implementierung des konkreten Typs verwendet und nicht die überschriebenen Methoden des Proxy, was an der Art und Weise der Handhabung von der Methodenbindung in C\# liegt.
+Es wird die Klasse \emph{ProxyGenerator} implementiert, welche die beiden generischen Methoden \emph{Create$<T>$(T obj)} und \emph{Create$<T>$(T obj, IInterception$<T>$ interceptor)} zur Verfügung stellt, die für das übergebene Objekt eine Proxyklasse und ein Proxyobjekt erstellen und das erstellte Proxyobjekt zurückliefern. Damit der Proxy auch bei einem \emph{Cast} auf den implementierten Typ greift, müssen die implementierten Methoden der Schnitstelle in der implementierenden Klasse als \emph{virtual} markiert werden, ansonsten wird die Implementierung implementierenden Klasse aufgerufen und nicht die überschriebenen Methoden des Proxy, was an der Art und Weise der Handhabung von der dynamischen Bindung in C\# liegt.
 \newline
 \newline
-Es werden alle Methoden im Proxy überschrieben, jedoch wird der \emph{Interceptor} nur bei den Methoden, die im Typ \emph{T} zur Verfügung stehen eingefügt. Ein Interceptor wird durch die Schnittstelle \emph{IIntercepton} spezifiziert wobei die beiden Methoden \emph{Before} und \emph{After} für einen \emph{Interceptor} zur Verfügung stehen. Diese beiden Methoden \emph{Before} und \emph{After} bekommen das Objekt und den Methodennamen übergeben, sodass der \emph{Interceptor} mit dem Objekt interagieren kann und auch die Information hat welche Methode aufgerufen wird.
+Es werden alle Methoden im Proxy überschrieben, jedoch wird der \emph{Interceptor} nur bei den Methoden, die im Typ \emph{T} zur Verfügung stehen eingefügt. Ein Interceptor wird durch die Schnittstelle \emph{IIntercepton} spezifiziert, wobei die beiden Methoden \emph{Before} und \emph{After} von einem \emph{Interceptor} implementiert werden müssen. Diese beiden Methoden \emph{Before} und \emph{After} bekommen das Objekt vom Typ \emph{T} und den Methodennamen übergeben, sodass der \emph{Interceptor} mit dem Objekt interagieren kann und auch die Information hat welche Methode abgefangen wird.
 \newline
 \newline
 Es wird die Klasse \emph{LogInterception} implementiert, welche die Schnittstelle \emph{IInterception} implementiert und bei einem Aufruf der Methoden \emph{Before} und \emph{After} \emph{Logs} generiert.
@@ -134,20 +134,29 @@ Dieser Abschnitt beinhaltet die implementierten Quelltexte und das Testprogramm.
 	\cppSourceFile{\srcEmit/Program.cs}
 	\label{src:class-program}
 \end{code}
+\ \newpage
 
 \subsection{Tests}
 Dieser Abschnitt behandelt die Tests in Form von Ausgaben der \emph{Logs}.
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.75]{\imageDir/test-proxy-generator.JPG}
-	\caption{Test für \emph{Interception} von \emph{ITest} und \emph{ISecondTest}}
+	\includegraphics[scale=0.8]{\imageDir/test-proxy-generator_1.JPG}
+	\caption{Test für \emph{Interception} von \emph{ITest}}
 	\label{fig:image-proxy-generator}
 \end{figure}
-
 \ \newpage
+
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.75]{\imageDir/test-proxy-generator-2.JPG}
+	\includegraphics[scale=0.8]{\imageDir/test-proxy-generator_2.JPG}
+	\caption{Test für \emph{Interception} von \emph{ISecondTest}}
+	\label{fig:image-proxy-generator-2}
+\end{figure}
+\ \newpage
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.8]{\imageDir/test-proxy-generator_3.JPG}
 	\caption{Test für \emph{Interception} von \emph{Test}}
 	\label{fig:image-proxy-generator-2}
 \end{figure}
@@ -157,10 +166,16 @@ Dieser Abschnitt behandelt die Tests in Form von Ausgaben der \emph{Logs}.
 Dieser Abschnitt behandelt die Aufgabenstellung \emph{Dynamic Generation of Functions}.
 
 \subsection{Lösungsidee}
-Ein Großteil der Implementierungen wurde bereits in der Übung implementiert, jedocjh wurden folgende Veränderungen vorgenommen. Die Methode \emph{CompileTerminal} bekommt die Argumente als String Array übergeben, sodass beim Erstellen der Aufrufer nicht von statischen Definitionen dieser Implementierung abhängig ist, die bereits vorgeben, wie die Argumente der erstellten Methode benannt sind. Ebenso wird dieser Methode der Datentyp des Resultats dieser Methode übergeben.
+Ein Großteil der Implementierungen wurde bereits in der Übung implementiert, jedoch wurden die folgenden Veränderungen vorgenommen. 
 \newline
 \newline
-Die Methode \emph{CompileFunction} bekommt ebenfalls das Argument in Form eines Strings und den Datentyp des Resultats dieser Methode übergeben, damit auch bei dieser Methode der Aufrufer nicht abhängig ist von statische Definitionen der Implementierung, die bereits den Namen und Datentyp des Resultats definieren.
+Die Methode \emph{CompileTerminal} verlangt die Argumente in Form eines Strings Arrays und den Datentyp des Resultats der zu erzeugenden Methode, damit der Aufrufer nicht abhängig ist von statische Definitionen in der Implementierung dieser Methode.
+\newline
+\newline
+Die Methode \emph{CompileFunction} verlangt das Argument in Form eines Strings und den Datentyp des Resultats der zu erzeugenden Methode, damit der Aufrufer nicht abhängig ist von statische Definitionen in der Implementierung dieser Methode.
+\newline
+\newline
+Die \emph{delegate} Definitionen wurden in die Datei \emph{Node.cs} verschoben, da die \emph{delegates} die unterstützten Evaluierungsmethoden darstellen, die von den implementierten \emph{Nodes} unterstützt werden. Die Methoden \emph{CompileTerminal} und \emph{CompileFunctional} liefern ein Objekt des Datentyps \emph{T} und sind daher unabhängig von der konkreten Ausprägung der Terminal- und Funktionsmethode.  
 \newline
 \newline
 Es wird die Schnittstelle \emph{INode} implementiert, die eine Node im Evaluierungsbaum darstellt. Es wird die abstrakte Klasse \emph{BaseNode} implementiert, die alle gemeinsamen \emph{Properties} kapselt. Es werden die Klassen \emph{FunctionalNode} und \emph{TerminalNode} implementiert, welche die Knoten der zwei Typen von Evaluierungsmethoden repräsentieren und die spezifischen Evaluierungen dieser Knotentypen implementieren. 
@@ -172,7 +187,7 @@ Dieser Abschnitt beinhaltet die implementierten Quelltexte und das Testprogramm.
 	\cppSourceFile{\srcSymbolic/AssertDouble.cs}
 	\label{src:class-assertdouble}
 \end{code}
-\ \newpage
+
 \begin{code}
 	\caption{Node.cs}
 	\cppSourceFile{\srcSymbolic/Node.cs}
@@ -190,6 +205,7 @@ Dieser Abschnitt beinhaltet die implementierten Quelltexte und das Testprogramm.
 	\cppSourceFile{\srcSymbolic/Program.cs}
 	\label{src:class-symbolic-program}
 \end{code}
+\ \newpage
 
 \subsection{Tests}
 Dieser Abschnitt beinhaltet die implementierten Quelltexte und das Testprogramm.

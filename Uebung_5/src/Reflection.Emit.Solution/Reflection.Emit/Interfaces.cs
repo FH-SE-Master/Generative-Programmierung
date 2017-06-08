@@ -8,6 +8,8 @@ namespace Reflection.Emit
     public interface ITest
     {
         int DoStuff(int i, int j);
+
+        void DoVoidStuff();
     }
 
     /// <summary>
@@ -16,5 +18,7 @@ namespace Reflection.Emit
     public interface ISecondTest
     {
         string DoOtherStuff();
+
+        void DoOtherVoidStuff();
     }
 }
