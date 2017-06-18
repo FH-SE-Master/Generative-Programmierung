@@ -10,7 +10,23 @@ namespace XMLGenerator
     {
         static void Main(string[] args)
         {
-            String xml = XmlGenerator.Create()
+            Console.WriteLine("----------------------------------------------");
+            Console.WriteLine("XMLGenerator tests");
+            Console.WriteLine("----------------------------------------------");
+            Console.WriteLine("testExampleNoValuesAndNoAttributes:");
+            Console.WriteLine(testExampleNoValuesAndNoAttributes());
+            Console.WriteLine("----------------------------------------------");
+            Console.WriteLine("testExampleValuesNoAttributes:");
+            Console.WriteLine(testExampleValuesNoAttributes());
+            Console.WriteLine("----------------------------------------------");
+            Console.WriteLine("testExampleValuesAndAttributes:");
+            Console.WriteLine(testExampleValuesAndAttributes());
+            Console.WriteLine("----------------------------------------------");
+        }
+
+        private static string testExampleNoValuesAndNoAttributes()
+        {
+            return XmlGenerator.Create()
                 .Customer
                 .BeginChildElements
                 .Name
@@ -22,11 +38,11 @@ namespace XMLGenerator
                 .EndChildElements
                 .EndChildElements
                 .Generate();
+        }
 
-            Console.WriteLine(xml);
-
-
-            xml = XmlGenerator.Create()
+        private static string testExampleValuesNoAttributes()
+        {
+            return XmlGenerator.Create()
                 .Customer.BeginChildElements
                 .Name("Franz")
                 .Phone("033577021")
@@ -37,8 +53,21 @@ namespace XMLGenerator
                 .EndChildElements
                 .EndChildElements
                 .Generate();
+        }
 
-            Console.WriteLine(xml);
+        private static string testExampleValuesAndAttributes()
+        {
+            return XmlGenerator.Create()
+                .Customer.BeginChildElements
+                .Name("Mayr", "FirstName", "Franz")
+                .Phone("033577021", "CountryCode", "43")
+                .Address.BeginChildElements
+                .Street("Street 5")
+                .City("Linz")
+                .Zip("4020")
+                .EndChildElements
+                .EndChildElements
+                .Generate();
         }
     }
 }

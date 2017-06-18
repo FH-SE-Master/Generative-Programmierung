@@ -10,6 +10,8 @@ namespace ProxyGenerator
     {
         static void Main(string[] args)
         {
+            dynamic test = new Test();
+            test.DoSomething();
         }
     }
 }

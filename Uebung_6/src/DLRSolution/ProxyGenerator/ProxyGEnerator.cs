@@ -9,10 +9,19 @@ using Microsoft.CSharp.RuntimeBinder;
 
 namespace ProxyGenerator
 {
+    /// <summary>
+    /// This class is the proxy generator.
+    /// </summary>
     public class ProxyGEnerator : DynamicMetaObject
     {
         private readonly IInterception _interceptor;
 
+        /// <summary>
+        /// Constructs a proxy generator
+        /// </summary>
+        /// <param name="expression">the expression to proxy</param>
+        /// <param name="obj">the object teh method gets called</param>
+        /// <param name="interceptor">the interceptor, can be null</param>
         public ProxyGEnerator(Expression expression, object obj, IInterception interceptor) : base(expression,
             BindingRestrictions.Empty, obj)
         {

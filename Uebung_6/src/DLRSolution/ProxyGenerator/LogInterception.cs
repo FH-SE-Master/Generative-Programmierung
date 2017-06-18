@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace ProxyGenerator
 {
+    /// <summary>
+    /// The log interceptor implementation for IInterception
+    /// </summary>
     public class LogInterception : IInterception
     {
         public void Before()
