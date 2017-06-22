@@ -108,7 +108,7 @@ namespace XMLGenerator
                 // Empty tag only if no values and children are presnet
                 if (!valuePresent  && !hasChildren)
                 {
-                    sb.Append("/>");
+                    sb.Append("/>").Append(Environment.NewLine);
                 }
                 else
                 {
@@ -127,7 +127,7 @@ namespace XMLGenerator
             // End tag if no empty tag or had children
             if (!nameNotPresent && (valuePresent || hasChildren))
             {
-                sb.Append($"</{_name}>");
+                sb.Append($"</{_name}>").Append(Environment.NewLine);
             }
         }
     }

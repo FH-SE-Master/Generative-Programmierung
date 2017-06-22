@@ -12,7 +12,7 @@ namespace ProxyGenerator
     /// <summary>
     /// This class is the proxy generator.
     /// </summary>
-    public class ProxyGEnerator : DynamicMetaObject
+    public class ProxyGenerator : DynamicMetaObject
     {
         private readonly IInterception _interceptor;
 
@@ -20,9 +20,9 @@ namespace ProxyGenerator
         /// Constructs a proxy generator
         /// </summary>
         /// <param name="expression">the expression to proxy</param>
-        /// <param name="obj">the object teh method gets called</param>
+        /// <param name="obj">the object the method gets called</param>
         /// <param name="interceptor">the interceptor, can be null</param>
-        public ProxyGEnerator(Expression expression, object obj, IInterception interceptor) : base(expression,
+        public ProxyGenerator(Expression expression, object obj, IInterception interceptor) : base(expression,
             BindingRestrictions.Empty, obj)
         {
             _interceptor = interceptor;
@@ -45,23 +45,45 @@ namespace ProxyGenerator
 
         private DynamicMetaObject WeaveAspect(DynamicMetaObject origObj, DynamicMetaObject[] args)
         {
-            var origExpr = origObj.Expression;
+            // only if interception is provided
+            if (_interceptor != null)
+            {
+                // original expressions
+                var origExpr = origObj.Expression;
+                var origVal = Expression.Parameter(origExpr.Type);
 
-            var localVarExpr = Expression.Parameter(origExpr.Type);
-            var beforeExpr = Expression.Call(Expression.Constant(_interceptor),
-                typeof(IInterception).GetMethod(nameof(IInterception.Before)));
-            var afterExpr = Expression.Call(Expression.Constant(_interceptor),
-                typeof(IInterception).GetMethod(nameof(IInterception.After)));
+                // before/after expressions
+                var beforeExpr = Expression.Call(Expression.Constant(_interceptor),
+                    typeof(IInterception).GetMethod(nameof(IInterception.Before)));
+                var afterExpr = Expression.Call(Expression.Constant(_interceptor),
+                    typeof(IInterception).GetMethod(nameof(IInterception.After)));
 
-            var block = Expression.Block(
-                new[] {localVarExpr},
-                beforeExpr,
-                Expression.Assign(localVarExpr, origExpr),
-                afterExpr,
-                localVarExpr
-            );
+                // new execution block expression
+                var block = Expression.Block(
+                    new[] {origVal},
+                    beforeExpr,
+                    Expression.Assign(origVal, origExpr),
+                    afterExpr,
+                    origVal
+                );
 
-            return new DynamicMetaObject(block, origObj.Restrictions);
+                // proceed expression
+                var proceedExpressions = Expression.Lambda(Expression.Block(new ParameterExpression[] { }, block));
+
+                // around expression
+                var aroundExpr = Expression.Call(Expression.Constant(_interceptor),
+                    typeof(IInterception).GetMethod(nameof(IInterception.Around)),
+                    new List<Expression>
+                    {
+                        proceedExpressions,
+                        Expression.NewArrayInit(typeof(object),
+                            args.Select(x => Expression.Convert(x.Expression, typeof(object))))
+                    });
+
+                return new DynamicMetaObject(aroundExpr, origObj.Restrictions);
+            }
+
+            return origObj;
         }
     }
 }

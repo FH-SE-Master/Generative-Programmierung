@@ -32,7 +32,7 @@ namespace XMLGenerator
         }
 
         /// <summary>
-        /// Find existing member by name or create new one.
+        /// Create a new node for the member
         /// </summary>
         /// <param name="binder">the binder providing the member name</param>
         /// <param name="result">out parameter holding the newly create node</param>

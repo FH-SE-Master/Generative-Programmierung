@@ -11,6 +11,10 @@ namespace ProxyGenerator
     /// </summary>
     public class LogInterception : IInterception
     {
+        public bool ProceedEnabled { get; set; } 
+        public bool EnforceResultEnabled { get; set; } 
+        public object EnforcedResult { get; set; } 
+        
         public void Before()
         {
             Console.WriteLine("Before called");
@@ -18,7 +22,7 @@ namespace ProxyGenerator
 
         public void After()
         {
-            Console.WriteLine("Before called");
+            Console.WriteLine("After called");
         }
 
         public object Around(Delegate proceed, object[] args)
@@ -26,15 +30,24 @@ namespace ProxyGenerator
             object result = null;
             Console.WriteLine("around (before)");
 
-            if ((!args.Any() || args[0].Equals("gp")))
+            if (ProceedEnabled)
             {
-                Console.WriteLine("procceding");
+                Console.WriteLine("around (procceding)");
                 result = proceed.DynamicInvoke();
-                if (result != null && (int) result < 10)
+                if (EnforceResultEnabled)
                 {
-                    result = 10;
+                    Console.WriteLine("around (enforced result)");
+                    result = EnforcedResult;
                 }
-                Console.WriteLine("proceeded");
+                else
+                {
+                    Console.WriteLine("around (result not enforced)");
+                }
+                Console.WriteLine("around (proceeded)");
+            }
+            else
+            {
+                Console.WriteLine("around (proceed disabled)");
             }
 
             Console.WriteLine("around (after)");
