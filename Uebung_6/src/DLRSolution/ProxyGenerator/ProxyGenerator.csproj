@@ -47,7 +47,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyGenerator.cs" />
+<<<<<<< HEAD
     <Compile Include="Test.cs" />
+=======
+    <Compile Include="DynamicTest.cs" />
+>>>>>>> 93b4458fa8c581c49f115008bef9b3a0197e2b3e
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
